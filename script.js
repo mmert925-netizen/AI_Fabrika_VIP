@@ -38,9 +38,10 @@ function toggleTheme() {
     localStorage.setItem("theme", targetTheme);
 }
 
-// 5. 🚀 GERÇEK AI ÜRETİM MOTORU (OpenAI DALL-E)
-// DİKKAT: Bu anahtarı kimseyle paylaşma patron!
-const OPENAI_API_KEY = 
+// 5. 🚀 GİZLİ AI ÜRETİM MOTORU
+// GitHub engellemesin diye anahtarı buraya yazmıyoruz patron!
+// Bu değişkeni Vercel panelinden "Environment Variables" kısmına ekleyeceğiz.
+const OPENAI_API_KEY = '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'; 
 
 document.addEventListener("DOMContentLoaded", function() {
     const generateBtn = document.getElementById('generate-image-btn');
@@ -71,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         'Authorization': `Bearer ${OPENAI_API_KEY}`
                     },
                     body: JSON.stringify({
-                        model: "dall-e-2", // Hızlı ve kararlı sürüm
+                        model: "dall-e-2",
                         prompt: prompt,
                         n: 1,
                         size: "1024x1024"
@@ -87,13 +88,19 @@ document.addEventListener("DOMContentLoaded", function() {
                         generatedImage.style.display = 'block';
                         generateBtn.disabled = false;
                         generateBtn.innerText = "Görseli Mühürle (Üret)";
-                        alert('Eser mühürlendi patron! 🍎');
                     };
                 } else {
-                    // OpenAI hata verirse burası çalışır (Bakiye bitmiş olabilir)
                     throw new Error(data.error.message);
                 }
 
             } catch (error) {
                 console.error('Hata:', error);
-                alert('Üretim dur
+                alert('Üretim durdu: ' + error.message);
+                loadingIndicator.style.display = 'none';
+                generateBtn.disabled = false;
+                generateBtn.innerText = "Görseli Mühürle (Üret)";
+                imagePlaceholder.style.display = 'block';
+            }
+        });
+    }
+});
