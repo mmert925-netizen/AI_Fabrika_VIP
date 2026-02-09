@@ -20,9 +20,9 @@ function sendMessage() {
         if(userMsg.includes("selam") || userMsg.includes("merhaba")) {
             botResponse = "Merhaba! ÖMER.AI Yazılım Fabrikası'na hoş geldin.";
         } else if(userMsg.includes("proje")) {
-            botResponse = "Yapay zeka modelleri ve otonom yazılımlar üretiyoruz. Aşağıya bir göz at!";
+            botResponse = "Yapay zeka modelleri ve otonom yazılımlar üretiyoruz. Sergimize göz atabilirsin!";
         } else if(userMsg.includes("iletişim")) {
-            botResponse = "Aşağıdaki formu doldurup 'Mührü Gönder' demen yeterli.";
+            botResponse = "Formu doldurup 'Mührü Gönder' dersen mesajın doğrudan telefonuma düşer.";
         }
 
         setTimeout(() => {
@@ -45,6 +45,11 @@ function moveSlider(direction) {
     }
 }
 
+// 🚀 EKLEME: Otonom Slider (5 saniyede bir kendi kayar)
+setInterval(() => {
+    moveSlider(1);
+}, 5000);
+
 // 4. Tema (Karanlık/Aydınlık) Yönetimi
 function toggleTheme() {
     const currentTheme = document.documentElement.getAttribute("data-theme");
@@ -53,21 +58,24 @@ function toggleTheme() {
     localStorage.setItem("theme", targetTheme);
 }
 
-// 5. TELEGRAM MESAJ HATTI (TAMİR EDİLEN ANA MOTOR) 🚀
-const TELEGRAM_BOT_TOKEN = '8385745600:AAFRf0-qUiy8ooJfvzGcn_MpL77YXONGHis'; // BotFather'dan aldığın token
-const TELEGRAM_CHAT_ID = '7076964315';       // Kendi Chat ID'n
+// 5. TELEGRAM MESAJ HATTI 🚀
+const TELEGRAM_BOT_TOKEN = '8385745600:AAFRf0-qUiy8ooJfvzGcn_MpL77YXONGHis'; 
+const TELEGRAM_CHAT_ID = '7076964315'; 
 
 document.addEventListener("DOMContentLoaded", function() {
-    // Kayıtlı Temayı Uygula
     const savedTheme = localStorage.getItem("theme") || "dark";
     document.documentElement.setAttribute("data-theme", savedTheme);
 
-    // İletişim Formu Yönetimi (Telegram Bağlantılı)
     const form = document.getElementById("contact-form");
     if (form) {
         form.addEventListener("submit", function(event) {
             event.preventDefault();
             
+            // Butonu geçici olarak devre dışı bırak (Çift gönderimi önler)
+            const submitBtn = form.querySelector('button');
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Mühürleniyor...";
+
             const name = form.querySelector('input[type="text"]').value;
             const email = form.querySelector('input[type="email"]').value;
             const message = form.querySelector('textarea').value;
@@ -88,14 +96,20 @@ document.addEventListener("DOMContentLoaded", function() {
                     alert("Mührün Telegram hattına fırlatıldı patron! 🚀");
                     form.reset();
                 } else {
-                    alert("Hata: Anahtarlar hatalı olabilir.");
+                    alert("Hata: Mesaj iletilemedi. Token veya ID kontrolü gerek.");
                 }
             })
-            .catch(error => console.error('Hata:', error));
+            .catch(error => {
+                console.error('Hata:', error);
+                alert("Bağlantı hatası oluştu!");
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Mührü Gönder";
+            });
         });
     }
 
-    // Chat Girişi İçin Enter Tuşu
     const chatInput = document.getElementById('user-input');
     if(chatInput) {
         chatInput.addEventListener("keypress", function(event) {

@@ -22,6 +22,10 @@
 }
 
 /* 2. GENEL AYARLAR */
+html {
+    scroll-behavior: smooth; /* Sayfa geçişleri yağ gibi akar */
+}
+
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
@@ -82,25 +86,30 @@ h1 { font-size: 3.5rem; color: var(--accent-color); margin-bottom: 10px; }
     overflow: hidden;
     border-radius: 20px;
     border: 2px solid var(--accent-color);
+    box-shadow: 0 0 30px rgba(56, 189, 248, 0.2);
 }
 
-/* Slider Akış Mekanizması */
 .slider-track {
     display: flex;
-    transition: transform 0.5s ease-in-out;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .slide {
-    min-width: 100%; /* Her resim tam genişlik kaplasın */
+    min-width: 100%;
     box-sizing: border-box;
 }
 
 .slide img {
     width: 100%;
     display: block;
+    transition: transform 0.3s ease;
 }
 
-/* Okları Kenarlara Sabitleyen Düzenleme */
+.slide img:hover {
+    transform: scale(1.02);
+}
+
+/* Oklar */
 .slider-btn {
     position: absolute;
     top: 50%;
@@ -122,9 +131,10 @@ h1 { font-size: 3.5rem; color: var(--accent-color); margin-bottom: 10px; }
 }
 
 .slider-btn:hover { background: var(--accent-color); color: #fff; }
+.slider-btn:active { transform: translateY(-50%) scale(0.9); }
 
-.prev { left: 20px; } /* Sol ok en sola */
-.next { right: 20px; } /* Sağ ok en sağa */
+.prev { left: 20px; }
+.next { right: 20px; }
 
 /* 6. HİZMETLER VE ZAMAN TÜNELİ */
 .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; padding: 40px 0; }
@@ -139,7 +149,7 @@ h1 { font-size: 3.5rem; color: var(--accent-color); margin-bottom: 10px; }
 
 .service-card:hover { transform: translateY(-10px); box-shadow: 0 0 25px var(--accent-color); }
 
-.timeline { border-left: 3px solid var(--accent-color); margin-left: 20px; padding-left: 20px; }
+.timeline { border-left: 3px solid var(--accent-color); margin-left: 20px; padding-left: 20px; margin-top: 30px; }
 .checkpoint { margin-bottom: 30px; position: relative; }
 .checkpoint::before {
     content: ''; position: absolute; left: -31.5px; top: 5px;
@@ -154,10 +164,16 @@ h1 { font-size: 3.5rem; color: var(--accent-color); margin-bottom: 10px; }
 input, textarea {
     padding: 15px;
     background: var(--card-bg);
-    border: 1px solid var(--accent-color);
+    border: 1px solid var(--border-color);
     color: var(--text-color);
     border-radius: 10px;
     outline: none;
+    transition: 0.3s;
+}
+
+input:focus, textarea:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
 }
 
 .neon-button {
@@ -168,9 +184,11 @@ input, textarea {
     cursor: pointer;
     font-weight: bold;
     transition: 0.3s;
+    border-radius: 10px;
 }
 
 .neon-button:hover { background: var(--accent-color); color: #fff; box-shadow: 0 0 20px var(--accent-color); }
+.neon-button:active { transform: scale(0.98); }
 
 /* 8. SOHBET KUTUSU */
 .chat-container {
@@ -178,14 +196,24 @@ input, textarea {
     width: 320px; background: var(--input-bg);
     border-radius: 15px; border: 1px solid var(--accent-color);
     overflow: hidden; z-index: 1000;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
 }
 
-.chat-header { background: var(--accent-color); color: #fff; padding: 12px; font-weight: bold; }
-.chat-messages { height: 250px; padding: 15px; overflow-y: auto; background: var(--bg-color); }
+.chat-header { background: var(--accent-color); color: #fff; padding: 12px; font-weight: bold; text-align: center; }
+.chat-messages { height: 250px; padding: 15px; overflow-y: auto; background: var(--bg-color); display: flex; flex-direction: column; }
 
-/* 9. MOBİL UYUMLULUK */
-@media (max-width: 768px) {
-    h1 { font-size: 2.2rem; }
-    nav ul { display: none; }
-    .chat-container { width: 90%; right: 5%; }
+.chat-input {
+    display: flex;
+    padding: 10px;
+    background: var(--nav-bg);
+    border-top: 1px solid var(--border-color);
 }
+
+.chat-input input {
+    flex: 1;
+    padding: 8px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 5px 0 0 5px;
+    font-size: 14px;
