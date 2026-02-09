@@ -1,3 +1,4 @@
+/* 1. RENK VE TEMEL AYARLAR */
 :root {
     --bg-color: #0f172a; --text-color: #f8fafc; --accent-color: #38bdf8;
     --card-bg: rgba(30, 41, 59, 0.7); --nav-bg: rgba(15, 23, 42, 0.9);
@@ -8,38 +9,91 @@
     --card-bg: rgba(255, 255, 255, 0.9); --nav-bg: rgba(241, 245, 249, 0.9);
     --border-color: #cbd5e1; --input-bg: #ffffff;
 }
-html { scroll-behavior: smooth; }
-body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Inter', sans-serif; margin: 0; transition: 0.3s; }
 
-nav { display: flex; justify-content: space-between; padding: 1.5rem 2rem; background: var(--nav-bg); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--border-color); }
+html { scroll-behavior: smooth; }
+body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Inter', sans-serif; margin: 0; transition: 0.3s; overflow-x: hidden; }
+
+/* 2. BÖLÜMLERİ HİZALA (DAĞILMAYI ÖNLEYEN KISIM) */
+section {
+    position: relative;
+    width: 100%;
+    padding: 80px 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* 3. NAVİGASYON */
+nav { 
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1rem 2rem; background: var(--nav-bg); backdrop-filter: blur(10px); 
+    position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--border-color);
+}
 .logo { font-size: 1.5rem; font-weight: bold; color: var(--accent-color); text-shadow: 0 0 10px var(--accent-color); }
-nav ul { list-style: none; display: flex; gap: 20px; }
+nav ul { list-style: none; display: flex; gap: 20px; margin: 0; }
 nav a { color: var(--text-color); text-decoration: none; font-weight: 500; }
 
-.hero { height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-h1 { font-size: 3.5rem; color: var(--accent-color); }
+/* 4. HERO */
+.hero { height: 80vh; justify-content: center; background: radial-gradient(circle at center, var(--input-bg) 0%, var(--bg-color) 100%); }
+h1 { font-size: 3.5rem; color: var(--accent-color); text-align: center; margin-bottom: 10px; }
 
-.gallery-container, .lab-container { padding: 4rem 2rem; text-align: center; border-bottom: 1px solid var(--border-color); }
-.neon-text { color: var(--accent-color); text-shadow: 0 0 10px var(--accent-color); }
-
-.slider-container, .image-output-container { position: relative; max-width: 1000px; margin: 0 auto; overflow: hidden; border-radius: 20px; border: 2px solid var(--accent-color); background: var(--card-bg); }
+/* 5. SLIDER VE LABORATUVAR */
+.slider-container, .image-output-container { 
+    position: relative; width: 100%; max-width: 900px; 
+    overflow: hidden; border-radius: 20px; border: 2px solid var(--accent-color); 
+    background: var(--card-bg); margin: 20px 0;
+}
 .slider-track { display: flex; transition: 0.5s; }
 .slide { min-width: 100%; }
-.slide img { width: 100%; display: block; }
+.slide img, #generated-image { width: 100%; height: auto; display: block; object-fit: cover; }
 
-.lab-form-container { max-width: 800px; margin: 2rem auto; display: flex; flex-direction: column; gap: 15px; padding: 2rem; background: var(--card-bg); border-radius: 15px; border: 1px solid var(--accent-color); position: relative; }
-#prompt-input { padding: 15px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 10px; outline: none; }
+.lab-form-container { 
+    width: 100%; max-width: 800px; display: flex; flex-direction: column; 
+    gap: 15px; padding: 2rem; background: var(--card-bg); border-radius: 15px; 
+    border: 1px solid var(--accent-color); box-sizing: border-box;
+}
 
-.loading-spinner { border: 4px solid rgba(255,255,255,.3); border-top: 4px solid var(--accent-color); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; position: absolute; top: 50%; left: 50%; }
-@keyframes spin { 0% { transform: translate(-50%,-50%) rotate(0deg); } 100% { transform: translate(-50%,-50%) rotate(360deg); } }
+/* 6. HİZMETLER VE DİĞERLERİ */
+.services-grid { 
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+    gap: 20px; width: 100%; max-width: 1100px; margin-top: 30px;
+}
+.service-card { 
+    background: var(--card-bg); border: 1px solid var(--accent-color); 
+    padding: 30px; border-radius: 15px; text-align: center; transition: 0.3s;
+}
 
-.neon-button { background: transparent; border: 2px solid var(--accent-color); color: var(--accent-color); padding: 15px; cursor: pointer; font-weight: bold; border-radius: 10px; transition: 0.3s; }
+/* 7. FORM VE ELEMENTLER */
+#contact-form { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 15px; }
+input, textarea, #prompt-input { 
+    padding: 15px; background: var(--input-bg); border: 1px solid var(--border-color); 
+    color: var(--text-color); border-radius: 10px; font-family: inherit;
+}
+
+.neon-button { 
+    background: transparent; border: 2px solid var(--accent-color); 
+    color: var(--accent-color); padding: 15px 30px; cursor: pointer; 
+    font-weight: bold; border-radius: 10px; transition: 0.3s;
+}
 .neon-button:hover { background: var(--accent-color); color: #fff; box-shadow: 0 0 20px var(--accent-color); }
 
-.chat-container { position: fixed; bottom: 20px; right: 20px; width: 320px; background: var(--input-bg); border-radius: 15px; border: 1px solid var(--accent-color); overflow: hidden; }
-.chat-header { background: var(--accent-color); color: #fff; padding: 10px; font-weight: bold; }
-.chat-messages { height: 200px; padding: 10px; overflow-y: auto; background: var(--bg-color); }
-.chat-input { display: flex; padding: 5px; }
-.chat-input input { flex: 1; padding: 5px; background: var(--input-bg); color: #fff; border: 1px solid var(--border-color); }
+/* 8. SOHBET VE SPINNER */
+.loading-spinner { 
+    border: 4px solid rgba(255,255,255,.1); border-top: 4px solid var(--accent-color); 
+    border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; 
+    position: absolute; top: 50%; left: 50%; margin-left: -20px; margin-top: -20px;
+}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-@media (max-width: 768px) { h1 { font-size: 2rem; } nav ul { display: none; } }
+.chat-container { position: fixed; bottom: 20px; right: 20px; width: 300px; background: var(--input-bg); border-radius: 15px; border: 1px solid var(--accent-color); z-index: 2000; overflow: hidden; }
+
+/* 9. MOBİL AYAR */
+@media (max-width: 768px) {
+    h1 { font-size: 2.2rem; }
+    nav ul { display: none; }
+    .hero { height: 60vh; }
+}
+
+footer { padding: 40px; text-align: center; opacity: 0.6; }
