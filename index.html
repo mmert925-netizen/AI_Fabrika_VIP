@@ -42,51 +42,43 @@
         </div>
     </section>
 
-    <section id="hakkimda" class="about-section">
-        <h2 class="neon-text">Fabrika Zaman Tüneli</h2>
-        <div class="timeline">
-            <div class="checkpoint">
-                <h3>🚀 Başlangıç</h3>
-                <p>İlk kod mühürlendi, temel atıldı.</p>
-            </div>
-            <div class="checkpoint">
-                <h3>🤖 AI Entegrasyonu</h3>
-                <p>ÖMER.AI asistanı fabrikanın beyni olarak devreye girdi.</p>
-            </div>
-            <div class="checkpoint">
-                <h3>🏭 Seri Üretim</h3>
-                <p>Yapay zeka sergisi ve modern arayüz tamamlandı.</p>
+    <section id="ai-lab" class="contact-section">
+        <h2 class="neon-text">AI Üretim Laboratuvarı</h2>
+        <div id="contact-form" style="max-width: 800px; margin: 0 auto;">
+            <textarea id="prompt-input" placeholder="Hayal ettiğin görseli buraya yaz patron..." rows="4"></textarea>
+            <button id="generate-image-btn" class="neon-button" style="margin-top: 15px; width: 100%;">Görseli Mühürle (Üret)</button>
+            <div id="loading-indicator" style="display: none; margin-top: 15px; color: var(--accent-color);">⌛ Üretiliyor...</div>
+            <div id="image-output-container" style="margin-top: 25px; border: 1px dashed var(--accent-color); border-radius: 15px; min-height: 200px; display: flex; align-items: center; justify-content: center;">
+                <img id="generated-image" src="" alt="Üretilen Görsel" style="display: none; width: 100%; border-radius: 15px;">
+                <p id="image-placeholder" style="opacity: 0.5;">Eser burada belirecek...</p>
             </div>
         </div>
     </section>
 
-    <section id="hizmetler" class="services-section">
-        <h2 class="neon-text">Fabrika Çözümleri</h2>
+    <section id="hakkimda" class="about-section">
+        <h2 class="neon-text" style="text-align: center;">Fabrika Zaman Tüneli</h2>
+        <div class="timeline">
+            <div class="checkpoint"><h3>🚀 Başlangıç</h3><p>İlk kod mühürlendi, temel atıldı.</p></div>
+            <div class="checkpoint"><h3>🤖 AI Entegrasyonu</h3><p>ÖMER.AI beyni devreye girdi.</p></div>
+            <div class="checkpoint"><h3>🏭 Seri Üretim</h3><p>Yapay zeka sergisi tamamlandı.</p></div>
+        </div>
+    </section>
+
+    <section id="hizmetler" class="services-section" style="padding: 2rem;">
+        <h2 class="neon-text" style="text-align: center;">Fabrika Çözümleri</h2>
         <div class="services-grid">
-            <div class="service-card">
-                <i class="icon">🧠</i>
-                <h3>Yapay Zeka Modelleme</h3>
-                <p>Gemini ve Imagen tabanlı otonom sistemler ve botlar geliştiriyoruz.</p>
-            </div>
-            <div class="service-card">
-                <i class="icon">🌐</i>
-                <h3>Siberpunk Web Tasarım</h3>
-                <p>Geleceğin estetiğini bugünün teknolojisiyle birleştiriyoruz.</p>
-            </div>
-            <div class="service-card">
-                <i class="icon">🚀</i>
-                <h3>Yazılım Otomasyonu</h3>
-                <p>İş akışlarını hızlandıran özel kodlanmış dijital araçlar.</p>
-            </div>
+            <div class="service-card"><i class="icon">🧠</i><h3>AI Modelleme</h3><p>Otonom sistemler.</p></div>
+            <div class="service-card"><i class="icon">🌐</i><h3>Web Tasarım</h3><p>Siberpunk estetik.</p></div>
+            <div class="service-card"><i class="icon">🚀</i><h3>Otomasyon</h3><p>Özel dijital araçlar.</p></div>
         </div>
     </section>
 
     <section id="iletisim" class="contact-section">
         <h2 class="neon-text">Mühürlü Mesaj Bırak</h2>
         <form id="contact-form">
-            <input type="text" placeholder="Adın veya Şirketin" required>
-            <input type="email" placeholder="E-posta Adresin" required>
-            <textarea placeholder="Proje detaylarını buraya mühürle..." rows="5" required></textarea>
+            <input type="text" placeholder="Adın" required>
+            <input type="email" placeholder="E-posta" required>
+            <textarea placeholder="Mesajın..." rows="5" required></textarea>
             <button type="submit" class="neon-button">Mührü Gönder</button>
         </form>
     </section>
@@ -95,15 +87,12 @@
         <div class="chat-header">🤖 ÖMER.AI Asistan</div>
         <div id="chat-box" class="chat-messages"></div>
         <div class="chat-input">
-            <input type="text" id="user-input" placeholder="Patrona mesaj bırak...">
+            <input type="text" id="user-input" placeholder="Patrona yaz...">
             <button onclick="sendMessage()">Gönder</button>
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2026 ÖMER.AI - Gelecek Burada Mühürlendi.</p>
-    </footer>
-
+    <footer><p>&copy; 2026 ÖMER.AI - Gelecek Burada Mühürlendi.</p></footer>
     <script src="script.js"></script>
 </body>
 </html>
