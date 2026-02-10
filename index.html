@@ -3,90 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ÖMER.AI | Fabrika</title>
+    <title>ÖMER.AI | Yazılım ve Yapay Zeka Fabrikası</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;500;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
-<body>
-    <nav>
-        <div class="logo">ÖMER.AI</div>
-        <ul>
-            <li><a href="#home">Ana Sayfa</a></li>
-            <li><a href="#projects">Projelerim</a></li>
-            <li><a href="#ai-lab">Üretim Hattı</a></li>
-            <li><a href="#contact">İletişim</a></li>
-        </ul>
+<body class="dark-theme">
+
+    <nav class="glass-nav">
+        <div class="nav-container">
+            <div class="logo">ÖMER<span>.AI</span></div>
+            <ul class="nav-links">
+                <li><a href="#home">Ana Sayfa</a></li>
+                <li><a href="#projects">Projeler</a></li>
+                <li><a href="#ai-lab">AI Lab</a></li>
+                <li><a href="#about">Hakkımda</a></li>
+                <li><a href="#contact">İletişim</a></li>
+            </ul>
+            <div class="theme-switcher">
+                <button id="theme-btn" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+            </div>
+        </div>
     </nav>
 
-    <header id="home" class="hero">
-        <h1>YAZILIM VE AI FABRİKASI</h1>
-        <p>Geleceği kodla, görselleri mühürle.</p>
-        <button onclick="document.getElementById('ai-lab').scrollIntoView({behavior:'smooth'})" class="neon-button">Üretime Başla</button>
+    <header id="home" class="hero-section">
+        <div class="hero-content">
+            <h1 class="glitch" data-text="YAZILIM FABRİKASI">YAZILIM FABRİKASI</h1>
+            <p class="hero-subtitle">Geleceğin kodlarını mühürlüyor, yapay zeka ile dünyayı yeniden şekillendiriyoruz.</p>
+            <div class="hero-btns">
+                <a href="#projects" class="main-btn">Eserleri İncele</a>
+                <a href="#ai-lab" class="outline-btn">Hemen Üret</a>
+            </div>
+        </div>
+        <div class="hero-overlay"></div>
     </header>
 
-    <section id="projects" class="projects-section">
-        <h2 class="neon-text">PROJELERİM</h2>
-        <div class="projects-grid">
-            <div class="project-card">
-                <img src="img/proje1.jpg" alt="Proje 1" onerror="this.src='https://via.placeholder.com/300x200?text=Gorsel+Yok'">
-                <h3>Proje 1</h3>
-            </div>
-            <div class="project-card">
-                <img src="img/proje2.jpg" alt="Proje 2" onerror="this.src='https://via.placeholder.com/300x200?text=Gorsel+Yok'">
-                <h3>Proje 2</h3>
-            </div>
-            <div class="project-card">
-                <img src="img/proje3.jpg" alt="Proje 3" onerror="this.src='https://via.placeholder.com/300x200?text=Gorsel+Yok'">
-                <h3>Proje 3</h3>
-            </div>
-            <div class="project-card">
-                <img src="img/proje4.jpg" alt="Proje 4" onerror="this.src='https://via.placeholder.com/300x200?text=Gorsel+Yok'">
-                <h3>Proje 4</h3>
-            </div>
-            <div class="project-card">
-                <img src="img/proje5.jpg" alt="Proje 5" onerror="this.src='https://via.placeholder.com/300x200?text=Gorsel+Yok'">
-                <h3>Proje 5</h3>
-            </div>
-            <div class="project-card">
-                <img src="img/proje6.jpg" alt="Proje 6" onerror="this.src='https://via.placeholder.com/300x200?text=Gorsel+Yok'">
-                <h3>Proje 6</h3>
-            </div>
-        </div>
-    </section>
-
-    <section id="ai-lab" class="lab-section">
-        <h2 class="neon-text">GÖRSEL ÜRETİM HATTI</h2>
-        <div class="lab-container">
-            <textarea id="prompt-input" placeholder="Ne üretmek istersin patron? (Örn: İstanbul'da uçan arabalar)" rows="4"></textarea>
-            <button id="generate-image-btn" class="neon-button full-width">MÜHÜRLE VE ÜRET</button>
-            
-            <p id="loading-text" style="display:none; color: #38bdf8; margin-top:15px;">⚡ Fabrika çalışıyor...</p>
-
-            <div id="image-output-container">
-                <img id="generated-image" src="" alt="Sonuç" style="display:none; width: 100%; border-radius: 10px;">
-                <p id="image-placeholder" style="color: #64748b;">Görsel burada belirecek...</p>
+    <section id="projects" class="section">
+        <div class="container">
+            <h2 class="section-title">PROJELERİM</h2>
+            <div class="projects-grid">
+                <div class="project-card animate-on-scroll">
+                    <div class="card-img">
+                        <img src="img/proje1.jpg" alt="AI Proje 1" onerror="this.src='https://via.placeholder.com/400x300/1e293b/38bdf8?text=Proje+1'">
+                        <div class="card-overlay"><a href="#">Detayları Gör</a></div>
+                    </div>
+                    <div class="card-body">
+                        <h3>OmerAI-Fabrika V1</h3>
+                        <p>Web tabanlı görüntü işleme ve üretim platformu.</p>
+                    </div>
+                </div>
+                <div class="project-card animate-on-scroll">
+                    <div class="card-img"><img src="img/proje2.jpg" alt="P2" onerror="this.src='https://via.placeholder.com/400x300/1e293b/38bdf8?text=Proje+2'"></div>
+                    <div class="card-body"><h3>Akıllı Bot Sistemleri</h3><p>Otomatik mesajlaşma ve mühürleme hattı.</p></div>
+                </div>
+                <div class="project-card animate-on-scroll">
+                    <div class="card-img"><img src="img/proje3.jpg" alt="P3" onerror="this.src='https://via.placeholder.com/400x300/1e293b/38bdf8?text=Proje+3'"></div>
+                    <div class="card-body"><h3>Cyber-Security AI</h3><p>Veri mühürleme ve güvenlik protokolleri.</p></div>
+                </div>
+                <div class="project-card animate-on-scroll">
+                    <div class="card-img"><img src="img/proje4.jpg" alt="P4" onerror="this.src='https://via.placeholder.com/400x300/1e293b/38bdf8?text=Proje+4'"></div>
+                    <div class="card-body"><h3>Veri Analiz Hattı</h3><p>Büyük veri setleri üzerinde AI mühürleme.</p></div>
+                </div>
+                <div class="project-card animate-on-scroll">
+                    <div class="card-img"><img src="img/proje5.jpg" alt="P5" onerror="this.src='https://via.placeholder.com/400x300/1e293b/38bdf8?text=Proje+5'"></div>
+                    <div class="card-body"><h3>Mobil AI Vizyon</h3><p>Taşınabilir yapay zeka çözümleri.</p></div>
+                </div>
+                <div class="project-card animate-on-scroll">
+                    <div class="card-img"><img src="img/proje6.jpg" alt="P6" onerror="this.src='https://via.placeholder.com/400x300/1e293b/38bdf8?text=Proje+6'"></div>
+                    <div class="card-body"><h3>Fabrika Entegrasyonu</h3><p>Donanım ve yazılımın muazzam uyumu.</p></div>
+                </div>
             </div>
         </div>
     </section>
 
-    <section id="contact" class="contact-section">
-        <h2 class="neon-text">İLETİŞİM</h2>
-        <form id="contact-form">
-            <input type="text" placeholder="Adın" required>
-            <input type="email" placeholder="E-posta" required>
-            <textarea placeholder="Mesajın" rows="4" required></textarea>
-            <button type="submit" class="neon-button">GÖNDER</button>
-        </form>
+    <section id="ai-lab" class="section alt-bg">
+        <div class="container">
+            <h2 class="section-title">AI ÜRETİM LABORATUVARI</h2>
+            <div class="lab-wrapper">
+                <div class="lab-controls">
+                    <p>Imagen 4.0 motoru ile sınırsız hayal gücü.</p>
+                    <textarea id="prompt-input" placeholder="Hayal ettiğin sahneyi buraya kodla patron..."></textarea>
+                    <button id="generate-btn" class="glow-btn">MÜHRÜ BAS (ÜRET)</button>
+                </div>
+                <div class="lab-display">
+                    <div id="loading-spinner" class="hidden">
+                        <div class="spinner"></div>
+                        <p>Mühür işleniyor...</p>
+                    </div>
+                    <div id="image-frame">
+                        <p id="frame-placeholder">Üretilen Eser Burada Belirecek</p>
+                        <img id="output-image" class="hidden" alt="AI Output">
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <div class="chat-container">
-        <div class="chat-header">🤖 ÖMER.AI</div>
-        <div id="chat-box" class="chat-messages"></div>
-        <div class="chat-input">
-            <input type="text" id="user-input" placeholder="Yaz...">
-            <button onclick="sendMessage()">➤</button>
+    <section id="contact" class="section">
+        <div class="container">
+            <h2 class="section-title">İLETİŞİM HATTI</h2>
+            <div class="contact-box">
+                <form id="contact-form">
+                    <div class="form-group">
+                        <input type="text" id="name" placeholder="Adınız" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" placeholder="E-posta Adresiniz" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="message" placeholder="Mesajınız..." rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="main-btn full-width">Mesajı Mühürle</button>
+                </form>
+            </div>
         </div>
-    </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2026 ÖMER.AI | Yazılım Fabrikası. Tüm Hakları Saklıdır.</p>
+    </footer>
 
     <script src="script.js"></script>
 </body>
