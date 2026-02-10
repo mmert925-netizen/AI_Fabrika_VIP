@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ÖMER.AI | Fabrika</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <div class="logo">ÖMER.AI</div>
+        <button onclick="toggleTheme()">MOD DEĞİŞTİR</button>
+    </nav>
+
+    <section id="stats">
+        <div>ANALİZ: <b id="stat-data">1.20 TB</b></div>
+        <div>MÜHÜR: <b id="stat-projects">142</b></div>
+    </section>
+
+    <section id="ai-lab">
+        <textarea id="prompt-input" placeholder="Hayalini yaz..."></textarea>
+        <button onclick="generateImage()">ÜRET</button>
+        <div id="out"><img id="gen-img" style="display:none; width:100%;"></div>
+    </section>
+
+    <section id="iletisim">
+        <form id="contact-form">
+            <input type="text" id="name" placeholder="Ad" required>
+            <input type="email" id="email" placeholder="E-posta" required>
+            <textarea id="message" placeholder="Mesaj" required></textarea>
+            <button type="submit">GÖNDER</button>
+        </form>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
