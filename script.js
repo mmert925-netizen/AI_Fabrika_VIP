@@ -1,45 +1,41 @@
-// ÖMER.AI FABRİKA - ÜCRETSİZ AI MOTORU
+// ÖMER.AI FABRİKA - AKILLI SİSTEM
 
+// 1. Slider Mekanizması (Yan Yana Kaydırma)
+let currentSlide = 0;
+function moveSlider(direction) {
+    const track = document.getElementById('slider-track');
+    const slides = document.querySelectorAll('.slide');
+    if (track && slides.length > 0) {
+        currentSlide = (currentSlide + direction + slides.length) % slides.length;
+        track.style.transform = `translateX(-${currentSlide * 100}%)`;
+    }
+}
+
+// Otomatik Slayt (5 saniyede bir)
+setInterval(() => moveSlider(1), 5000);
+
+// 2. Ücretsiz Görsel Üretimi (Pollinations)
 document.addEventListener("DOMContentLoaded", function() {
     const generateBtn = document.getElementById('generate-image-btn');
     const promptInput = document.getElementById('prompt-input');
-    const loadingIndicator = document.getElementById('loading-indicator');
     const generatedImage = document.getElementById('generated-image');
+    const loader = document.getElementById('loading-indicator');
 
     if (generateBtn) {
         generateBtn.addEventListener('click', () => {
             const prompt = promptInput.value.trim();
-            if (!prompt) {
-                alert('Patron, boş üretim yapamayız! Bir şeyler yaz.');
-                return;
-            }
+            if (!prompt) return alert("Patron bir şeyler yaz!");
 
-            // Üretim Hazırlığı
-            loadingIndicator.style.display = 'block';
+            loader.style.display = 'block';
             generatedImage.style.display = 'none';
-            generateBtn.disabled = true;
-            generateBtn.innerText = "Fabrika Çiziyor...";
 
-            // 🚀 ÜCRETSİZ VE SINIRSIZ MOTOR (Pollinations AI)
-            // Bu motor anahtar istemez, yazdığın her şeyi çizer.
-            const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&nologo=true&seed=${Math.floor(Math.random() * 1000)}`;
-
-            // Resim yükleme işlemi
-            generatedImage.src = imageUrl;
-
+            // Ücretsiz motor (seed ekledik ki her seferinde farklı resim gelsin)
+            const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&seed=${Math.random()}`;
+            
+            generatedImage.src = url;
             generatedImage.onload = () => {
-                loadingIndicator.style.display = 'none';
+                loader.style.display = 'none';
                 generatedImage.style.display = 'block';
-                generateBtn.disabled = false;
-                generateBtn.innerText = "Görseli Mühürle (Üret)";
-                console.log("Üretim Tamamlandı Patron!");
-            };
-
-            generatedImage.onerror = () => {
-                loadingIndicator.style.display = 'none';
-                generateBtn.disabled = false;
-                generateBtn.innerText = "Tekrar Dene";
-                alert("Üretim hattında bir hata oluştu patron, tekrar dene!");
             };
         });
     }
