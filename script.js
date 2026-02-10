@@ -11,7 +11,7 @@ function sendMessage() {
     if(input && input.value.trim() !== "") {
         box.innerHTML += `<p style="color: #38bdf8; margin-bottom: 8px;"><b>Sen:</b> ${input.value}</p>`;
         setTimeout(() => {
-            box.innerHTML += `<p style="color: #f8fafc; margin-bottom: 8px;"><b>🤖 Bot:</b> Üretim laboratuvarı emrinde patron!</p>`;
+            box.innerHTML += `<p style="color: #f8fafc; margin-bottom: 8px;"><b>🤖 Bot:</b> Ücretsiz üretim hattı emrinde patron!</p>`;
             box.scrollTop = box.scrollHeight;
         }, 800);
         input.value = '';
@@ -38,10 +38,7 @@ function toggleTheme() {
     localStorage.setItem("theme", targetTheme);
 }
 
-// 5. 🚀 AKILLI AI ÜRETİM MOTORU
-// Burayı boş bırakıyoruz çünkü anahtarı Vercel'den çekeceğiz patron!
-const OPENAI_API_KEY = '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'; 
-
+// 5. 🚀 ÜCRETSİZ GÖRSEL MOTORU (Anahtar Gerektirmez)
 document.addEventListener("DOMContentLoaded", function() {
     const generateBtn = document.getElementById('generate-image-btn');
     const promptInput = document.getElementById('prompt-input');
@@ -50,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const imagePlaceholder = document.getElementById('image-placeholder');
 
     if (generateBtn) {
-        generateBtn.addEventListener('click', async () => {
+        generateBtn.addEventListener('click', () => {
             const prompt = promptInput.value.trim();
             if (!prompt) {
                 alert('Ne üretmemi istersin patron?');
@@ -59,52 +56,30 @@ document.addEventListener("DOMContentLoaded", function() {
 
             loadingIndicator.style.display = 'block';
             generateBtn.disabled = true;
-            generateBtn.innerText = "Üretiliyor...";
+            generateBtn.innerText = "Görsel Bulunuyor...";
             generatedImage.style.display = 'none';
             imagePlaceholder.style.display = 'none';
 
-            try {
-                // EĞER anahtar boşsa hatayı önceden verelim
-                if (!OPENAI_API_KEY) {
-                    throw new Error("API Anahtarı bulunamadı! Lütfen Vercel ayarlarını kontrol et.");
-                }
+            // Yazdığın kelimeye göre dev kütüphaneden en iyi resmi çeker
+            const imageUrl = `https://source.unsplash.com/featured/1024x1024?${encodeURIComponent(prompt)}`;
 
-                const response = await fetch('https://api.openai.com/v1/images/generations', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${OPENAI_API_KEY}`
-                    },
-                    body: JSON.stringify({
-                        model: "dall-e-2",
-                        prompt: prompt,
-                        n: 1,
-                        size: "1024x1024"
-                    })
-                });
-
-                const data = await response.json();
-
-                if (data.data && data.data[0].url) {
-                    generatedImage.src = data.data[0].url;
-                    generatedImage.onload = () => {
-                        loadingIndicator.style.display = 'none';
-                        generatedImage.style.display = 'block';
-                        generateBtn.disabled = false;
-                        generateBtn.innerText = "Görseli Mühürle (Üret)";
-                    };
-                } else {
-                    throw new Error(data.error.message);
-                }
-
-            } catch (error) {
-                console.error('Hata:', error);
-                alert('Üretim durdu: ' + error.message);
+            // Resim yüklendiğinde
+            generatedImage.src = imageUrl;
+            generatedImage.onload = () => {
                 loadingIndicator.style.display = 'none';
+                generatedImage.style.display = 'block';
                 generateBtn.disabled = false;
                 generateBtn.innerText = "Görseli Mühürle (Üret)";
+            };
+
+            // Hata durumunda (Nadir olur)
+            generatedImage.onerror = () => {
+                loadingIndicator.style.display = 'none';
+                generateBtn.disabled = false;
+                generateBtn.innerText = "Tekrar Dene";
                 imagePlaceholder.style.display = 'block';
-            }
+                imagePlaceholder.innerText = "Görsel bulunamadı, başka bir şey yaz patron!";
+            };
         });
     }
 });
