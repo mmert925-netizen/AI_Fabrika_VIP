@@ -17,6 +17,7 @@
             <li><a href="#ai-gallery">AI Sergi</a></li>
             <li><a href="#ai-lab">AI Laboratuvarı</a></li>
             <li><a href="#hizmetler">Hizmetler</a></li>
+            <li><a href="#terminal-section">Terminal</a></li>
             <li><a href="#iletisim">İletişim</a></li>
         </ul>
     </nav>
@@ -24,6 +25,13 @@
     <section id="home" class="hero">
         <h1>Yazılım ve Yapay Zeka Fabrikası</h1>
         <p>Geleceği kodla, görselleri mühürle.</p>
+        
+        <div class="factory-stats">
+            <div class="stat-item"><span>ANALİZ:</span> <b id="stat-data">1.20 TB</b></div>
+            <div class="stat-item"><span>MÜHÜR:</span> <b id="stat-projects">142</b></div>
+            <div class="stat-item"><span>DURUM:</span> <b style="color: #22c55e;">AKTİF</b></div>
+        </div>
+        
         <button onclick="scrollProjects()" class="neon-button">Projeleri Gör</button>
     </section>
 
@@ -34,9 +42,6 @@
                 <div class="slide"><img src="img/proje1.jpg" alt="AI 1"></div>
                 <div class="slide"><img src="img/proje2.jpg" alt="AI 2"></div>
                 <div class="slide"><img src="img/proje3.jpg" alt="AI 3"></div>
-                <div class="slide"><img src="img/proje4.jpg" alt="AI 4"></div>
-                <div class="slide"><img src="img/proje5.jpg" alt="AI 5"></div>
-                <div class="slide"><img src="img/proje6.jpg" alt="AI 6"></div>
             </div> 
             <button class="slider-btn prev" onclick="moveSlider(-1)">❮</button>
             <button class="slider-btn next" onclick="moveSlider(1)">❯</button>
@@ -44,59 +49,38 @@
     </section>
 
     <section id="ai-lab" class="lab-container">
-        <h2 class="neon-text">Imagen 4.0 Üretim Laboratuvarı</h2>
+        <h2 class="neon-text">AI Laboratuvarı</h2>
         <div class="lab-form-container">
-            <textarea id="prompt-input" placeholder="Hayal ettiğin görseli buraya yaz patron..." rows="4"></textarea>
+            <textarea id="prompt-input" placeholder="Türkçe yaz, biz mühürleyelim patron..."></textarea>
             <button id="generate-image-btn" class="neon-button">Görseli Mühürle (Üret)</button>
-            <div id="loading-indicator" class="loading-spinner" style="display: none;"></div>
         </div>
         <div id="image-output-container" class="image-output-container">
-            <img id="generated-image" src="" alt="Üretilen Görsel" style="display: none;">
-            <p id="image-placeholder" style="color: var(--text-color); opacity: 0.7;">Üretilen eser burada belirecek...</p>
+            <img id="generated-image" src="" style="display: none;">
+            <p id="image-placeholder">Üretim bekleniyor...</p>
         </div>
     </section>
 
-    <section id="hizmetler" class="services-section">
-        <h2 class="neon-text">Fabrika Çözümleri</h2>
-        <div class="services-grid">
-            <div class="service-card">
-                <i class="icon">🧠</i>
-                <h3>Yapay Zeka Modelleme</h3>
-                <p>Gemini ve Imagen 4.0 tabanlı otonom sistemler ve akıllı botlar geliştiriyoruz.</p>
-            </div>
-            <div class="service-card">
-                <i class="icon">🌐</i>
-                <h3>Siberpunk Web Tasarım</h3>
-                <p>Geleceğin estetiğini modern arayüzlerle birleştiriyor, hızlı siteler mühürlüyoruz.</p>
-            </div>
-            <div class="service-card">
-                <i class="icon">🚀</i>
-                <h3>Yazılım Otomasyonu</h3>
-                <p>İş akışlarını hızlandıran, Telegram entegreli özel yazılım çözümleri üretiyoruz.</p>
+    <section id="terminal-section">
+        <h2 class="neon-text">Sistem Terminali</h2>
+        <div class="matrix-terminal">
+            <div id="terminal-output">ÖMER.AI OS [V115]... Hazır. (help yazın)</div>
+            <div class="terminal-input-line">
+                <span>></span>
+                <input type="text" id="terminal-input" placeholder="Komut...">
             </div>
         </div>
     </section>
 
     <section id="iletisim" class="contact-section">
-        <h2 class="neon-text">Mühürlü Mesaj Bırak</h2>
+        <h2 class="neon-text">İletişim</h2>
         <form id="contact-form">
-            <input type="text" placeholder="Adın" required>
+            <input type="text" placeholder="Adınız" required>
             <input type="email" placeholder="E-posta" required>
-            <textarea placeholder="Mesajın..." required></textarea>
+            <textarea placeholder="Mesajınız..." required></textarea>
             <button type="submit" class="neon-button">Mührü Gönder</button>
         </form>
     </section>
 
-    <div id="ai-chat-widget" class="chat-container">
-        <div class="chat-header">🤖 ÖMER.AI Asistan</div>
-        <div id="chat-box" class="chat-messages"></div>
-        <div class="chat-input">
-            <input type="text" id="user-input" placeholder="Patrona yaz...">
-            <button onclick="sendMessage()">Gönder</button>
-        </div>
-    </div>
-
-    <footer><p>&copy; 2026 ÖMER.AI - Gelecek Burada Mühürlendi.</p></footer>
     <script src="script.js"></script>
 </body>
 </html>
