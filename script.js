@@ -1,172 +1,122 @@
-// ==========================================
-// ÖMER.AI FABRİKA KONTROL MERKEZİ - V125
-// MOD VE MAİL DÜZELTİLMİŞ SÜRÜM
-// ==========================================
+// ÖMER.AI FABRİKA KONTROL MERKEZİ - V600 (Görsel Üretim Aktif)
 
-// 1. TERCÜMAN SİSTEMİ (Türkçe -> AI Dili)
-function translatePrompt(text) {
-    const dict = {
-        "karadelik": "black hole, event horizon, singularity, space nebula, cinematic lighting, 8k",
-        "araba": "luxury supercar, futuristic racing car, hyper-realistic, 8k",
-        "kedi": "cyberpunk neon cat, high detail fur, 4k resolution",
-        "deniz": "dramatic ocean waves, sunset, hyper-realistic, 8k",
-        "orman": "mystical ancient forest, volumetric lighting, photorealistic, cinematic",
-        "robot": "advanced humanoid robot, glowing blue parts, intricate mechanical detail, masterpiece",
-        "ev": "modern glass villa on a cliff, architecture masterpiece, cinematic lighting",
-        "uzay": "deep space, galaxies, stars and planets, high resolution, 8k",
-        "aslan": "majestic lion, golden lighting, sharp focus, 8k",
-        "kurt": "white wolf in snow, cinematic lighting, sharp focus, masterpiece"
-    };
-    let processed = text.toLowerCase();
-    for (let key in dict) {
-        if (processed.includes(key)) return dict[key];
-    }
-    return processed;
+// 1. Projelere Kaydırma
+function scrollProjects() {
+    const gallery = document.getElementById('ai-gallery');
+    if(gallery) gallery.scrollIntoView({ behavior: 'smooth' });
 }
 
-// 2. MOD DEĞİŞTİRME (KESİN ÇALIŞAN DÜZELTME)
-function toggleTheme() {
-    const html = document.documentElement;
-    // Mevcut temayı kontrol et, yoksa 'dark' say
-    const currentTheme = html.getAttribute("data-theme") || "dark";
-    const newTheme = currentTheme === "light" ? "dark" : "light";
-    
-    // Temayı uygula ve kaydet
-    html.setAttribute("data-theme", newTheme);
-    localStorage.setItem("theme", newTheme);
-}
-
-// 3. CANLI VERİ AKIŞI
-function updateStats() {
-    const dataStat = document.getElementById('stat-data');
-    const projectStat = document.getElementById('stat-projects');
-    let dataVal = 1.20;
-    let projVal = 142;
-
-    if(dataStat && projectStat) {
-        setInterval(() => {
-            dataVal += Math.random() * 0.03;
-            if(Math.random() > 0.85) projVal += 1;
-            dataStat.innerText = dataVal.toFixed(2) + " TB";
-            projectStat.innerText = projVal;
-        }, 2500);
-    }
-}
-
-// 4. MATRIX TERMİNALİ
-function initTerminal() {
-    const input = document.getElementById('terminal-input');
-    const output = document.getElementById('terminal-output');
-    if(!input || !output) return;
-
-    input.addEventListener('keypress', (e) => {
-        if(e.key === 'Enter') {
-            const cmd = input.value.toLowerCase().trim();
-            let res = `\n> ${cmd}\n`;
-            
-            if(cmd === 'help') res += "KOMUTLAR: status, factory, projects, clear, whoami";
-            else if(cmd === 'status') res += "SİSTEM: %100 Aktif\nİŞLEMCİ: Imagen 4.0 Online\nBELLEK: Stabil.";
-            else if(cmd === 'factory') res += "SAHİBİ: ÖMER PATRON\nKONUM: Siber Uzay Ana Üs.";
-            else if(cmd === 'projects') res += "1- AI Görüntü İşleme\n2- Telegram Otomasyon\n3- Siberpunk Web Tasarım";
-            else if(cmd === 'whoami') res += "Siz fabrikada bir misafirsiniz. Patronun izniyle buradasınız.";
-            else if(cmd === 'clear') { output.innerText = "Sistem Hazır. (help yazın)"; input.value = ''; return; }
-            else res += "Hata: Komut sistemde tanımlı değil.";
-            
-            output.innerText += res;
-            output.scrollTop = output.scrollHeight;
-            input.value = '';
-        }
-    });
-}
-
-// 5. SLIDER VE KAYDIRMA SİSTEMİ
+// 2. Slider Mekanizması
 let currentSlide = 0;
-function moveSlider(dir) {
+function moveSlider(direction) {
     const track = document.getElementById('slider-track');
     const slides = document.querySelectorAll('.slide');
-    if(track && slides.length) {
-        currentSlide = (currentSlide + dir + slides.length) % slides.length;
+    if(track && slides.length > 0) {
+        currentSlide = (currentSlide + direction + slides.length) % slides.length;
         track.style.transform = `translateX(-${currentSlide * 100}%)`;
     }
 }
-function scrollProjects() { 
-    document.getElementById('ai-gallery')?.scrollIntoView({behavior:'smooth'}); 
+setInterval(() => moveSlider(1), 5000);
+
+// 3. Tema Yönetimi
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute("data-theme");
+    const targetTheme = currentTheme === "light" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", targetTheme);
+    localStorage.setItem("theme", targetTheme);
 }
 
-// --- ANA SİSTEM ÇALIŞTIRICI ---
+// 4. Asistan Mesajlaşma
+function sendMessage() {
+    const input = document.getElementById('user-input');
+    const box = document.getElementById('chat-box');
+    if(input && input.value.trim() !== "") {
+        const userMsg = input.value.toLowerCase();
+        box.innerHTML += `<p style="color: #38bdf8; margin-bottom: 8px;"><b>Sen:</b> ${input.value}</p>`;
+        let botResponse = "Şu an projeler üzerinde mühürleme yapıyorum patron, sana nasıl yardımcı olabilirim?";
+        if(userMsg.includes("selam") || userMsg.includes("merhaba")) botResponse = "Merhaba! ÖMER.AI Yazılım Fabrikası'na hoş geldin.";
+        else if(userMsg.includes("proje")) botResponse = "Yapay zeka modelleri ve otonom yazılımlar üretiyoruz. Sergimize göz atabilirsin!";
+        else if(userMsg.includes("iletişim")) botResponse = "Formu doldurup 'Mührü Gönder' dersen mesajın doğrudan telefonuma düşer.";
+        
+        setTimeout(() => {
+            box.innerHTML += `<p style="color: #f8fafc; margin-bottom: 8px;"><b>🤖 Bot:</b> ${botResponse}</p>`;
+            box.scrollTop = box.scrollHeight;
+        }, 800);
+        input.value = '';
+    }
+}
+
+// --- ANA ÇALIŞTIRICI (DOM Content Loaded) ---
 document.addEventListener("DOMContentLoaded", function() {
-    // 1. Kayıtlı Temayı Yükle (Başlangıçta hatayı önler)
     const savedTheme = localStorage.getItem("theme") || "dark";
     document.documentElement.setAttribute("data-theme", savedTheme);
 
-    // 2. Sistemleri Başlat
-    updateStats();
-    initTerminal();
-    setInterval(() => moveSlider(1), 5000);
-
-    // 3. TELEGRAM MESAJ SİSTEMİ (MAIL DÜZELTİLDİ)
+    // TELEGRAM HATTI
+    const TELEGRAM_BOT_TOKEN = '8385745600:AAFRf0-qUiy8ooJfvzGcn_MpL77YXONGHis'; 
+    const TELEGRAM_CHAT_ID = '7076964315'; 
     const form = document.getElementById("contact-form");
     if (form) {
         form.addEventListener("submit", function(event) {
             event.preventDefault();
             const submitBtn = form.querySelector('button');
+            submitBtn.disabled = true;
             submitBtn.innerText = "Mühürleniyor...";
-            
             const name = form.querySelector('input[type="text"]').value;
-            // DÜZELTME: Email inputunu yakala (id veya tip üzerinden)
-            const emailInput = form.querySelector('input[type="email"]') || form.querySelectorAll('input')[1];
-            const email = emailInput ? emailInput.value : "Belirtilmedi";
+            const email = form.querySelector('input[type="email"]').value;
             const message = form.querySelector('textarea').value;
+            const text = `🚀 *Yeni Web Mesajı!*\n\n👤 *Ad:* ${name}\n📧 *E-posta:* ${email}\n📝 *Mesaj:* ${message}`;
 
-            // DÜZELTME: Mail adresi metne eklendi
-            const text = `🚀 *Webden Mesaj!*\n👤 *Ad:* ${name}\n📧 *E-posta:* ${email}\n📝 *Mesaj:* ${message}`;
-
-            fetch(`https://api.telegram.org/bot8385745600:AAFRf0-qUiy8ooJfvzGcn_MpL77YXONGHis/sendMessage`, {
+            fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: '7076964315', text: text, parse_mode: 'Markdown' })
+                body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: text, parse_mode: 'Markdown' })
             }).then(() => {
-                alert("Mühür ve E-posta Telegram'a fırlatıldı patron!");
+                alert("Mührün Telegram hattına fırlatıldı patron! 🚀");
                 form.reset();
             }).finally(() => {
+                submitBtn.disabled = false;
                 submitBtn.innerText = "Mührü Gönder";
             });
         });
     }
 
-    // 4. AI GÖRSEL ÜRETİM HATTI
-    const genBtn = document.getElementById('generate-image-btn');
+    // 🚨 AI GÖRSEL ÜRETİM MOTORU (Imagen 4.0 Simülasyonu)
+    const generateBtn = document.getElementById('generate-image-btn');
     const promptInput = document.getElementById('prompt-input');
-    const genImg = document.getElementById('generated-image');
-    const placeholder = document.getElementById('image-placeholder');
+    const generatedImage = document.getElementById('generated-image');
+    const imagePlaceholder = document.getElementById('image-placeholder');
 
-    if(genBtn) {
-        genBtn.addEventListener('click', () => {
-            const rawPrompt = promptInput.value.trim();
-            if(!rawPrompt) return alert("Hayalini yaz patron!");
+    if (generateBtn) {
+        generateBtn.addEventListener('click', function() {
+            const prompt = promptInput.value.trim();
+            if (!prompt) {
+                alert('Lütfen bir görsel açıklaması girin patron!');
+                return;
+            }
 
-            genBtn.innerText = "Üretiliyor...";
-            genBtn.disabled = true;
-            placeholder.innerText = "Tercüme ediliyor ve 8K mühürleniyor...";
-            genImg.style.display = "none";
+            generateBtn.disabled = true;
+            generateBtn.innerText = "Mühürleniyor...";
+            imagePlaceholder.innerText = "Fabrika üretim yapıyor, lütfen bekle...";
+            imagePlaceholder.style.display = "block";
+            generatedImage.style.display = "none";
 
-            const translated = translatePrompt(rawPrompt);
-            const quality = "photorealistic, masterpiece, 8k, highly detailed, sharp focus";
-            const seed = Math.floor(Math.random() * 999999);
-            const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(translated + ", " + quality)}?width=1024&height=1024&model=flux&seed=${seed}&nologo=true`;
+            const encodedPrompt = encodeURIComponent(prompt);
+            // Ücretsiz, hızlı ve API key istemeyen Flux motoru
+            const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=800&height=600&model=flux&nologo=true&seed=${Math.floor(Math.random() * 1000)}`;
 
-            const imgTester = new Image();
-            imgTester.src = url;
-            imgTester.onload = () => {
-                genImg.src = url;
-                genImg.style.display = "block";
-                placeholder.style.display = "none";
-                genBtn.innerText = "Görseli Mühürle (Üret)";
-                genBtn.disabled = false;
+            const img = new Image();
+            img.src = imageUrl;
+            img.onload = function() {
+                generatedImage.src = imageUrl;
+                generatedImage.style.display = "block";
+                imagePlaceholder.style.display = "none";
+                generateBtn.disabled = false;
+                generateBtn.innerText = "Görseli Mühürle (Üret)";
             };
-            imgTester.onerror = () => {
-                alert("Limit doldu veya fabrika meşgul!");
-                genBtn.disabled = false;
+            img.onerror = function() {
+                alert("Üretim bandında hata oluştu!");
+                generateBtn.disabled = false;
+                generateBtn.innerText = "Görseli Mühürle (Üret)";
             };
         });
     }
