@@ -5,77 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ÖMER.AI | Fabrika</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <nav>
         <div class="logo">ÖMER.AI</div>
         <ul>
-            <li><a href="#" onclick="window.location.reload()">Ana Sayfa</a></li>
-            <li><a href="#ai-gallery">Sergi</a></li>
-            <li><a href="#ai-lab">Üretim Hattı</a></li>
+            <li><a href="#" onclick="location.reload()">Ana Sayfa</a></li>
+            <li><a href="#uretim">Üretim Hattı</a></li>
             <li><a href="#iletisim">İletişim</a></li>
         </ul>
-        <button id="theme-toggle" onclick="toggleTheme()">🌓 Tema</button>
     </nav>
 
     <header class="hero">
         <h1>YAZILIM VE AI FABRİKASI</h1>
         <p>Geleceği kodla, görselleri mühürle.</p>
-        <button onclick="document.getElementById('ai-lab').scrollIntoView({behavior:'smooth'})" class="neon-button">Üretime Başla</button>
+        <button class="neon-button" onclick="document.getElementById('uretim').scrollIntoView({behavior: 'smooth'})">FABRİKAYA GİR</button>
     </header>
 
-    <section id="ai-gallery" class="gallery-container">
-        <h2 class="neon-text">Yapay Zeka Sergisi</h2>
+    <section>
+        <h2 style="color: #38bdf8; margin-bottom: 20px;">AI SERGİSİ</h2>
         <div class="slider-container">
             <div class="slider-track" id="slider-track">
-                <div class="slide"><img src="https://image.pollinations.ai/prompt/cyberpunk%20city?width=1024&height=500&nologo=true" alt="AI 1"></div>
-                <div class="slide"><img src="https://image.pollinations.ai/prompt/futuristic%20car?width=1024&height=500&nologo=true" alt="AI 2"></div>
-                <div class="slide"><img src="https://image.pollinations.ai/prompt/robot%20portrait?width=1024&height=500&nologo=true" alt="AI 3"></div>
-            </div> 
+                <div class="slide"><img src="https://image.pollinations.ai/prompt/cyberpunk%20city?nologo=true" alt="1"></div>
+                <div class="slide"><img src="https://image.pollinations.ai/prompt/space%20station?nologo=true" alt="2"></div>
+                <div class="slide"><img src="https://image.pollinations.ai/prompt/ai%20robot?nologo=true" alt="3"></div>
+            </div>
         </div>
     </section>
 
-    <section id="ai-lab" class="production-section">
-        <h2 class="neon-text">Görsel Üretim Laboratuvarı</h2>
+    <section id="uretim">
+        <h2 style="color: #38bdf8; margin-bottom: 20px;">GÖRSEL ÜRETİM LABORATUVARI</h2>
         <div class="lab-container">
-            <textarea id="prompt-input" placeholder="Hayalindeki görseli buraya yaz patron... (Örn: Uçan arabalar, İstanbul manzarası)" rows="3"></textarea>
-            <button id="generate-image-btn" class="neon-button full-width">MÜHÜRLE VE ÜRET</button>
+            <textarea id="prompt-input" placeholder="Ne üretmek istersin patron? (Örn: Uçan arabalar, kırmızı elma)" rows="4"></textarea>
+            <button id="generate-image-btn" class="neon-button" style="width: 100%;">MÜHÜRLE VE ÜRET</button>
             
-            <div id="loading-indicator" style="display: none; margin-top: 20px;">
-                <div class="loader"></div>
-                <p>Fabrika çalışıyor...</p>
-            </div>
-            
+            <p id="loading-text" style="display:none; color: #38bdf8; margin-top:15px; font-weight:bold;">⚡ Fabrika çalışıyor, mühür basılıyor...</p>
+
             <div id="image-output-container">
-                <p id="image-placeholder">Görsel burada belirecek...</p>
-                <img id="generated-image" src="" alt="Üretilen Görsel">
+                <p id="image-placeholder" style="color: #64748b;">Görsel burada belirecek...</p>
+                <img id="generated-image" src="" alt="Sonuç">
             </div>
         </div>
     </section>
 
-    <section id="iletisim" class="contact-section">
-        <h2 class="neon-text">Mühürlü Mesaj Bırak</h2>
-        <form id="contact-form">
+    <section id="iletisim">
+        <h2 style="color: #38bdf8; margin-bottom: 20px;">İLETİŞİM HATTI</h2>
+        <form id="contact-form" style="width: 100%; max-width: 500px;">
             <input type="text" placeholder="Adın" required>
             <input type="email" placeholder="E-posta" required>
-            <textarea placeholder="Mesajın..." rows="5" required></textarea>
-            <button type="submit" class="neon-button">Gönder</button>
+            <textarea placeholder="Mesajın" rows="5" required></textarea>
+            <button type="submit" class="neon-button" style="width: 100%;">GÖNDER</button>
         </form>
     </section>
 
-    <div id="ai-chat-widget" class="chat-container">
-        <div class="chat-header">🤖 Asistan</div>
+    <div class="chat-container">
+        <div class="chat-header">🤖 ÖMER.AI Asistan</div>
         <div id="chat-box" class="chat-messages"></div>
         <div class="chat-input">
-            <input type="text" id="user-input" placeholder="Yaz...">
+            <input type="text" id="user-input" placeholder="Bir şeyler yaz...">
             <button onclick="sendMessage()">➤</button>
         </div>
     </div>
-
-    <footer>
-        <p>&copy; 2026 ÖMER.AI - Tüm Hakları Saklıdır.</p>
-    </footer>
 
     <script src="script.js"></script>
 </body>
