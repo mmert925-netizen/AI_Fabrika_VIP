@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ÖMER.AI | Yapay Zeka Fabrikası</title>
+    <title>ÖMER.AI | Fabrika</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
@@ -11,70 +11,82 @@
     <nav>
         <div class="logo">ÖMER.AI</div>
         <ul>
-            <li><a href="#home" onclick="location.reload()">Ana Sayfa</a></li>
-            <li><a href="#ai-gallery">AI Sergi</a></li>
+            <li><a href="#home">Ana Sayfa</a></li>
+            <li><a href="#projects">Projelerim</a></li>
             <li><a href="#ai-lab">Üretim Hattı</a></li>
-            <li><a href="#iletisim">İletişim</a></li>
+            <li><a href="#contact">İletişim</a></li>
         </ul>
-        <button id="theme-toggle" onclick="toggleTheme()">🌓 Tema</button>
     </nav>
 
-    <section id="home" class="hero">
+    <header id="home" class="hero">
         <h1>YAZILIM VE AI FABRİKASI</h1>
         <p>Geleceği kodla, görselleri mühürle.</p>
-        <button onclick="scrollProjects()" class="neon-button">PROJELERİ GÖR</button>
-    </section>
+        <button onclick="document.getElementById('ai-lab').scrollIntoView({behavior:'smooth'})" class="neon-button">Üretime Başla</button>
+    </header>
 
-    <section id="ai-gallery" class="gallery-container">
-        <h2 class="neon-text">Yapay Zeka Sergisi</h2>
-        <div class="slider-container">
-            <div class="slider-track" id="slider-track">
-                <div class="slide"><img src="https://image.pollinations.ai/prompt/cyberpunk%20city?width=1024&height=500&nologo=true" alt="AI 1"></div>
-                <div class="slide"><img src="https://image.pollinations.ai/prompt/futuristic%20car?width=1024&height=500&nologo=true" alt="AI 2"></div>
-                <div class="slide"><img src="https://image.pollinations.ai/prompt/robot%20portrait?width=1024&height=500&nologo=true" alt="AI 3"></div>
-            </div> 
-            <button class="slider-btn prev" onclick="moveSlider(-1)">❮</button>
-            <button class="slider-btn next" onclick="moveSlider(1)">❯</button>
-        </div>
-    </section>
-
-    <section id="ai-lab" class="production-section">
-        <h2 class="neon-text">Imagen 4.0 Üretim Hattı</h2>
-        <div class="lab-container">
-            <textarea id="prompt-input" placeholder="Hayal ettiğin görseli mühürle patron..." rows="3"></textarea>
-            <button id="generate-image-btn" class="neon-button full-width">Görseli Mühürle (Üret)</button>
-            
-            <div id="loading-indicator" style="display: none; margin: 20px; color: #38bdf8;">⌛ Fabrika çalışıyor...</div>
-            
-            <div id="image-output-container">
-                <p id="image-placeholder">Eser burada belirecek...</p>
-                <img id="generated-image" src="" alt="Üretilen Eser" style="display: none;">
+    <section id="projects" class="projects-section">
+        <h2 class="neon-text">PROJELERİM</h2>
+        <div class="projects-grid">
+            <div class="project-card">
+                <img src="img/proje1.jpg" alt="Proje 1" onerror="this.src='https://via.placeholder.com/300x200?text=Gorsel+Yok'">
+                <h3>Proje 1</h3>
+            </div>
+            <div class="project-card">
+                <img src="img/proje2.jpg" alt="Proje 2" onerror="this.src='https://via.placeholder.com/300x200?text=Gorsel+Yok'">
+                <h3>Proje 2</h3>
+            </div>
+            <div class="project-card">
+                <img src="img/proje3.jpg" alt="Proje 3" onerror="this.src='https://via.placeholder.com/300x200?text=Gorsel+Yok'">
+                <h3>Proje 3</h3>
+            </div>
+            <div class="project-card">
+                <img src="img/proje4.jpg" alt="Proje 4" onerror="this.src='https://via.placeholder.com/300x200?text=Gorsel+Yok'">
+                <h3>Proje 4</h3>
+            </div>
+            <div class="project-card">
+                <img src="img/proje5.jpg" alt="Proje 5" onerror="this.src='https://via.placeholder.com/300x200?text=Gorsel+Yok'">
+                <h3>Proje 5</h3>
+            </div>
+            <div class="project-card">
+                <img src="img/proje6.jpg" alt="Proje 6" onerror="this.src='https://via.placeholder.com/300x200?text=Gorsel+Yok'">
+                <h3>Proje 6</h3>
             </div>
         </div>
     </section>
 
-    <section id="iletisim" class="contact-section">
-        <h2 class="neon-text">Mühürlü Mesaj Bırak</h2>
+    <section id="ai-lab" class="lab-section">
+        <h2 class="neon-text">GÖRSEL ÜRETİM HATTI</h2>
+        <div class="lab-container">
+            <textarea id="prompt-input" placeholder="Ne üretmek istersin patron? (Örn: İstanbul'da uçan arabalar)" rows="4"></textarea>
+            <button id="generate-image-btn" class="neon-button full-width">MÜHÜRLE VE ÜRET</button>
+            
+            <p id="loading-text" style="display:none; color: #38bdf8; margin-top:15px;">⚡ Fabrika çalışıyor...</p>
+
+            <div id="image-output-container">
+                <img id="generated-image" src="" alt="Sonuç" style="display:none; width: 100%; border-radius: 10px;">
+                <p id="image-placeholder" style="color: #64748b;">Görsel burada belirecek...</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+        <h2 class="neon-text">İLETİŞİM</h2>
         <form id="contact-form">
             <input type="text" placeholder="Adın" required>
             <input type="email" placeholder="E-posta" required>
-            <textarea placeholder="Mesajın..." rows="5" required></textarea>
-            <button type="submit" class="neon-button">Mührü Gönder</button>
+            <textarea placeholder="Mesajın" rows="4" required></textarea>
+            <button type="submit" class="neon-button">GÖNDER</button>
         </form>
     </section>
 
-    <div id="ai-chat-widget" class="chat-container">
-        <div class="chat-header">🤖 ÖMER.AI Asistan</div>
+    <div class="chat-container">
+        <div class="chat-header">🤖 ÖMER.AI</div>
         <div id="chat-box" class="chat-messages"></div>
         <div class="chat-input">
-            <input type="text" id="user-input" placeholder="Patrona yaz...">
+            <input type="text" id="user-input" placeholder="Yaz...">
             <button onclick="sendMessage()">➤</button>
         </div>
     </div>
-
-    <footer>
-        <p>&copy; 2026 ÖMER.AI - Tüm Hakları Saklıdır.</p>
-    </footer>
 
     <script src="script.js"></script>
 </body>
