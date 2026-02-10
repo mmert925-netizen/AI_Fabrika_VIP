@@ -1,9 +1,9 @@
 // ==========================================
-// ÖMER.AI FABRİKA KONTROL MERKEZİ - V115
-// TÜM SİSTEMLER TEK PARÇA - FULL ENTEGRE
+// ÖMER.AI FABRİKA KONTROL MERKEZİ - V120
+// %100 FULL ENTEGRE - TÜRKÇE AI - TELEGRAM - TERMİNAL
 // ==========================================
 
-// 1. OTOMATİK TERCÜMAN SİSTEMİ (Türkçe -> AI Dili)
+// 1. TERCÜMAN SİSTEMİ (Türkçe -> AI Dili)
 function translatePrompt(text) {
     const dict = {
         "karadelik": "black hole, event horizon, singularity, space nebula, cinematic lighting, 8k",
@@ -24,23 +24,33 @@ function translatePrompt(text) {
     return processed;
 }
 
-// 2. İSTATİSTİK SAYACI (Canlı Veri Akışı)
+// 2. MOD DEĞİŞTİRME (Karanlık/Aydınlık)
+function toggleTheme() {
+    const html = document.documentElement;
+    const currentTheme = html.getAttribute("data-theme") || "dark";
+    const newTheme = currentTheme === "light" ? "dark" : "light";
+    html.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
+}
+
+// 3. CANLI VERİ AKIŞI (Hero Altındaki TB ve Mühür)
 function updateStats() {
     const dataStat = document.getElementById('stat-data');
     const projectStat = document.getElementById('stat-projects');
+    let dataVal = 1.20;
+    let projVal = 142;
+
     if(dataStat && projectStat) {
-        let currentData = 1.2;
-        let currentProjects = 142;
         setInterval(() => {
-            currentData += Math.random() * 0.05;
-            currentProjects += Math.floor(Math.random() * 2);
-            dataStat.innerText = currentData.toFixed(2) + " TB";
-            projectStat.innerText = currentProjects;
-        }, 3000);
+            dataVal += Math.random() * 0.03;
+            if(Math.random() > 0.85) projVal += 1;
+            dataStat.innerText = dataVal.toFixed(2) + " TB";
+            projectStat.innerText = projVal;
+        }, 2500);
     }
 }
 
-// 3. MATRIX TERMİNALİ
+// 4. MATRIX TERMİNALİ
 function initTerminal() {
     const input = document.getElementById('terminal-input');
     const output = document.getElementById('terminal-output');
@@ -49,140 +59,106 @@ function initTerminal() {
     input.addEventListener('keypress', (e) => {
         if(e.key === 'Enter') {
             const cmd = input.value.toLowerCase().trim();
-            let response = `> ${cmd}\n`;
+            let res = `\n> ${cmd}\n`;
             
-            if(cmd === 'help') response += "Komutlar: status, projects, clear, factory, whoami";
-            else if(cmd === 'status') response += "Sistem: %100 Stabil\nÇekirdek: Imagen 4.0 Online\nLimit: API Meşgul.";
-            else if(cmd === 'projects') response += "1. Siberpunk Web\n2. AI Görüntü İşleme\n3. Otonom Botlar";
-            else if(cmd === 'factory') response += "Fabrika Sahibi: ÖMER PATRON\nDurum: Üretime Hazır.";
-            else if(cmd === 'whoami') response += "Siz, fabrikada bir misafirsiniz. Patronun gözü üzerinizde.";
-            else if(cmd === 'clear') { output.innerText = "Temizlendi..."; input.value = ''; return; }
-            else response += "Hata: Komut bulunamadı. 'help' yazın.";
-
-            output.innerText += "\n" + response;
+            if(cmd === 'help') res += "KOMUTLAR: status, factory, projects, clear, whoami";
+            else if(cmd === 'status') res += "SİSTEM: %100 Aktif\nİŞLEMCİ: Imagen 4.0 Online\nBELLEK: Stabil.";
+            else if(cmd === 'factory') res += "SAHİBİ: ÖMER PATRON\nKONUM: Siber Uzay Ana Üs.";
+            else if(cmd === 'projects') res += "1- AI Görüntü İşleme\n2- Telegram Otomasyon\n3- Siberpunk Web Tasarım";
+            else if(cmd === 'whoami') res += "Siz fabrikada bir misafirsiniz. Patronun izniyle buradasınız.";
+            else if(cmd === 'clear') { output.innerText = "Sistem Hazır. (help yazın)"; input.value = ''; return; }
+            else res += "Hata: Komut sistemde tanımlı değil.";
+            
+            output.innerText += res;
             output.scrollTop = output.scrollHeight;
             input.value = '';
         }
     });
 }
 
-// 4. PROJELERE KAYDIRMA
-function scrollProjects() {
-    const gallery = document.getElementById('ai-gallery');
-    if(gallery) gallery.scrollIntoView({ behavior: 'smooth' });
-}
-
-// 5. SLIDER MEKANİZMASI
+// 5. SLIDER VE KAYDIRMA SİSTEMİ
 let currentSlide = 0;
-function moveSlider(direction) {
+function moveSlider(dir) {
     const track = document.getElementById('slider-track');
     const slides = document.querySelectorAll('.slide');
-    if(track && slides.length > 0) {
-        currentSlide = (currentSlide + direction + slides.length) % slides.length;
+    if(track && slides.length) {
+        currentSlide = (currentSlide + dir + slides.length) % slides.length;
         track.style.transform = `translateX(-${currentSlide * 100}%)`;
     }
 }
-setInterval(() => moveSlider(1), 5000);
-
-// 6. TEMA YÖNETİMİ
-function toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute("data-theme");
-    const targetTheme = currentTheme === "light" ? "dark" : "light";
-    document.documentElement.setAttribute("data-theme", targetTheme);
-    localStorage.setItem("theme", targetTheme);
+function scrollProjects() { 
+    document.getElementById('ai-gallery')?.scrollIntoView({behavior:'smooth'}); 
 }
 
-// 7. ASİSTAN CHAT SİSTEMİ
-function sendMessage() {
-    const input = document.getElementById('user-input');
-    const box = document.getElementById('chat-box');
-    if(input && input.value.trim() !== "") {
-        const userMsg = input.value.toLowerCase();
-        box.innerHTML += `<p style="color: #38bdf8; margin-bottom: 8px;"><b>Sen:</b> ${input.value}</p>`;
-        let botResponse = "Üretim bandındayım patron, her şey kontrolümde!";
-        if(userMsg.includes("selam") || userMsg.includes("merhaba")) botResponse = "Merhaba patron! Fabrikaya hoş geldin.";
-        else if(userMsg.includes("proje")) botResponse = "AI projelerimiz sergide hazır bekliyor!";
-        
-        setTimeout(() => {
-            box.innerHTML += `<p style="color: #f8fafc; margin-bottom: 8px;"><b>🤖 Bot:</b> ${botResponse}</p>`;
-            box.scrollTop = box.scrollHeight;
-        }, 600);
-        input.value = '';
-    }
-}
-
-// --- ANA ÇALIŞTIRICI ---
+// --- ANA SİSTEM ÇALIŞTIRICI ---
 document.addEventListener("DOMContentLoaded", function() {
+    // 1. Kayıtlı Temayı Yükle
     const savedTheme = localStorage.getItem("theme") || "dark";
     document.documentElement.setAttribute("data-theme", savedTheme);
-    
+
+    // 2. Sistemleri Başlat
     updateStats();
     initTerminal();
+    setInterval(() => moveSlider(1), 5000);
 
-    // 8. TELEGRAM MESAJ HATTI
+    // 3. TELEGRAM MESAJ SİSTEMİ (Tam Entegre)
     const form = document.getElementById("contact-form");
     if (form) {
         form.addEventListener("submit", function(event) {
             event.preventDefault();
             const submitBtn = form.querySelector('button');
-            submitBtn.disabled = true;
             submitBtn.innerText = "Mühürleniyor...";
-
+            
             const name = form.querySelector('input[type="text"]').value;
-            const email = form.querySelector('input[type="email"]').value;
             const message = form.querySelector('textarea').value;
-            const text = `🚀 *Yeni Web Mesajı!*\n\n👤 *Ad:* ${name}\n📧 *E-posta:* ${email}\n📝 *Mesaj:* ${message}`;
+            const text = `🚀 *Webden Mesaj!*\n👤 *Ad:* ${name}\n📝 *Mesaj:* ${message}`;
 
             fetch(`https://api.telegram.org/bot8385745600:AAFRf0-qUiy8ooJfvzGcn_MpL77YXONGHis/sendMessage`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ chat_id: '7076964315', text: text, parse_mode: 'Markdown' })
             }).then(() => {
-                alert("Mührün Telegram hattına fırlatıldı patron! 🚀");
+                alert("Mühür Telegram'a fırlatıldı patron!");
                 form.reset();
             }).finally(() => {
-                submitBtn.disabled = false;
                 submitBtn.innerText = "Mührü Gönder";
             });
         });
     }
 
-    // 9. ULTRA KALİTE AI ÜRETİM HATTI
-    const generateBtn = document.getElementById('generate-image-btn');
+    // 4. AI GÖRSEL ÜRETİM HATTI (Tercümanlı & Ultra Kalite)
+    const genBtn = document.getElementById('generate-image-btn');
     const promptInput = document.getElementById('prompt-input');
-    const generatedImage = document.getElementById('generated-image');
-    const imagePlaceholder = document.getElementById('image-placeholder');
+    const genImg = document.getElementById('generated-image');
+    const placeholder = document.getElementById('image-placeholder');
 
-    if (generateBtn) {
-        generateBtn.addEventListener('click', function() {
+    if(genBtn) {
+        genBtn.addEventListener('click', () => {
             const rawPrompt = promptInput.value.trim();
-            if (!rawPrompt) return alert('Lütfen bir görsel açıklaması girin patron!');
+            if(!rawPrompt) return alert("Hayalini yaz patron!");
 
-            generateBtn.disabled = true;
-            generateBtn.innerText = "Mühürleniyor...";
-            imagePlaceholder.innerText = "Tercüme ediliyor ve yüksek kalite üretiliyor...";
-            generatedImage.style.display = "none";
+            genBtn.innerText = "Üretiliyor...";
+            genBtn.disabled = true;
+            placeholder.innerText = "Tercüme ediliyor ve 8K mühürleniyor...";
+            genImg.style.display = "none";
 
             const translated = translatePrompt(rawPrompt);
-            const qualityTags = "photorealistic, masterpiece, 8k resolution, highly detailed, cinematic lighting, sharp focus";
-            const finalPrompt = encodeURIComponent(translated + ", " + qualityTags);
+            const quality = "photorealistic, masterpiece, 8k, highly detailed, sharp focus";
             const seed = Math.floor(Math.random() * 999999);
-            
-            const imageUrl = `https://image.pollinations.ai/prompt/${finalPrompt}?width=1024&height=1024&model=flux&seed=${seed}&nologo=true`;
+            const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(translated + ", " + quality)}?width=1024&height=1024&model=flux&seed=${seed}&nologo=true`;
 
-            const img = new Image();
-            img.src = imageUrl;
-            img.onload = function() {
-                generatedImage.src = imageUrl;
-                generatedImage.style.display = "block";
-                imagePlaceholder.style.display = "none";
-                generateBtn.disabled = false;
-                generateBtn.innerText = "Görseli Mühürle (Üret)";
+            const imgTester = new Image();
+            imgTester.src = url;
+            imgTester.onload = () => {
+                genImg.src = url;
+                genImg.style.display = "block";
+                placeholder.style.display = "none";
+                genBtn.innerText = "Görseli Mühürle (Üret)";
+                genBtn.disabled = false;
             };
-            img.onerror = function() {
-                alert("Üretim bandı limit doldu veya hata oluştu!");
-                generateBtn.disabled = false;
-                generateBtn.innerText = "Görseli Mühürle (Üret)";
+            imgTester.onerror = () => {
+                alert("Limit doldu veya fabrika meşgul!");
+                genBtn.disabled = false;
             };
         });
     }
