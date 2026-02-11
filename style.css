@@ -137,6 +137,7 @@ h1 { font-size: 3.5rem; color: var(--accent-color); margin-bottom: 10px; }
 .next { right: 20px; }
 
 /* 6. HİZMETLER VE ZAMAN TÜNELİ */
+.services-section { padding-right: 340px; }  /* Sohbet kutusu üstüne binmesin */
 .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; padding: 40px 0; }
 .service-card {
     background: var(--card-bg);
@@ -158,7 +159,7 @@ h1 { font-size: 3.5rem; color: var(--accent-color); margin-bottom: 10px; }
 }
 
 /* 7. İLETİŞİM FORMU */
-.contact-section { padding: 50px 20px; text-align: center; }
+.contact-section { padding: 50px 340px 50px 20px; text-align: center; }  /* Sağda sohbet için boşluk */
 #contact-form { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 15px; }
 
 input, textarea {
@@ -236,6 +237,8 @@ input:focus, textarea:focus {
     nav ul { display: none; }
     .chat-container { width: 90%; right: 5%; bottom: 10px; }
     .hero { height: 60vh; }
+    .services-section { padding-right: 20px; }
+    .contact-section { padding-right: 20px; }
 }
 
 footer {
