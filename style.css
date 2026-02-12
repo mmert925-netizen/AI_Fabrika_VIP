@@ -132,6 +132,35 @@ h1 { font-size: 3.5rem; color: var(--accent-color); margin-bottom: 10px; }
 .gallery-container { padding: 4rem 380px; text-align: center; box-sizing: border-box; }  /* Sayfa ortasında, simetrik */
 .neon-text { color: var(--accent-color); text-shadow: 0 0 10px var(--accent-color); margin-bottom: 2rem; }
 
+.gallery-filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+.filter-btn {
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: 0.3s;
+}
+.filter-btn:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+.filter-btn.active {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: #0f172a;
+    box-shadow: 0 0 12px rgba(34, 211, 238, 0.4);
+}
+
 .slider-wrapper {
     display: flex;
     align-items: center;
@@ -785,6 +814,8 @@ input:focus, textarea:focus {
 @media (max-width: 768px) {
     h1 { font-size: 2.2rem; }
     nav { padding: 1rem; }
+    .gallery-filters { gap: 0.4rem; margin-bottom: 1rem; }
+    .filter-btn { padding: 6px 12px; font-size: 0.8rem; }
     nav ul { display: none; }
     .chat-wrapper { right: 5%; bottom: 10px; }
     .chat-container { width: min(90vw, 320px); }

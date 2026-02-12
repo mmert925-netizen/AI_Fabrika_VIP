@@ -1,12 +1,21 @@
 //// PROJE DETAY SAYFALARI (Portfolio)
 const PROJECTS = {
-    1: { title: { tr: "Neon Şehir Manzarası", en: "Neon City Landscape" }, desc: { tr: "Siberpunk tema ile oluşturulmuş gelecek şehir vizyonu.", en: "Future city vision with cyberpunk theme." }, img: "img/proje1.jpg" },
-    2: { title: { tr: "Robot Portresi", en: "Robot Portrait" }, desc: { tr: "Yapay zeka destekli robot karakter tasarımı.", en: "AI-assisted robot character design." }, img: "img/proje2.jpg" },
-    3: { title: { tr: "Sanal Evren", en: "Virtual Universe" }, desc: { tr: "Dijital sanat ve soyut görsel üretimi.", en: "Digital art and abstract visual generation." }, img: "img/proje3.jpg" },
-    4: { title: { tr: "Mekanik Bulutlar", en: "Mechanical Clouds" }, desc: { tr: "Steampunk ve futuristik karışımı konsept.", en: "Steampunk and futuristic blend concept." }, img: "img/proje4.jpg" },
-    5: { title: { tr: "Holografik İkon", en: "Holographic Icon" }, desc: { tr: "3D holografik efekt ile logo tasarımı.", en: "Logo design with 3D holographic effect." }, img: "img/proje5.jpg" },
-    6: { title: { tr: "Dijital Orman", en: "Digital Forest" }, desc: { tr: "Doğa ve teknoloji sentezinde görsel.", en: "Visual in nature and technology synthesis." }, img: "img/proje6.jpg" }
+    1: { title: { tr: "Neon Şehir Manzarası", en: "Neon City Landscape" }, desc: { tr: "Siberpunk tema ile oluşturulmuş gelecek şehir vizyonu.", en: "Future city vision with cyberpunk theme." }, img: "img/proje1.jpg", category: "cyberpunk" },
+    2: { title: { tr: "Robot Portresi", en: "Robot Portrait" }, desc: { tr: "Yapay zeka destekli robot karakter tasarımı.", en: "AI-assisted robot character design." }, img: "img/proje2.jpg", category: "karakter" },
+    3: { title: { tr: "Sanal Evren", en: "Virtual Universe" }, desc: { tr: "Dijital sanat ve soyut görsel üretimi.", en: "Digital art and abstract visual generation." }, img: "img/proje3.jpg", category: "soyut" },
+    4: { title: { tr: "Mekanik Bulutlar", en: "Mechanical Clouds" }, desc: { tr: "Steampunk ve futuristik karışımı konsept.", en: "Steampunk and futuristic blend concept." }, img: "img/proje4.jpg", category: "mimari" },
+    5: { title: { tr: "Holografik İkon", en: "Holographic Icon" }, desc: { tr: "3D holografik efekt ile logo tasarımı.", en: "Logo design with 3D holographic effect." }, img: "img/proje5.jpg", category: "logo" },
+    6: { title: { tr: "Dijital Orman", en: "Digital Forest" }, desc: { tr: "Doğa ve teknoloji sentezinde görsel.", en: "Visual in nature and technology synthesis." }, img: "img/proje6.jpg", category: "doga" }
 };
+const GALLERY_CATEGORIES = [
+    { id: "all", tr: "Tümü", en: "All" },
+    { id: "cyberpunk", tr: "Cyberpunk", en: "Cyberpunk" },
+    { id: "mimari", tr: "Mimari", en: "Architecture" },
+    { id: "logo", tr: "Logo", en: "Logo" },
+    { id: "karakter", tr: "Karakter", en: "Character" },
+    { id: "soyut", tr: "Soyut", en: "Abstract" },
+    { id: "doga", tr: "Doğa", en: "Nature" }
+];
 
 let currentLang = localStorage.getItem("lang") || "tr";
 let modalCurrentProject = 1;
@@ -262,10 +271,39 @@ function sendMessage(customText) {
 
 // 3. Slider Mekanizması
 let currentSlide = 0;
+let currentGalleryFilter = "all";
+
+function getFilteredProjectIds() {
+    if (currentGalleryFilter === "all") return [1, 2, 3, 4, 5, 6];
+    return Object.keys(PROJECTS).filter(id => PROJECTS[id].category === currentGalleryFilter).map(Number);
+}
+
+function renderFilteredSlides() {
+    const track = document.getElementById("slider-track");
+    if (!track) return;
+    const ids = getFilteredProjectIds();
+    track.innerHTML = ids.map(id => {
+        const p = PROJECTS[id];
+        return `<div class="slide" data-project="${id}" data-category="${p.category}" onclick="openProjectDetail(${id})"><img src="${p.img}" alt="AI ${id}"></div>`;
+    }).join("");
+    currentSlide = 0;
+    track.style.transform = "translateX(0)";
+}
+function setupGalleryFilters() {
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+        btn.addEventListener("click", function() {
+            document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+            this.classList.add("active");
+            currentGalleryFilter = this.dataset.filter || "all";
+            renderFilteredSlides();
+        });
+    });
+}
+
 function moveSlider(direction) {
     const track = document.getElementById('slider-track');
     const slides = document.querySelectorAll('.slide');
-    if(track && slides.length > 0) {
+    if (track && slides.length > 0) {
         currentSlide = (currentSlide + direction + slides.length) % slides.length;
         track.style.transform = `translateX(-${currentSlide * 100}%)`;
     }
@@ -273,7 +311,8 @@ function moveSlider(direction) {
 
 // 🚀 EKLEME: Otonom Slider (5 saniyede bir kendi kayar)
 setInterval(() => {
-    moveSlider(1);
+    const slides = document.querySelectorAll('.slide');
+    if (slides.length > 1) moveSlider(1);
 }, 5000);
 
 // 3b. Sesli Komut (Voice Seal) – Web Speech API
@@ -552,6 +591,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     renderGeneratedGallery();
     renderLiveStream();
+    renderFilteredSlides();
+    setupGalleryFilters();
     loadPatronunGundemi();
     updateTokenUI();
     if (getTokens() === 0) addTokens(3);

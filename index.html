@@ -39,16 +39,25 @@
 
     <section id="ai-gallery" class="gallery-container">
         <h2 class="neon-text" data-tr="Yapay Zeka Sergisi" data-en="AI Gallery">Yapay Zeka Sergisi</h2>
+        <div class="gallery-filters" id="gallery-filters">
+            <button class="filter-btn active" data-filter="all" data-tr="Tümü" data-en="All">Tümü</button>
+            <button class="filter-btn" data-filter="cyberpunk" data-tr="Cyberpunk" data-en="Cyberpunk">Cyberpunk</button>
+            <button class="filter-btn" data-filter="mimari" data-tr="Mimari" data-en="Architecture">Mimari</button>
+            <button class="filter-btn" data-filter="logo" data-tr="Logo" data-en="Logo">Logo</button>
+            <button class="filter-btn" data-filter="karakter" data-tr="Karakter" data-en="Character">Karakter</button>
+            <button class="filter-btn" data-filter="soyut" data-tr="Soyut" data-en="Abstract">Soyut</button>
+            <button class="filter-btn" data-filter="doga" data-tr="Doğa" data-en="Nature">Doğa</button>
+        </div>
         <div class="slider-wrapper">
             <button class="slider-btn prev" onclick="moveSlider(-1)">❮</button>
             <div class="slider-container">
                 <div class="slider-track" id="slider-track">
-                    <div class="slide" data-project="1" onclick="openProjectDetail(1)"><img src="img/proje1.jpg" alt="AI 1"></div>
-                    <div class="slide" data-project="2" onclick="openProjectDetail(2)"><img src="img/proje2.jpg" alt="AI 2"></div>
-                    <div class="slide" data-project="3" onclick="openProjectDetail(3)"><img src="img/proje3.jpg" alt="AI 3"></div>
-                    <div class="slide" data-project="4" onclick="openProjectDetail(4)"><img src="img/proje4.jpg" alt="AI 4"></div>
-                    <div class="slide" data-project="5" onclick="openProjectDetail(5)"><img src="img/proje5.jpg" alt="AI 5"></div>
-                    <div class="slide" data-project="6" onclick="openProjectDetail(6)"><img src="img/proje6.jpg" alt="AI 6"></div>
+                    <div class="slide" data-project="1" data-category="cyberpunk" onclick="openProjectDetail(1)"><img src="img/proje1.jpg" alt="AI 1"></div>
+                    <div class="slide" data-project="2" data-category="karakter" onclick="openProjectDetail(2)"><img src="img/proje2.jpg" alt="AI 2"></div>
+                    <div class="slide" data-project="3" data-category="soyut" onclick="openProjectDetail(3)"><img src="img/proje3.jpg" alt="AI 3"></div>
+                    <div class="slide" data-project="4" data-category="mimari" onclick="openProjectDetail(4)"><img src="img/proje4.jpg" alt="AI 4"></div>
+                    <div class="slide" data-project="5" data-category="logo" onclick="openProjectDetail(5)"><img src="img/proje5.jpg" alt="AI 5"></div>
+                    <div class="slide" data-project="6" data-category="doga" onclick="openProjectDetail(6)"><img src="img/proje6.jpg" alt="AI 6"></div>
                 </div>
             </div>
             <button class="slider-btn next" onclick="moveSlider(1)">❯</button>
