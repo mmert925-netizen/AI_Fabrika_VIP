@@ -1,12 +1,12 @@
 /* 1. RENK MÜHÜRLERİ (DEĞİŞKENLER) */
 :root {
-    --bg-color: #1e293b;
-    --text-color: #f8fafc;
-    --accent-color: #67e8f9;
-    --card-bg: rgba(30, 41, 59, 0.85);
-    --nav-bg: rgba(30, 41, 59, 0.95);
-    --border-color: #475569;
-    --input-bg: #334155;
+    --bg-color: #1e3a4f;
+    --text-color: #b2ebf2;
+    --accent-color: #22d3ee;
+    --card-bg: rgba(30, 58, 79, 0.9);
+    --nav-bg: rgba(30, 58, 79, 0.95);
+    --border-color: #5eead4;
+    --input-bg: #1e4a5f;
 }
 
 [data-theme="light"] {
@@ -286,7 +286,7 @@ h1 { font-size: 3.5rem; color: var(--accent-color); margin-bottom: 10px; }
     transition: 0.3s;
 }
 
-.slider-btn:hover { background: var(--accent-color); color: #fff; }
+.slider-btn:hover { background: var(--accent-color); color: #0f172a; }
 .slider-btn:active { transform: translateY(-50%) scale(0.9); }
 
 .prev { left: 20px; }
@@ -383,7 +383,7 @@ input:focus, textarea:focus {
     border-radius: 10px;
 }
 
-.neon-button:hover { background: var(--accent-color); color: #fff; box-shadow: 0 0 20px var(--accent-color); }
+.neon-button:hover { background: var(--accent-color); color: #0f172a; box-shadow: 0 0 20px var(--accent-color); }
 .neon-button:active { transform: scale(0.98); }
 
 /* 8. SOHBET KUTUSU – Açılır kapanır */
@@ -394,7 +394,7 @@ input:focus, textarea:focus {
     gap: 8px;
     padding: 12px 20px;
     background: var(--accent-color);
-    color: #fff;
+    color: #0f172a;
     border: none;
     border-radius: 25px;
     font-weight: bold;
@@ -425,14 +425,14 @@ input:focus, textarea:focus {
     justify-content: space-between;
     align-items: center;
     background: var(--accent-color);
-    color: #fff;
+    color: #0f172a;
     padding: 12px 15px;
     font-weight: bold;
 }
 .chat-close-btn {
-    background: rgba(255,255,255,0.2);
+    background: rgba(0,0,0,0.2);
     border: none;
-    color: #fff;
+    color: #0f172a;
     width: 28px;
     height: 28px;
     border-radius: 50%;
@@ -440,7 +440,7 @@ input:focus, textarea:focus {
     font-size: 14px;
     transition: 0.2s;
 }
-.chat-close-btn:hover { background: rgba(255,255,255,0.4); }
+.chat-close-btn:hover { background: rgba(0,0,0,0.3); }
 .chat-messages { height: 250px; padding: 15px; overflow-y: auto; background: var(--bg-color); display: flex; flex-direction: column; }
 
 .chat-input {
@@ -462,7 +462,7 @@ input:focus, textarea:focus {
 
 .chat-input button {
     background: var(--accent-color);
-    color: white;
+    color: #0f172a;
     border: none;
     padding: 0 15px;
     border-radius: 0 5px 5px 0;
