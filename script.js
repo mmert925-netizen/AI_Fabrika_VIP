@@ -5,7 +5,13 @@ const PROJECTS = {
     3: { title: { tr: "Sanal Evren", en: "Virtual Universe" }, desc: { tr: "Dijital sanat ve soyut görsel üretimi.", en: "Digital art and abstract visual generation." }, img: "img/proje3.jpg", category: "soyut" },
     4: { title: { tr: "Mekanik Bulutlar", en: "Mechanical Clouds" }, desc: { tr: "Steampunk ve futuristik karışımı konsept.", en: "Steampunk and futuristic blend concept." }, img: "img/proje4.jpg", category: "mimari" },
     5: { title: { tr: "Holografik İkon", en: "Holographic Icon" }, desc: { tr: "3D holografik efekt ile logo tasarımı.", en: "Logo design with 3D holographic effect." }, img: "img/proje5.jpg", category: "logo" },
-    6: { title: { tr: "Dijital Orman", en: "Digital Forest" }, desc: { tr: "Doğa ve teknoloji sentezinde görsel.", en: "Visual in nature and technology synthesis." }, img: "img/proje6.jpg", category: "doga" }
+    6: { title: { tr: "Dijital Orman", en: "Digital Forest" }, desc: { tr: "Doğa ve teknoloji sentezinde görsel.", en: "Visual in nature and technology synthesis." }, img: "img/proje6.jpg", category: "doga" },
+    7: { title: { tr: "Gece Şehri", en: "Night City" }, desc: { tr: "Neon ışıklarla aydınlanan futuristik metropol manzarası.", en: "Futuristic metropolis illuminated by neon lights." }, img: "img/proje7.jpg", category: "cyberpunk" },
+    8: { title: { tr: "Android Portresi", en: "Android Portrait" }, desc: { tr: "Sibernetic devrelerle bezenmiş insansı AI figürü.", en: "Humanoid AI figure with glowing cybernetic circuits." }, img: "img/proje8.jpg", category: "karakter" },
+    9: { title: { tr: "Veri Evreni", en: "Data Universe" }, desc: { tr: "Neural ağ ve veri akışlarının soyut görselleştirmesi.", en: "Abstract visualization of neural networks and data streams." }, img: "img/proje9.jpg", category: "soyut" },
+    10: { title: { tr: "Buhar Makinesi", en: "Steam Engine" }, desc: { tr: "Steampunk mimari: dişliler ve pirinç yapılar.", en: "Steampunk architecture: gears and brass structures." }, img: "img/proje10.jpg", category: "mimari" },
+    11: { title: { tr: "Hologram Sembol", en: "Hologram Symbol" }, desc: { tr: "Prismatik holografik ikon, neon glow efekti.", en: "Prismatic holographic icon with neon glow effect." }, img: "img/proje11.jpg", category: "logo" },
+    12: { title: { tr: "Biyolüminesan Orman", en: "Bioluminescent Forest" }, desc: { tr: "Teknoloji ve doğanın buluştuğu büyülü manzara.", en: "Magical landscape where technology meets nature." }, img: "img/proje12.jpg", category: "doga" }
 };
 const GALLERY_CATEGORIES = [
     { id: "all", tr: "Tümü", en: "All" },
@@ -98,7 +104,8 @@ function modalNav(direction) {
         }
     } else {
         modalViewingProjects = true;
-        modalCurrentProject = ((modalCurrentProject - 1 + direction + 6) % 6) + 1;
+        const totalProjects = Object.keys(PROJECTS).length;
+        modalCurrentProject = ((modalCurrentProject - 1 + direction + totalProjects) % totalProjects) + 1;
         openProjectDetail(modalCurrentProject);
     }
 }
@@ -274,7 +281,7 @@ let currentSlide = 0;
 let currentGalleryFilter = "all";
 
 function getFilteredProjectIds() {
-    if (currentGalleryFilter === "all") return [1, 2, 3, 4, 5, 6];
+    if (currentGalleryFilter === "all") return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
     return Object.keys(PROJECTS).filter(id => PROJECTS[id].category === currentGalleryFilter).map(Number);
 }
 
@@ -519,7 +526,7 @@ function renderGeneratedGallery() {
 function renderLiveStream() {
     const track = document.getElementById("live-stream-track");
     if (!track) return;
-    const projectImgs = [1,2,3,4,5,6].map(i => `img/proje${i}.jpg`);
+    const projectImgs = [1,2,3,4,5,6,7,8,9,10,11,12].map(i => `img/proje${i}.jpg`);
     const generated = getSavedGallery().map(g => g.src);
     const allImages = [...projectImgs, ...generated];
     if (allImages.length === 0) {
