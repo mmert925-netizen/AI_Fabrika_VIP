@@ -9,10 +9,30 @@ const PROJECTS = {
 };
 
 let currentLang = localStorage.getItem("lang") || "tr";
+let modalCurrentProject = 1;
+let modalViewingProjects = false;
+
+function modalNav(direction) {
+    const modal = document.getElementById("project-modal");
+    if (!modal || !modal.classList.contains("modal-open")) return;
+    if (modal.classList.contains("modal-fullscreen")) {
+        const content = modal.querySelector(".project-modal-content");
+        if (content) {
+            const scrollAmount = 150;
+            content.scrollLeft += direction * scrollAmount;
+        }
+    } else {
+        modalViewingProjects = true;
+        modalCurrentProject = ((modalCurrentProject - 1 + direction + 6) % 6) + 1;
+        openProjectDetail(modalCurrentProject);
+    }
+}
 
 function openProjectDetail(id) {
     const p = PROJECTS[id];
     if (!p) return;
+    modalCurrentProject = id;
+    modalViewingProjects = true;
     const modal = document.getElementById("project-modal");
     document.getElementById("project-modal-img").src = p.img;
     document.getElementById("project-modal-title").textContent = p.title[currentLang] || p.title.tr;
@@ -160,6 +180,7 @@ function renderGeneratedGallery() {
     });
 }
 function showGeneratedImage(src) {
+    modalViewingProjects = false;
     const modal = document.getElementById("project-modal");
     document.getElementById("project-modal-img").src = src;
     document.getElementById("project-modal-title").textContent = currentLang === "tr" ? "Üretilen Görsel" : "Generated Image";

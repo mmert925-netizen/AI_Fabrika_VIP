@@ -31,16 +31,18 @@
 
     <section id="ai-gallery" class="gallery-container">
         <h2 class="neon-text" data-tr="Yapay Zeka Sergisi" data-en="AI Gallery">Yapay Zeka Sergisi</h2>
-        <div class="slider-container">
-            <div class="slider-track" id="slider-track">
-                <div class="slide" data-project="1" onclick="openProjectDetail(1)"><img src="img/proje1.jpg" alt="AI 1"></div>
-                <div class="slide" data-project="2" onclick="openProjectDetail(2)"><img src="img/proje2.jpg" alt="AI 2"></div>
-                <div class="slide" data-project="3" onclick="openProjectDetail(3)"><img src="img/proje3.jpg" alt="AI 3"></div>
-                <div class="slide" data-project="4" onclick="openProjectDetail(4)"><img src="img/proje4.jpg" alt="AI 4"></div>
-                <div class="slide" data-project="5" onclick="openProjectDetail(5)"><img src="img/proje5.jpg" alt="AI 5"></div>
-                <div class="slide" data-project="6" onclick="openProjectDetail(6)"><img src="img/proje6.jpg" alt="AI 6"></div>
-            </div> 
+        <div class="slider-wrapper">
             <button class="slider-btn prev" onclick="moveSlider(-1)">❮</button>
+            <div class="slider-container">
+                <div class="slider-track" id="slider-track">
+                    <div class="slide" data-project="1" onclick="openProjectDetail(1)"><img src="img/proje1.jpg" alt="AI 1"></div>
+                    <div class="slide" data-project="2" onclick="openProjectDetail(2)"><img src="img/proje2.jpg" alt="AI 2"></div>
+                    <div class="slide" data-project="3" onclick="openProjectDetail(3)"><img src="img/proje3.jpg" alt="AI 3"></div>
+                    <div class="slide" data-project="4" onclick="openProjectDetail(4)"><img src="img/proje4.jpg" alt="AI 4"></div>
+                    <div class="slide" data-project="5" onclick="openProjectDetail(5)"><img src="img/proje5.jpg" alt="AI 5"></div>
+                    <div class="slide" data-project="6" onclick="openProjectDetail(6)"><img src="img/proje6.jpg" alt="AI 6"></div>
+                </div>
+            </div>
             <button class="slider-btn next" onclick="moveSlider(1)">❯</button>
         </div>
         <div id="generated-gallery" class="generated-gallery-grid"></div>
@@ -123,12 +125,14 @@
     </section>
 
     <div id="project-modal" class="project-modal" onclick="closeProjectDetail(event)">
+        <button class="modal-nav-btn modal-prev" onclick="event.stopPropagation(); modalNav(-1)">❮</button>
         <div class="project-modal-content" onclick="event.stopPropagation()">
             <button class="project-modal-close" onclick="closeProjectDetail()">&times;</button>
             <img id="project-modal-img" src="" alt="">
             <h3 id="project-modal-title"></h3>
             <p id="project-modal-desc"></p>
         </div>
+        <button class="modal-nav-btn modal-next" onclick="event.stopPropagation(); modalNav(1)">❯</button>
     </div>
 
     <div class="chat-wrapper">
