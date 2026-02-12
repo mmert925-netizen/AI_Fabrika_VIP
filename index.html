@@ -119,8 +119,17 @@
         </div>
         <div id="image-output-container" class="image-output-container">
             <div class="image-result-wrapper">
-                <img id="generated-image" src="" alt="Üretilen Görsel" style="display: none;">
-                <button id="add-to-gallery-btn" class="neon-button add-gallery-btn" style="display: none;" data-tr="Galeriye Ekle" data-en="Add to Gallery">Galeriye Ekle</button>
+                <div class="sealed-image-container" id="sealed-image-container" style="display: none;">
+                    <img id="generated-image" src="" alt="Üretilen Görsel">
+                    <div class="seal-band" id="seal-band">
+                        <span class="seal-text">ÖMER.AI Fabrikası - Seri No: <span id="seal-serial">#0000</span></span>
+                        <div class="seal-qr" id="seal-qr" title="ÖMER.AI Doğrulama"></div>
+                    </div>
+                </div>
+                <div class="image-result-actions">
+                    <button id="download-sealed-btn" class="neon-button add-gallery-btn" style="display: none;" data-tr="Mühürlü İndir" data-en="Download with Seal">Mühürlü İndir</button>
+                    <button id="add-to-gallery-btn" class="neon-button add-gallery-btn" style="display: none;" data-tr="Galeriye Ekle" data-en="Add to Gallery">Galeriye Ekle</button>
+                </div>
             </div>
             <p id="image-placeholder" style="color: var(--text-color); opacity: 0.7;" data-tr="Üretilen eser burada belirecek..." data-en="Generated artwork will appear here...">Üretilen eser burada belirecek...</p>
         </div>

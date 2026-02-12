@@ -28,6 +28,95 @@ let modalCurrentProject = 1;
 let modalViewingProjects = false;
 let vantaEffect = null;
 
+// 4. Sesli Sistem Arayüzü – Ambient uğultu, bip, hoş geldin AI sesi
+let audioCtx = null;
+let ambientGain = null;
+let ambientStarted = false;
+
+function getAudioCtx() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return audioCtx;
+}
+
+function playBeep() {
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const run = () => {
+        try {
+            const ctx = getAudioCtx();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.frequency.value = 880;
+            osc.type = "sine";
+            gain.gain.setValueAtTime(0.9, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + 0.15);
+        } catch (_) {}
+    };
+    try {
+        const ctx = getAudioCtx();
+        if (ctx.state === "suspended") {
+            ctx.resume().then(run);
+        } else {
+            run();
+        }
+    } catch (_) { run(); }
+}
+
+function startAmbientHum() {
+    if (ambientStarted || (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches)) return;
+    const run = () => {
+        try {
+            const ctx = getAudioCtx();
+            const osc1 = ctx.createOscillator();
+            const osc2 = ctx.createOscillator();
+            ambientGain = ctx.createGain();
+            osc1.connect(ambientGain);
+            osc2.connect(ambientGain);
+            ambientGain.connect(ctx.destination);
+            osc1.frequency.value = 60;
+            osc2.frequency.value = 90;
+            osc1.type = "sine";
+            osc2.type = "triangle";
+            ambientGain.gain.value = 0.25;
+            osc1.start();
+            osc2.start();
+            ambientStarted = true;
+        } catch (_) {}
+    };
+    try {
+        const ctx = getAudioCtx();
+        if (ctx.state === "suspended") {
+            ctx.resume().then(run);
+        } else {
+            run();
+        }
+    } catch (_) { run(); }
+}
+
+function playWelcomeVoice() {
+    if (sessionStorage.getItem("omerai_welcome_played") === "1") return;
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!window.speechSynthesis) return;
+    const doSpeak = () => {
+        const u = new SpeechSynthesisUtterance(currentLang === "tr" ? "Sisteme hoş geldin patron, üretim hattı hazır." : "Welcome to the system, boss, the production line is ready.");
+        u.rate = 0.9;
+        u.pitch = 1;
+        u.volume = 1;
+        try {
+            const voices = speechSynthesis.getVoices();
+            const trVoice = voices.find(v => v.lang.startsWith("tr"));
+            if (trVoice) u.voice = trVoice;
+        } catch (_) {}
+        u.onend = () => sessionStorage.setItem("omerai_welcome_played", "1");
+        speechSynthesis.speak(u);
+    };
+    if (speechSynthesis.getVoices().length) doSpeak();
+    else speechSynthesis.onvoiceschanged = () => { doSpeak(); speechSynthesis.onvoiceschanged = null; };
+}
+
 // ÖMER.AI Token / Dijital Mühür Sistemi
 const TOKEN_KEY = "omerai_tokens";
 const TOKEN_SESSION_KEY = "omerai_session_minutes";
@@ -352,10 +441,16 @@ function sendMessage(customText) {
                 typingEl.remove();
                 if (data.image) {
                     const dataUrl = "data:image/png;base64," + data.image;
-                    box.innerHTML += `<p class="chat-msg bot"><b>🤖 Asistan:</b> İşte mühürlediğim görsel:</p><div class="chat-image-wrapper"><img src="${dataUrl}" alt="Üretilen" class="chat-generated-img" onclick="showGeneratedImage(this.src)"></div>`;
-                    saveToGallery(dataUrl);
+                    const serialNo = getNextSerial();
+                    createSealedImageDataUrl(dataUrl, serialNo).then(sealedUrl => {
+                        box.innerHTML += `<p class="chat-msg bot"><b>🤖 Asistan:</b> İşte mühürlediğim görsel (Seri No: #${serialNo}):</p><div class="chat-image-wrapper"><img src="${sealedUrl}" alt="ÖMER.AI mühürlü" class="chat-generated-img" onclick="showGeneratedImage(this.src)"></div>`;
+                        saveToGallery(sealedUrl, serialNo);
+                        box.scrollTop = box.scrollHeight;
+                        playBeep();
+                    });
                 } else {
                     box.innerHTML += `<p class="chat-msg bot"><b>🤖 Asistan:</b> ${data.error || (currentLang === "tr" ? "Görsel üretilemedi." : "Image generation failed.")}</p>`;
+                    playBeep();
                 }
                 box.scrollTop = box.scrollHeight;
             })
@@ -363,6 +458,7 @@ function sendMessage(customText) {
                 typingEl.remove();
                 box.innerHTML += `<p class="chat-msg bot"><b>🤖 Asistan:</b> ${currentLang === "tr" ? "Görsel API bağlantı hatası." : "Image API connection error."}</p>`;
                 box.scrollTop = box.scrollHeight;
+                playBeep();
             })
             .finally(() => { if (input) { input.disabled = false; input.focus(); } });
         return;
@@ -381,11 +477,13 @@ function sendMessage(customText) {
                 chatHistory.push({ role: 'model', text: post });
                 if (chatHistory.length > 10) chatHistory = chatHistory.slice(-10);
                 box.scrollTop = box.scrollHeight;
+                playBeep();
             })
             .catch(() => {
                 typingEl.remove();
                 box.innerHTML += `<p class="chat-msg bot"><b>🤖 Asistan:</b> ${currentLang === "tr" ? "Bağlantı hatası." : "Connection error."}</p>`;
                 box.scrollTop = box.scrollHeight;
+                playBeep();
             })
             .finally(() => { if (input) { input.disabled = false; input.focus(); } });
         return;
@@ -403,11 +501,13 @@ function sendMessage(customText) {
                 chatHistory.push({ role: 'model', text: summary });
                 if (chatHistory.length > 10) chatHistory = chatHistory.slice(-10);
                 box.scrollTop = box.scrollHeight;
+                playBeep();
             })
             .catch(() => {
                 typingEl.remove();
                 box.innerHTML += `<p class="chat-msg bot"><b>🤖 Asistan:</b> ${currentLang === "tr" ? "Haber servisi hatası." : "News service error."}</p>`;
                 box.scrollTop = box.scrollHeight;
+                playBeep();
             })
             .finally(() => { if (input) { input.disabled = false; input.focus(); } });
         return;
@@ -428,11 +528,13 @@ function sendMessage(customText) {
         chatHistory.push({ role: 'model', text: reply });
         if (chatHistory.length > 10) chatHistory = chatHistory.slice(-10);
         box.scrollTop = box.scrollHeight;
+        playBeep();
     })
     .catch(() => {
         typingEl.remove();
         box.innerHTML += `<p class="chat-msg bot"><b>🤖 Asistan:</b> ${currentLang === "tr" ? "Bağlantı hatası. Tekrar dene." : "Connection error. Try again."}</p>`;
         box.scrollTop = box.scrollHeight;
+        playBeep();
     })
     .finally(() => { if (input) { input.disabled = false; input.focus(); } });
 }
@@ -593,6 +695,8 @@ function toggleChat() {
         toggleBtn.classList.add("visible");
         localStorage.setItem("chatOpen", "false");
     } else {
+        playBeep();
+        startAmbientHum();
         chat.classList.add("chat-open");
         chat.classList.remove("chat-closed");
         toggleBtn.classList.remove("visible");
@@ -629,14 +733,66 @@ function applyLang() {
     });
 }
 
+// Mühür Sertifikasyon Sistemi – Seri no + indirildiğinde profesyonel bant
+const SERIAL_KEY = "omerai_seal_serial";
+function getNextSerial() {
+    let n = parseInt(localStorage.getItem(SERIAL_KEY) || "4948", 10);
+    n++;
+    localStorage.setItem(SERIAL_KEY, String(n));
+    return n;
+}
+function createSealedImageDataUrl(dataUrl, serialNo) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => {
+            const c = document.createElement("canvas");
+            const bandH = Math.max(56, Math.floor(img.height * 0.12));
+            c.width = img.width;
+            c.height = img.height + bandH;
+            const ctx = c.getContext("2d");
+            ctx.drawImage(img, 0, 0);
+            ctx.fillStyle = "rgba(0, 20, 40, 0.98)";
+            ctx.fillRect(0, img.height, c.width, bandH);
+            ctx.strokeStyle = "#22d3ee";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(0, img.height, c.width, bandH);
+            ctx.fillStyle = "#22d3ee";
+            ctx.font = "bold 18px Consolas, Monaco, monospace";
+            ctx.textAlign = "left";
+            ctx.shadowColor = "rgba(34, 211, 238, 0.6)";
+            ctx.shadowBlur = 8;
+            ctx.fillText("ÖMER.AI Fabrikası - Seri No: #" + serialNo, 20, img.height + bandH / 2 + 6);
+            ctx.shadowBlur = 0;
+            const qrSize = Math.min(40, bandH - 12);
+            const qrX = c.width - qrSize - 16;
+            const qrY = img.height + (bandH - qrSize) / 2;
+            ctx.fillStyle = "#fff";
+            ctx.fillRect(qrX, qrY, qrSize, qrSize);
+            ctx.strokeStyle = "#22d3ee";
+            ctx.strokeRect(qrX, qrY, qrSize, qrSize);
+            const cell = Math.floor(qrSize / 8);
+            for (let i = 0; i < 8; i++) for (let j = 0; j < 8; j++) {
+                if ((i + j + serialNo) % 3 !== 0) {
+                    ctx.fillStyle = "#000";
+                    ctx.fillRect(qrX + i * cell, qrY + j * cell, cell, cell);
+                }
+            }
+            resolve(c.toDataURL("image/png"));
+        };
+        img.onerror = () => reject(new Error("Image load failed"));
+        img.src = dataUrl;
+    });
+}
+
 // Görsel galeri kaydetme – üretilen görselleri localStorage'a ekle
 const GALLERY_KEY = "omerai_generated_gallery";
 function getSavedGallery() {
     try { return JSON.parse(localStorage.getItem(GALLERY_KEY) || "[]"); } catch { return []; }
 }
-function saveToGallery(src) {
+function saveToGallery(src, serialNo) {
     const g = getSavedGallery();
-    g.push({ src, id: Date.now() });
+    g.push({ src, serialNo: serialNo || 0, id: Date.now() });
     localStorage.setItem(GALLERY_KEY, JSON.stringify(g));
     renderGeneratedGallery();
     renderLiveStream();
@@ -679,7 +835,7 @@ function renderGeneratedGallery() {
     container.innerHTML = g.map((item, i) => `
         <div class="generated-gallery-item" data-gallery-index="${i}">
             <button class="gallery-delete-btn" data-index="${i}" title="${currentLang === 'tr' ? 'Sil' : 'Delete'}">×</button>
-            <img src="${item.src}" alt="Kaydedilmiş görsel">
+            <img src="${item.src}" alt="ÖMER.AI mühürlü görsel">
         </div>
     `).join("");
     container.querySelectorAll(".generated-gallery-item").forEach(el => {
@@ -737,6 +893,23 @@ document.addEventListener("DOMContentLoaded", function() {
     document.documentElement.setAttribute("data-theme", savedTheme);
 
     initVanta();
+    setTimeout(playWelcomeVoice, 1200);
+    function audioUnlock() {
+        try {
+            const ctx = getAudioCtx();
+            if (ctx.state === "suspended") {
+                ctx.resume().then(() => {
+                    startAmbientHum();
+                    if (sessionStorage.getItem("omerai_welcome_played") !== "1") setTimeout(playWelcomeVoice, 400);
+                });
+            } else {
+                startAmbientHum();
+                if (sessionStorage.getItem("omerai_welcome_played") !== "1") setTimeout(playWelcomeVoice, 400);
+            }
+        } catch (_) {}
+    }
+    document.addEventListener("click", audioUnlock, { once: true });
+    document.addEventListener("keydown", audioUnlock, { once: true });
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) document.body.classList.add("no-motion");
     else {
         const cg = document.getElementById("cursor-glow");
@@ -844,14 +1017,39 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Görsel üret butonu + Stil seçeneği + Galeriye ekle
+    // Görsel üret butonu + Mühür sertifikasyonu + Galeriye ekle
     const genBtn = document.getElementById("generate-image-btn");
     const promptInput = document.getElementById("prompt-input");
     const loadingEl = document.getElementById("loading-indicator");
     const imgOut = document.getElementById("generated-image");
     const imgPlaceholder = document.getElementById("image-placeholder");
+    const sealedContainer = document.getElementById("sealed-image-container");
     const addGalleryBtn = document.getElementById("add-to-gallery-btn");
+    const downloadBtn = document.getElementById("download-sealed-btn");
+    const sealSerialEl = document.getElementById("seal-serial");
+    const sealQrEl = document.getElementById("seal-qr");
     const styleSelect = document.getElementById("style-select");
+
+    function drawSealQR(el, serialNo) {
+        if (!el) return;
+        const c = document.createElement("canvas");
+        c.width = 48; c.height = 48;
+        const ctx = c.getContext("2d");
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(0, 0, 48, 48);
+        ctx.strokeStyle = "#22d3ee";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(0, 0, 48, 48);
+        const cell = 6;
+        for (let i = 0; i < 8; i++) for (let j = 0; j < 8; j++) {
+            if ((i + j + serialNo) % 3 !== 0) {
+                ctx.fillStyle = "#000";
+                ctx.fillRect(i * cell, j * cell, cell, cell);
+            }
+        }
+        el.innerHTML = "";
+        el.appendChild(c);
+    }
 
     if (genBtn && promptInput) {
         genBtn.addEventListener("click", function() {
@@ -868,9 +1066,10 @@ document.addEventListener("DOMContentLoaded", function() {
             if (useHD) prompt = "highly detailed, 8k resolution, professional quality, sharp focus, " + prompt;
 
             if (loadingEl) loadingEl.style.display = "block";
-            if (imgOut) { imgOut.style.display = "none"; imgOut.src = ""; }
+            if (sealedContainer) sealedContainer.style.display = "none";
             if (imgPlaceholder) imgPlaceholder.style.display = "block";
             if (addGalleryBtn) addGalleryBtn.style.display = "none";
+            if (downloadBtn) downloadBtn.style.display = "none";
 
             fetch("/api/generate-image", {
                 method: "POST",
@@ -881,13 +1080,35 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (ok && data.image) {
                     if (useHD) spendTokens(2);
                     const dataUrl = "data:image/png;base64," + data.image;
+                    const serialNo = getNextSerial();
+
                     imgOut.src = dataUrl;
-                    imgOut.style.display = "block";
                     imgOut.onclick = () => showGeneratedImage(dataUrl);
+                    if (sealSerialEl) sealSerialEl.textContent = "#" + serialNo;
+                    drawSealQR(sealQrEl, serialNo);
                     if (imgPlaceholder) imgPlaceholder.style.display = "none";
+                    if (sealedContainer) sealedContainer.style.display = "inline-block";
+                    if (downloadBtn) {
+                        downloadBtn.style.display = "inline-block";
+                        downloadBtn.onclick = () => {
+                            createSealedImageDataUrl(dataUrl, serialNo).then(sealedUrl => {
+                                const a = document.createElement("a");
+                                a.href = sealedUrl;
+                                a.download = "omerai-fabrika-seri-" + serialNo + ".png";
+                                a.click();
+                            });
+                        };
+                    }
                     if (addGalleryBtn) {
                         addGalleryBtn.style.display = "inline-block";
-                        addGalleryBtn.onclick = () => { saveToGallery(dataUrl); addGalleryBtn.style.display = "none"; alert(currentLang === "tr" ? "Galeriye eklendi!" : "Added to gallery!"); };
+                        addGalleryBtn.onclick = () => {
+                            createSealedImageDataUrl(dataUrl, serialNo).then(sealedUrl => {
+                                saveToGallery(sealedUrl, serialNo);
+                                addGalleryBtn.style.display = "none";
+                                if (downloadBtn) downloadBtn.style.display = "none";
+                                alert(currentLang === "tr" ? "Mühürlü görsel galeriye eklendi!" : "Sealed image added to gallery!");
+                            });
+                        };
                     }
                 } else {
                     alert(data.error || (currentLang === "tr" ? "Görsel üretilemedi." : "Image generation failed."));
@@ -900,4 +1121,5 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     if (addGalleryBtn) addGalleryBtn.style.cursor = "pointer";
+    if (downloadBtn) downloadBtn.style.cursor = "pointer";
 });

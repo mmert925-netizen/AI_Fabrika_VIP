@@ -560,9 +560,47 @@ h1 { font-size: 3.5rem; color: var(--accent-color); margin-bottom: 10px; }
     font-size: 1rem;
 }
 
-/* Galeriye ekle butonu */
+/* Galeriye ekle + Mühür bant */
 .image-result-wrapper { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
-.add-gallery-btn { margin-top: 0.5rem; }
+.image-result-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; }
+.add-gallery-btn { margin-top: 0; }
+.sealed-image-container {
+    position: relative;
+    display: inline-block;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid var(--accent-color);
+    box-shadow: 0 0 30px rgba(34, 211, 238, 0.3);
+}
+.sealed-image-container img {
+    display: block;
+    max-width: 100%;
+    vertical-align: top;
+}
+.seal-band {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: linear-gradient(135deg, rgba(0, 20, 40, 0.95) 0%, rgba(0, 40, 60, 0.9) 100%);
+    border-top: 2px solid var(--accent-color);
+    box-shadow: 0 0 15px rgba(34, 211, 238, 0.2);
+}
+.seal-text {
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: var(--accent-color);
+    text-shadow: 0 0 8px rgba(34, 211, 238, 0.5);
+}
+.seal-text #seal-serial { color: #39ff14; }
+.seal-qr {
+    width: 48px;
+    height: 48px;
+    background: #fff;
+    border: 2px solid var(--accent-color);
+    image-rendering: pixelated;
+}
 
 /* Testimonials – Cam efekti */
 .testimonials-section {
