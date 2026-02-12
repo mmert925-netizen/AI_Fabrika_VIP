@@ -45,14 +45,14 @@ body {
 }
 .cursor-glow {
     position: fixed;
-    width: 500px;
-    height: 500px;
+    width: 700px;
+    height: 700px;
     left: 0;
     top: 0;
-    margin-left: -250px;
-    margin-top: -250px;
+    margin-left: -350px;
+    margin-top: -350px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(34, 211, 238, 0.18) 0%, rgba(34, 211, 238, 0.06) 40%, transparent 70%);
+    background: radial-gradient(circle, rgba(34, 211, 238, 0.35) 0%, rgba(34, 211, 238, 0.12) 35%, rgba(34, 211, 238, 0.04) 60%, transparent 80%);
     pointer-events: none;
     z-index: 9999;
     opacity: 0;
