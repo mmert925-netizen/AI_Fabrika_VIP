@@ -10,82 +10,126 @@
     <nav>
         <div class="theme-switch-wrapper">
             <button id="theme-toggle" onclick="toggleTheme()">🌓 Mod Değiştir</button>
+            <button id="lang-toggle" onclick="toggleLang()" title="Dil / Language">🌐 EN</button>
         </div>
         <div class="logo">ÖMER.AI</div>
         <ul>
-            <li><a href="#home">Ana Sayfa</a></li>
-            <li><a href="#ai-gallery">AI Sergi</a></li>
-            <li><a href="#ai-lab">AI Laboratuvarı</a></li>
-            <li><a href="#hizmetler">Hizmetler</a></li>
-            <li><a href="#iletisim">İletişim</a></li>
+            <li><a href="#home" data-tr="Ana Sayfa" data-en="Home">Ana Sayfa</a></li>
+            <li><a href="#ai-gallery" data-tr="AI Sergi" data-en="AI Gallery">AI Sergi</a></li>
+            <li><a href="#ai-lab" data-tr="AI Laboratuvarı" data-en="AI Lab">AI Laboratuvarı</a></li>
+            <li><a href="#hizmetler" data-tr="Hizmetler" data-en="Services">Hizmetler</a></li>
+            <li><a href="#testimonials" data-tr="Yorumlar" data-en="Reviews">Yorumlar</a></li>
+            <li><a href="#iletisim" data-tr="İletişim" data-en="Contact">İletişim</a></li>
         </ul>
     </nav>
 
     <section id="home" class="hero">
-        <h1>Yazılım ve Yapay Zeka Fabrikası</h1>
-        <p>Geleceği kodla, görselleri mühürle.</p>
-        <button onclick="scrollProjects()" class="neon-button">Projeleri Gör</button>
+        <h1 data-tr="Yazılım ve Yapay Zeka Fabrikası" data-en="Software & AI Factory">Yazılım ve Yapay Zeka Fabrikası</h1>
+        <p data-tr="Geleceği kodla, görselleri mühürle." data-en="Code the future, seal the visuals.">Geleceği kodla, görselleri mühürle.</p>
+        <button onclick="scrollProjects()" class="neon-button" data-tr="Projeleri Gör" data-en="View Projects">Projeleri Gör</button>
     </section>
 
     <section id="ai-gallery" class="gallery-container">
-        <h2 class="neon-text">Yapay Zeka Sergisi</h2>
+        <h2 class="neon-text" data-tr="Yapay Zeka Sergisi" data-en="AI Gallery">Yapay Zeka Sergisi</h2>
         <div class="slider-container">
             <div class="slider-track" id="slider-track">
-                <div class="slide"><img src="img/proje1.jpg" alt="AI 1"></div>
-                <div class="slide"><img src="img/proje2.jpg" alt="AI 2"></div>
-                <div class="slide"><img src="img/proje3.jpg" alt="AI 3"></div>
-                <div class="slide"><img src="img/proje4.jpg" alt="AI 4"></div>
-                <div class="slide"><img src="img/proje5.jpg" alt="AI 5"></div>
-                <div class="slide"><img src="img/proje6.jpg" alt="AI 6"></div>
+                <div class="slide" data-project="1" onclick="openProjectDetail(1)"><img src="img/proje1.jpg" alt="AI 1"></div>
+                <div class="slide" data-project="2" onclick="openProjectDetail(2)"><img src="img/proje2.jpg" alt="AI 2"></div>
+                <div class="slide" data-project="3" onclick="openProjectDetail(3)"><img src="img/proje3.jpg" alt="AI 3"></div>
+                <div class="slide" data-project="4" onclick="openProjectDetail(4)"><img src="img/proje4.jpg" alt="AI 4"></div>
+                <div class="slide" data-project="5" onclick="openProjectDetail(5)"><img src="img/proje5.jpg" alt="AI 5"></div>
+                <div class="slide" data-project="6" onclick="openProjectDetail(6)"><img src="img/proje6.jpg" alt="AI 6"></div>
             </div> 
             <button class="slider-btn prev" onclick="moveSlider(-1)">❮</button>
             <button class="slider-btn next" onclick="moveSlider(1)">❯</button>
         </div>
+        <div id="generated-gallery" class="generated-gallery-grid"></div>
     </section>
 
     <section id="ai-lab" class="lab-container">
-        <h2 class="neon-text">Imagen 4.0 Üretim Laboratuvarı</h2>
+        <h2 class="neon-text" data-tr="Imagen 4.0 Üretim Laboratuvarı" data-en="Imagen 4.0 Production Lab">Imagen 4.0 Üretim Laboratuvarı</h2>
+        <div class="style-selector">
+            <span data-tr="Stil:" data-en="Style:">Stil:</span>
+            <select id="style-select">
+                <option value="" data-tr="Özel" data-en="Custom">Özel</option>
+                <option value="karikatür, çizgi roman tarzı" data-tr="Karikatür" data-en="Cartoon">Karikatür</option>
+                <option value="fotorealistik, gerçekçi, photorealistic" data-tr="Gerçekçi" data-en="Realistic">Gerçekçi</option>
+                <option value="siberpunk, neon, cyberpunk estetiği" data-tr="Siberpunk" data-en="Cyberpunk">Siberpunk</option>
+                <option value="minimalist, sade" data-tr="Minimalist" data-en="Minimalist">Minimalist</option>
+                <option value="anime, japon animasyon stili" data-tr="Anime" data-en="Anime">Anime</option>
+            </select>
+        </div>
         <div class="lab-form-container">
-            <textarea id="prompt-input" placeholder="Hayal ettiğin görseli buraya yaz patron..." rows="4"></textarea>
-            <button id="generate-image-btn" class="neon-button">Görseli Mühürle (Üret)</button>
+            <textarea id="prompt-input" placeholder="Hayal ettiğin görseli buraya yaz patron..." rows="4" data-placeholder-tr="Hayal ettiğin görseli buraya yaz patron..." data-placeholder-en="Describe your vision here..."></textarea>
+            <button id="generate-image-btn" class="neon-button" data-tr="Görseli Mühürle (Üret)" data-en="Generate Image">Görseli Mühürle (Üret)</button>
             <div id="loading-indicator" class="loading-spinner" style="display: none;"></div>
         </div>
         <div id="image-output-container" class="image-output-container">
-            <img id="generated-image" src="" alt="Üretilen Görsel" style="display: none;">
-            <p id="image-placeholder" style="color: var(--text-color); opacity: 0.7;">Üretilen eser burada belirecek...</p>
+            <div class="image-result-wrapper">
+                <img id="generated-image" src="" alt="Üretilen Görsel" style="display: none;">
+                <button id="add-to-gallery-btn" class="neon-button add-gallery-btn" style="display: none;" data-tr="Galeriye Ekle" data-en="Add to Gallery">Galeriye Ekle</button>
+            </div>
+            <p id="image-placeholder" style="color: var(--text-color); opacity: 0.7;" data-tr="Üretilen eser burada belirecek..." data-en="Generated artwork will appear here...">Üretilen eser burada belirecek...</p>
         </div>
     </section>
 
     <section id="hizmetler" class="services-section">
-        <h2 class="neon-text">Fabrika Çözümleri</h2>
+        <h2 class="neon-text" data-tr="Fabrika Çözümleri" data-en="Factory Solutions">Fabrika Çözümleri</h2>
         <div class="services-grid">
             <div class="service-card">
                 <i class="icon">🧠</i>
-                <h3>Yapay Zeka Modelleme</h3>
-                <p>Gemini ve Imagen 4.0 tabanlı otonom sistemler ve akıllı botlar geliştiriyoruz.</p>
+                <h3 data-tr="Yapay Zeka Modelleme" data-en="AI Modeling">Yapay Zeka Modelleme</h3>
+                <p data-tr="Gemini ve Imagen 4.0 tabanlı otonom sistemler ve akıllı botlar geliştiriyoruz." data-en="We develop autonomous systems and smart bots based on Gemini and Imagen 4.0.">Gemini ve Imagen 4.0 tabanlı otonom sistemler ve akıllı botlar geliştiriyoruz.</p>
             </div>
             <div class="service-card">
                 <i class="icon">🌐</i>
-                <h3>Siberpunk Web Tasarım</h3>
-                <p>Geleceğin estetiğini modern arayüzlerle birleştiriyor, hızlı siteler mühürlüyoruz.</p>
+                <h3 data-tr="Siberpunk Web Tasarım" data-en="Cyberpunk Web Design">Siberpunk Web Tasarım</h3>
+                <p data-tr="Geleceğin estetiğini modern arayüzlerle birleştiriyor, hızlı siteler mühürlüyoruz." data-en="We combine future aesthetics with modern interfaces and build fast sites.">Geleceğin estetiğini modern arayüzlerle birleştiriyor, hızlı siteler mühürlüyoruz.</p>
             </div>
             <div class="service-card">
                 <i class="icon">🚀</i>
-                <h3>Yazılım Otomasyonu</h3>
-                <p>İş akışlarını hızlandıran, Telegram entegreli özel yazılım çözümleri üretiyoruz.</p>
+                <h3 data-tr="Yazılım Otomasyonu" data-en="Software Automation">Yazılım Otomasyonu</h3>
+                <p data-tr="İş akışlarını hızlandıran, Telegram entegreli özel yazılım çözümleri üretiyoruz." data-en="We create custom software solutions with Telegram integration.">İş akışlarını hızlandıran, Telegram entegreli özel yazılım çözümleri üretiyoruz.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="testimonials" class="testimonials-section">
+        <h2 class="neon-text" data-tr="Müşteri Yorumları" data-en="Testimonials">Müşteri Yorumları</h2>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <p class="testimonial-text" data-tr="Harika iş çıkardılar! Web sitem hayal ettiğimden güzel oldu." data-en="They did an amazing job! My website turned out better than I imagined.">Harika iş çıkardılar! Web sitem hayal ettiğimden güzel oldu.</p>
+                <span class="testimonial-author">— Ahmet K., Girişimci</span>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text" data-tr="AI botumuz iş süreçlerimizi çok hızlandırdı. Kesinlikle tavsiye ederim." data-en="Our AI bot dramatically sped up our processes. Highly recommend.">AI botumuz iş süreçlerimizi çok hızlandırdı. Kesinlikle tavsiye ederim.</p>
+                <span class="testimonial-author">— Zeynep M., CFO</span>
+            </div>
+            <div class="testimonial-card">
+                <p class="testimonial-text" data-tr="Profesyonel ekip, hızlı teslimat. Tekrar çalışacağız." data-en="Professional team, fast delivery. We'll work together again.">Profesyonel ekip, hızlı teslimat. Tekrar çalışacağız.</p>
+                <span class="testimonial-author">— Can D., CTO</span>
             </div>
         </div>
     </section>
 
     <section id="iletisim" class="contact-section">
-        <h2 class="neon-text">Mühürlü Mesaj Bırak</h2>
+        <h2 class="neon-text" data-tr="Mühürlü Mesaj Bırak" data-en="Leave a Message">Mühürlü Mesaj Bırak</h2>
         <form id="contact-form">
-            <input type="text" placeholder="Adın" required>
-            <input type="email" placeholder="E-posta" required>
-            <textarea placeholder="Mesajın..." required></textarea>
-            <button type="submit" class="neon-button">Mührü Gönder</button>
+            <input type="text" placeholder="Adın" required data-placeholder-tr="Adın" data-placeholder-en="Your name">
+            <input type="email" placeholder="E-posta" required data-placeholder-tr="E-posta" data-placeholder-en="Email">
+            <textarea placeholder="Mesajın..." required data-placeholder-tr="Mesajın..." data-placeholder-en="Your message..."></textarea>
+            <button type="submit" class="neon-button" data-tr="Mührü Gönder" data-en="Send">Mührü Gönder</button>
         </form>
     </section>
+
+    <div id="project-modal" class="project-modal" onclick="closeProjectDetail(event)">
+        <div class="project-modal-content" onclick="event.stopPropagation()">
+            <button class="project-modal-close" onclick="closeProjectDetail()">&times;</button>
+            <img id="project-modal-img" src="" alt="">
+            <h3 id="project-modal-title"></h3>
+            <p id="project-modal-desc"></p>
+        </div>
+    </div>
 
     <div class="chat-wrapper">
         <button class="chat-toggle-btn" id="chat-toggle-btn" onclick="toggleChat()" title="Sohbeti aç">🤖 Sohbet</button>
@@ -102,7 +146,7 @@
         </div>
     </div>
 
-    <footer><p>&copy; 2026 ÖMER.AI - Gelecek Burada Mühürlendi.</p></footer>
+    <footer><p data-tr="© 2026 ÖMER.AI - Gelecek Burada Mühürlendi." data-en="© 2026 ÖMER.AI - Future Sealed Here.">&copy; 2026 ÖMER.AI - Gelecek Burada Mühürlendi.</p></footer>
     <script src="script.js"></script>
 </body>
 </html>

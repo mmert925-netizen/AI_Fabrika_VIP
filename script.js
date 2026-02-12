@@ -1,3 +1,31 @@
+//// PROJE DETAY SAYFALARI (Portfolio)
+const PROJECTS = {
+    1: { title: { tr: "Neon Şehir Manzarası", en: "Neon City Landscape" }, desc: { tr: "Siberpunk tema ile oluşturulmuş gelecek şehir vizyonu.", en: "Future city vision with cyberpunk theme." }, img: "img/proje1.jpg" },
+    2: { title: { tr: "Robot Portresi", en: "Robot Portrait" }, desc: { tr: "Yapay zeka destekli robot karakter tasarımı.", en: "AI-assisted robot character design." }, img: "img/proje2.jpg" },
+    3: { title: { tr: "Sanal Evren", en: "Virtual Universe" }, desc: { tr: "Dijital sanat ve soyut görsel üretimi.", en: "Digital art and abstract visual generation." }, img: "img/proje3.jpg" },
+    4: { title: { tr: "Mekanik Bulutlar", en: "Mechanical Clouds" }, desc: { tr: "Steampunk ve futuristik karışımı konsept.", en: "Steampunk and futuristic blend concept." }, img: "img/proje4.jpg" },
+    5: { title: { tr: "Holografik İkon", en: "Holographic Icon" }, desc: { tr: "3D holografik efekt ile logo tasarımı.", en: "Logo design with 3D holographic effect." }, img: "img/proje5.jpg" },
+    6: { title: { tr: "Dijital Orman", en: "Digital Forest" }, desc: { tr: "Doğa ve teknoloji sentezinde görsel.", en: "Visual in nature and technology synthesis." }, img: "img/proje6.jpg" }
+};
+
+let currentLang = localStorage.getItem("lang") || "tr";
+
+function openProjectDetail(id) {
+    const p = PROJECTS[id];
+    if (!p) return;
+    const modal = document.getElementById("project-modal");
+    document.getElementById("project-modal-img").src = p.img;
+    document.getElementById("project-modal-title").textContent = p.title[currentLang] || p.title.tr;
+    document.getElementById("project-modal-desc").textContent = p.desc[currentLang] || p.desc.tr;
+    modal.classList.add("modal-open");
+    document.body.style.overflow = "hidden";
+}
+function closeProjectDetail(e) {
+    if (e && e.target !== e.currentTarget) return;
+    document.getElementById("project-modal").classList.remove("modal-open");
+    document.body.style.overflow = "";
+}
+
 //// 1. Projelere Kaydırma Fonksiyonu
 function scrollProjects() {
     const gallery = document.getElementById('ai-gallery');
@@ -77,6 +105,57 @@ function toggleTheme() {
     localStorage.setItem("theme", targetTheme);
 }
 
+// 4c. Çoklu Dil (TR / EN)
+function toggleLang() {
+    currentLang = currentLang === "tr" ? "en" : "tr";
+    localStorage.setItem("lang", currentLang);
+    applyLang();
+    document.getElementById("lang-toggle").textContent = currentLang === "tr" ? "🌐 EN" : "🌐 TR";
+}
+function applyLang() {
+    document.querySelectorAll("[data-tr], [data-en]").forEach(el => {
+        if (el.hasAttribute("data-placeholder-tr") || el.hasAttribute("data-placeholder-en")) {
+            const ph = el.getAttribute("data-placeholder-" + currentLang) || el.getAttribute("data-placeholder-tr");
+            if (ph) el.placeholder = ph;
+        } else if (el.hasAttribute("data-tr") || el.hasAttribute("data-en")) {
+            const txt = el.getAttribute("data-" + currentLang) || el.getAttribute("data-tr");
+            if (txt) el.textContent = txt;
+        }
+    });
+}
+
+// Görsel galeri kaydetme – üretilen görselleri localStorage'a ekle
+const GALLERY_KEY = "omerai_generated_gallery";
+function getSavedGallery() {
+    try { return JSON.parse(localStorage.getItem(GALLERY_KEY) || "[]"); } catch { return []; }
+}
+function saveToGallery(src) {
+    const g = getSavedGallery();
+    g.push({ src, id: Date.now() });
+    localStorage.setItem(GALLERY_KEY, JSON.stringify(g));
+    renderGeneratedGallery();
+}
+function renderGeneratedGallery() {
+    const container = document.getElementById("generated-gallery");
+    if (!container) return;
+    const g = getSavedGallery();
+    container.innerHTML = g.map((item, i) => `
+        <div class="generated-gallery-item" data-gallery-index="${i}">
+            <img src="${item.src}" alt="Kaydedilmiş görsel">
+        </div>
+    `).join("");
+    container.querySelectorAll(".generated-gallery-item").forEach(el => {
+        el.onclick = () => showGeneratedImage(getSavedGallery()[parseInt(el.dataset.galleryIndex)].src);
+    });
+}
+function showGeneratedImage(src) {
+    document.getElementById("project-modal-img").src = src;
+    document.getElementById("project-modal-title").textContent = currentLang === "tr" ? "Üretilen Görsel" : "Generated Image";
+    document.getElementById("project-modal-desc").textContent = currentLang === "tr" ? "AI Laboratuvarı'nda üretildi." : "Generated in AI Lab.";
+    document.getElementById("project-modal").classList.add("modal-open");
+    document.body.style.overflow = "hidden";
+}
+
 // 5. Form doğrulama – e-posta formatı, boş alan kontrolü
 function validateEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -94,6 +173,12 @@ function validateContactForm(name, email, message) {
 document.addEventListener("DOMContentLoaded", function() {
     const savedTheme = localStorage.getItem("theme") || "dark";
     document.documentElement.setAttribute("data-theme", savedTheme);
+
+    currentLang = localStorage.getItem("lang") || "tr";
+    applyLang();
+    document.getElementById("lang-toggle").textContent = currentLang === "tr" ? "🌐 EN" : "🌐 TR";
+
+    renderGeneratedGallery();
 
     const chatOpen = localStorage.getItem("chatOpen");
     const chat = document.getElementById("ai-chat-widget");
@@ -159,27 +244,54 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Görsel üret butonu (Imagen 4.0 – backend API bağlandığında URL güncellenir)
+    // Görsel üret butonu + Stil seçeneği + Galeriye ekle
     const genBtn = document.getElementById("generate-image-btn");
     const promptInput = document.getElementById("prompt-input");
     const loadingEl = document.getElementById("loading-indicator");
     const imgOut = document.getElementById("generated-image");
     const imgPlaceholder = document.getElementById("image-placeholder");
+    const addGalleryBtn = document.getElementById("add-to-gallery-btn");
+    const styleSelect = document.getElementById("style-select");
+
     if (genBtn && promptInput) {
         genBtn.addEventListener("click", function() {
-            const prompt = promptInput.value.trim();
+            let prompt = promptInput.value.trim();
             if (!prompt) {
-                alert("Lütfen görsel açıklaması yazın.");
+                alert(currentLang === "tr" ? "Lütfen görsel açıklaması yazın." : "Please enter an image description.");
                 return;
             }
+            const styleVal = styleSelect ? styleSelect.value : "";
+            if (styleVal) prompt = styleVal + ", " + prompt;
+
             if (loadingEl) loadingEl.style.display = "block";
             if (imgOut) { imgOut.style.display = "none"; imgOut.src = ""; }
             if (imgPlaceholder) imgPlaceholder.style.display = "block";
-            // TODO: Backend'de Imagen/Gen API endpoint'i hazır olunca fetch ile buraya bağlan
-            setTimeout(function() {
+            if (addGalleryBtn) addGalleryBtn.style.display = "none";
+
+            fetch("/api/generate-image", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ prompt })
+            }).then(res => res.json().then(data => ({ ok: res.ok, data }))).then(({ ok, data }) => {
                 if (loadingEl) loadingEl.style.display = "none";
-                alert("Görsel üretimi için backend API henüz bağlı değil. Endpoint hazır olunca burada fetch ile bağlanacak.");
-            }, 600);
+                if (ok && data.image) {
+                    const dataUrl = "data:image/png;base64," + data.image;
+                    imgOut.src = dataUrl;
+                    imgOut.style.display = "block";
+                    if (imgPlaceholder) imgPlaceholder.style.display = "none";
+                    if (addGalleryBtn) {
+                        addGalleryBtn.style.display = "inline-block";
+                        addGalleryBtn.onclick = () => { saveToGallery(dataUrl); addGalleryBtn.style.display = "none"; alert(currentLang === "tr" ? "Galeriye eklendi!" : "Added to gallery!"); };
+                    }
+                } else {
+                    alert(data.error || (currentLang === "tr" ? "Görsel üretilemedi." : "Image generation failed."));
+                }
+            }).catch(() => {
+                if (loadingEl) loadingEl.style.display = "none";
+                alert("Görsel üretimi için backend API henüz bağlı değil.");
+            });
         });
     }
+
+    if (addGalleryBtn) addGalleryBtn.style.cursor = "pointer";
 });
