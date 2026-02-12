@@ -9,6 +9,10 @@
 <body>
     <nav>
         <div class="theme-switch-wrapper">
+            <div class="token-badge" id="token-badge" title="ÖMER.AI Dijital Mühürler">
+                <span class="token-icon">🔐</span>
+                <span id="token-count">0</span>
+            </div>
             <button id="theme-toggle" onclick="toggleTheme()">🌓 Mod Değiştir</button>
             <button id="lang-toggle" onclick="toggleLang()" title="Dil / Language">🌐 EN</button>
         </div>
@@ -64,6 +68,10 @@
         <h2 class="neon-text" data-tr="Imagen 4.0 Üretim Laboratuvarı" data-en="Imagen 4.0 Production Lab">Imagen 4.0 Üretim Laboratuvarı</h2>
         <div class="style-selector">
             <span data-tr="Stil:" data-en="Style:">Stil:</span>
+            <label class="hd-toggle-wrap">
+                <input type="checkbox" id="hd-mode-check" disabled>
+                <span class="hd-label" data-tr="HD Mühür (10+ gerekli)" data-en="HD Seal (10+ required)">HD Mühür (10+ gerekli)</span>
+            </label>
             <select id="style-select">
                 <option value="" data-tr="Özel" data-en="Custom">Özel</option>
                 <option value="karikatür, çizgi roman tarzı" data-tr="Karikatür" data-en="Cartoon">Karikatür</option>

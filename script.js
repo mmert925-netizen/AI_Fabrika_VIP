@@ -12,6 +12,48 @@ let currentLang = localStorage.getItem("lang") || "tr";
 let modalCurrentProject = 1;
 let modalViewingProjects = false;
 
+// ÖMER.AI Token / Dijital Mühür Sistemi
+const TOKEN_KEY = "omerai_tokens";
+const TOKEN_SESSION_KEY = "omerai_session_minutes";
+const TOKEN_SESSION_MAX = 5;
+
+function getTokens() {
+    return parseInt(localStorage.getItem(TOKEN_KEY) || "0", 10);
+}
+function addTokens(n) {
+    const t = getTokens() + n;
+    localStorage.setItem(TOKEN_KEY, String(Math.max(0, t)));
+    updateTokenUI();
+    return t;
+}
+function spendTokens(n) {
+    const t = Math.max(0, getTokens() - n);
+    localStorage.setItem(TOKEN_KEY, String(t));
+    updateTokenUI();
+    return t;
+}
+function updateTokenUI() {
+    const el = document.getElementById("token-count");
+    const hdCheck = document.getElementById("hd-mode-check");
+    if (el) el.textContent = getTokens();
+    if (hdCheck) {
+        hdCheck.disabled = getTokens() < 10;
+        hdCheck.title = getTokens() >= 10 ? (currentLang === "tr" ? "HD görsel için 2 mühür harcanır" : "2 tokens for HD image") : (currentLang === "tr" ? "10+ mühür gerekli" : "10+ tokens required");
+    }
+}
+function checkTimeTokens() {
+    let minutes = parseInt(sessionStorage.getItem(TOKEN_SESSION_KEY) || "0", 10);
+    const now = Date.now();
+    const last = parseInt(sessionStorage.getItem("omerai_last_check") || now, 10);
+    const elapsed = Math.floor((now - last) / 60000);
+    if (elapsed >= 2 && minutes < TOKEN_SESSION_MAX) {
+        minutes++;
+        sessionStorage.setItem(TOKEN_SESSION_KEY, String(minutes));
+        addTokens(1);
+    }
+    sessionStorage.setItem("omerai_last_check", String(now));
+}
+
 function modalNav(direction) {
     const modal = document.getElementById("project-modal");
     if (!modal || !modal.classList.contains("modal-open")) return;
@@ -336,6 +378,7 @@ function toggleLang() {
     currentLang = currentLang === "tr" ? "en" : "tr";
     localStorage.setItem("lang", currentLang);
     applyLang();
+    updateTokenUI();
     document.getElementById("lang-toggle").textContent = currentLang === "tr" ? "🌐 EN" : "🌐 TR";
 }
 function applyLang() {
@@ -439,6 +482,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     renderGeneratedGallery();
     renderLiveStream();
+    updateTokenUI();
+    if (getTokens() === 0) addTokens(3);
+    setInterval(checkTimeTokens, 120000);
 
     const chatOpen = localStorage.getItem("chatOpen");
     const chat = document.getElementById("ai-chat-widget");
@@ -487,7 +533,8 @@ document.addEventListener("DOMContentLoaded", function() {
             })
             .then(response => {
                 if (response.ok) {
-                    alert("Mührün Telegram hattına fırlatıldı patron! 🚀");
+                    addTokens(5);
+                    alert("Mührün Telegram hattına fırlatıldı patron! 🚀 +5 Dijital Mühür kazandın!");
                     form.reset();
                 } else {
                     alert("Hata: Mesaj iletilemedi. Token veya ID kontrolü gerek.");
@@ -530,6 +577,10 @@ document.addEventListener("DOMContentLoaded", function() {
             const styleVal = styleSelect ? styleSelect.value : "";
             if (styleVal) prompt = styleVal + ", " + prompt;
 
+            const hdCheck = document.getElementById("hd-mode-check");
+            const useHD = hdCheck && hdCheck.checked && getTokens() >= 2;
+            if (useHD) prompt = "highly detailed, 8k resolution, professional quality, sharp focus, " + prompt;
+
             if (loadingEl) loadingEl.style.display = "block";
             if (imgOut) { imgOut.style.display = "none"; imgOut.src = ""; }
             if (imgPlaceholder) imgPlaceholder.style.display = "block";
@@ -542,6 +593,7 @@ document.addEventListener("DOMContentLoaded", function() {
             }).then(res => res.json().then(data => ({ ok: res.ok, data }))).then(({ ok, data }) => {
                 if (loadingEl) loadingEl.style.display = "none";
                 if (ok && data.image) {
+                    if (useHD) spendTokens(2);
                     const dataUrl = "data:image/png;base64," + data.image;
                     imgOut.src = dataUrl;
                     imgOut.style.display = "block";

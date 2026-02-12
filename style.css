@@ -56,6 +56,20 @@ nav {
 }
 
 nav .theme-switch-wrapper { display: flex; gap: 0.5rem; align-items: center; }
+.token-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 6px 12px;
+    background: rgba(34, 211, 238, 0.15);
+    border: 1px solid var(--accent-color);
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--accent-color);
+    box-shadow: 0 0 12px rgba(34, 211, 238, 0.2);
+}
+.token-badge .token-icon { font-size: 1.1rem; }
 #lang-toggle {
     padding: 6px 12px;
     background: transparent;
@@ -339,6 +353,16 @@ h1 { font-size: 3.5rem; color: var(--accent-color); margin-bottom: 10px; }
     justify-content: center;
     gap: 0.5rem;
 }
+.hd-toggle-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    user-select: none;
+}
+.hd-toggle-wrap input[type="checkbox"]:disabled + .hd-label { opacity: 0.5; cursor: not-allowed; }
+.hd-toggle-wrap input[type="checkbox"]:not(:disabled) + .hd-label { color: var(--accent-color); }
+.hd-label { font-size: 0.9rem; }
 .style-selector select {
     padding: 8px 12px;
     background: var(--input-bg);
