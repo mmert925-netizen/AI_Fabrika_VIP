@@ -168,21 +168,17 @@
         <button class="modal-nav-btn modal-next" onclick="event.stopPropagation(); modalNav(1)">❯</button>
     </div>
 
-    <div class="voice-seal-wrapper">
-        <button class="voice-seal-btn" id="voice-seal-btn" onclick="toggleVoiceSeal()" title="Sesli Komut (Voice Seal)">
-            <span class="voice-icon">🎤</span>
-            <span class="voice-label" data-tr="Sesli Mühür" data-en="Voice Seal">Sesli Mühür</span>
-        </button>
-        <div id="voice-seal-status" class="voice-seal-status" style="display:none;"></div>
-    </div>
-
     <div class="chat-wrapper">
         <button class="chat-toggle-btn" id="chat-toggle-btn" onclick="toggleChat()" title="Sohbeti aç">🤖 Sohbet</button>
         <div id="ai-chat-widget" class="chat-container">
             <div class="chat-header">
                 <span>🤖 ÖMER.AI Asistan</span>
-                <button class="chat-close-btn" onclick="toggleChat()" title="Kapat">✕</button>
+                <div class="chat-header-actions">
+                    <button class="voice-seal-btn" id="voice-seal-btn" onclick="event.stopPropagation(); toggleVoiceSeal()" title="Sesli Komut">🎤</button>
+                    <button class="chat-close-btn" onclick="toggleChat()" title="Kapat">✕</button>
+                </div>
             </div>
+            <div id="voice-seal-status" class="voice-seal-status" style="display:none;"></div>
             <div class="chat-quick-actions">
                 <button class="quick-btn" onclick="quickAction('görsel')" data-tr="🖼️ Görsel Üret" data-en="🖼️ Generate">🖼️ Görsel Üret</button>
                 <button class="quick-btn" onclick="quickAction('proje')" data-tr="📂 Projeler" data-en="📂 Projects">📂 Projeler</button>
