@@ -11,6 +11,7 @@ const PROJECTS = {
 let currentLang = localStorage.getItem("lang") || "tr";
 let modalCurrentProject = 1;
 let modalViewingProjects = false;
+let vantaEffect = null;
 
 // ÖMER.AI Token / Dijital Mühür Sistemi
 const TOKEN_KEY = "omerai_tokens";
@@ -52,6 +53,29 @@ function checkTimeTokens() {
         addTokens(1);
     }
     sessionStorage.setItem("omerai_last_check", String(now));
+}
+
+// Dinamik arka plan (Vanta NET - fare tepkili neon mesh)
+function initVanta() {
+    if (typeof VANTA === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (vantaEffect) vantaEffect.destroy();
+    const isLight = document.documentElement.getAttribute("data-theme") === "light";
+    vantaEffect = VANTA.NET({
+        el: "#vanta-bg",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200,
+        minWidth: 200,
+        scale: 1,
+        scaleMobile: 1,
+        color: isLight ? 0x1e90ff : 0x22d3ee,
+        backgroundColor: isLight ? 0xf1f5f9 : 0x1e3a4f,
+        points: 12,
+        maxDistance: 22,
+        spacing: 18
+    });
 }
 
 function modalNav(direction) {
@@ -371,6 +395,7 @@ function toggleTheme() {
     const targetTheme = currentTheme === "light" ? "dark" : "light";
     document.documentElement.setAttribute("data-theme", targetTheme);
     localStorage.setItem("theme", targetTheme);
+    if (typeof VANTA !== "undefined") initVanta();
 }
 
 // 4c. Çoklu Dil (TR / EN)
@@ -475,6 +500,25 @@ function validateContactForm(name, email, message) {
 document.addEventListener("DOMContentLoaded", function() {
     const savedTheme = localStorage.getItem("theme") || "dark";
     document.documentElement.setAttribute("data-theme", savedTheme);
+
+    if (typeof VANTA !== "undefined") initVanta();
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) document.body.classList.add("no-motion");
+    else {
+        const cg = document.getElementById("cursor-glow");
+        if (cg) {
+            let rafId;
+            document.addEventListener("mousemove", function(e) {
+                if (rafId) cancelAnimationFrame(rafId);
+                rafId = requestAnimationFrame(function() {
+                    cg.style.left = e.clientX + "px";
+                    cg.style.top = e.clientY + "px";
+                    cg.classList.add("active");
+                    rafId = null;
+                });
+            });
+            document.addEventListener("mouseleave", function() { cg.classList.remove("active"); });
+        }
+    }
 
     currentLang = localStorage.getItem("lang") || "tr";
     applyLang();
