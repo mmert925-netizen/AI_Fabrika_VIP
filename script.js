@@ -77,9 +77,19 @@ function toggleTheme() {
     localStorage.setItem("theme", targetTheme);
 }
 
-// 5. TELEGRAM MESAJ HATTI 🚀
-const TELEGRAM_BOT_TOKEN = '8385745600:AAFRf0-qUiy8ooJfvzGcn_MpL77YXONGHis'; 
-const TELEGRAM_CHAT_ID = '7076964315'; 
+// 5. Form doğrulama – e-posta formatı, boş alan kontrolü
+function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+}
+function validateContactForm(name, email, message) {
+    const errors = [];
+    if (!name || !name.trim()) errors.push("Ad alanı boş olamaz.");
+    if (!email || !email.trim()) errors.push("E-posta alanı boş olamaz.");
+    else if (!validateEmail(email)) errors.push("Geçerli bir e-posta adresi girin.");
+    if (!message || !message.trim()) errors.push("Mesaj alanı boş olamaz.");
+    return errors;
+}
 
 document.addEventListener("DOMContentLoaded", function() {
     const savedTheme = localStorage.getItem("theme") || "dark";
@@ -102,33 +112,33 @@ document.addEventListener("DOMContentLoaded", function() {
     if (form) {
         form.addEventListener("submit", function(event) {
             event.preventDefault();
-            
-            // Butonu geçici olarak devre dışı bırak (Çift gönderimi önler)
-            const submitBtn = form.querySelector('button');
-            submitBtn.disabled = true;
-            submitBtn.innerText = "Mühürleniyor...";
 
             const name = form.querySelector('input[type="text"]').value;
             const email = form.querySelector('input[type="email"]').value;
             const message = form.querySelector('textarea').value;
 
-            const text = `🚀 *Yeni Web Mesajı!*\n\n👤 *Ad:* ${name}\n📧 *E-posta:* ${email}\n📝 *Mesaj:* ${message}`;
+            const errors = validateContactForm(name, email, message);
+            if (errors.length > 0) {
+                alert(errors.join("\n"));
+                return;
+            }
 
-            fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            const submitBtn = form.querySelector('button');
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Mühürleniyor...";
+
+            fetch("/api/telegram", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: TELEGRAM_CHAT_ID,
-                    text: text,
-                    parse_mode: 'Markdown'
-                })
+                body: JSON.stringify({ name: name.trim(), email: email.trim(), message: message.trim() })
             })
-            .then(response => {
-                if(response.ok) {
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
                     alert("Mührün Telegram hattına fırlatıldı patron! 🚀");
                     form.reset();
                 } else {
-                    alert("Hata: Mesaj iletilemedi. Token veya ID kontrolü gerek.");
+                    alert(data.error || "Mesaj iletilemedi.");
                 }
             })
             .catch(error => {
