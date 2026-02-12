@@ -135,17 +135,26 @@ function saveToGallery(src) {
     localStorage.setItem(GALLERY_KEY, JSON.stringify(g));
     renderGeneratedGallery();
 }
+function removeFromGallery(index) {
+    const g = getSavedGallery();
+    g.splice(index, 1);
+    localStorage.setItem(GALLERY_KEY, JSON.stringify(g));
+    renderGeneratedGallery();
+}
 function renderGeneratedGallery() {
     const container = document.getElementById("generated-gallery");
     if (!container) return;
     const g = getSavedGallery();
     container.innerHTML = g.map((item, i) => `
         <div class="generated-gallery-item" data-gallery-index="${i}">
+            <button class="gallery-delete-btn" data-index="${i}" title="${currentLang === 'tr' ? 'Sil' : 'Delete'}">×</button>
             <img src="${item.src}" alt="Kaydedilmiş görsel">
         </div>
     `).join("");
     container.querySelectorAll(".generated-gallery-item").forEach(el => {
-        el.onclick = () => showGeneratedImage(getSavedGallery()[parseInt(el.dataset.galleryIndex)].src);
+        const idx = parseInt(el.dataset.galleryIndex);
+        el.querySelector(".gallery-delete-btn").onclick = (e) => { e.stopPropagation(); removeFromGallery(idx); };
+        el.onclick = (e) => { if (!e.target.classList.contains("gallery-delete-btn")) showGeneratedImage(getSavedGallery()[idx].src); };
     });
 }
 function showGeneratedImage(src) {
