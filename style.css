@@ -612,7 +612,7 @@ input:focus, textarea:focus {
     .generated-gallery-grid { grid-template-columns: 1fr; max-width: 100%; }
     .services-section { padding: 40px 20px; }
     .pricing-section { padding: 3rem 2rem; }
-    footer .footer-section { padding: 2rem; }
+    footer .footer-section { padding: 1rem 2rem; }
     .testimonials-section { padding: 4rem 2rem; }
     .contact-section { padding: 50px 20px; }
 }
@@ -633,7 +633,7 @@ input:focus, textarea:focus {
     .generated-gallery-grid { grid-template-columns: 1fr; }
     .services-section { padding: 40px 1rem; }
     .pricing-section { padding: 3rem 1rem; }
-    footer .footer-section { padding: 2rem 1rem; }
+    footer .footer-section { padding: 1rem; }
     .chat-quick-actions { flex-direction: column; }
     .quick-btn { font-size: 12px; padding: 6px 10px; }
     .testimonials-section { padding: 4rem 1rem; }
@@ -645,14 +645,36 @@ footer {
     background: var(--bg-color);
 }
 footer .footer-section {
-    padding: 3rem 2rem 2rem;
+    padding: 1rem 2rem;
 }
-footer .footer-section:first-child { padding-top: 3rem; }
-footer .footer-section.faq-section .faq-list { max-width: 600px; margin: 0 auto; }
-footer .footer-section.blog-section .blog-grid { max-width: 900px; margin: 0 auto; }
+footer .footer-section h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+footer .footer-section.faq-section .faq-list {
+    max-width: 600px;
+    margin: 0 auto;
+}
+footer .footer-section.faq-section .faq-item {
+    margin-bottom: 6px;
+}
+footer .footer-section.faq-section .faq-item summary {
+    padding: 0.6rem 1rem;
+    font-size: 0.95rem;
+}
+footer .footer-section.blog-section .blog-grid {
+    max-width: 900px;
+    margin: 0 auto;
+}
+footer .footer-section.blog-section .blog-card {
+    padding: 1rem;
+}
+footer .footer-section.blog-section .blog-card h4 {
+    font-size: 1rem;
+}
 .footer-copyright {
     text-align: center;
-    padding: 2rem;
+    padding: 1rem 2rem;
     font-size: 0.9rem;
     opacity: 0.7;
     margin: 0;
