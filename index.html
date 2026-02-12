@@ -148,49 +148,6 @@
         </form>
     </section>
 
-    <section id="sss" class="faq-section">
-        <h2 class="neon-text" data-tr="Sık Sorulan Sorular" data-en="FAQ">Sık Sorulan Sorular</h2>
-        <div class="faq-list">
-            <details class="faq-item">
-                <summary data-tr="Proje ne kadar sürer?" data-en="How long does a project take?">Proje ne kadar sürer?</summary>
-                <p data-tr="Web projeleri 1-2 hafta, AI bot projeleri 2-3 hafta sürebilir." data-en="Web projects 1-2 weeks, AI bot projects 2-3 weeks.">Web projeleri 1-2 hafta, AI bot projeleri 2-3 hafta sürebilir.</p>
-            </details>
-            <details class="faq-item">
-                <summary data-tr="Destek veriyor musunuz?" data-en="Do you provide support?">Destek veriyor musunuz?</summary>
-                <p data-tr="Teslimattan sonra 1 ay ücretsiz destek." data-en="1 month free support after delivery.">Teslimattan sonra 1 ay ücretsiz destek.</p>
-            </details>
-            <details class="faq-item">
-                <summary data-tr="Ödeme nasıl yapılır?" data-en="How do I pay?">Ödeme nasıl yapılır?</summary>
-                <p data-tr="Havale/EFT veya kredi kartı. %50 ön ödeme ile başlıyoruz." data-en="Bank transfer or credit card. We start with 50% advance.">Havale/EFT veya kredi kartı. %50 ön ödeme ile başlıyoruz.</p>
-            </details>
-            <details class="faq-item">
-                <summary data-tr="Görsel üretimi nasıl çalışır?" data-en="How does image generation work?">Görsel üretimi nasıl çalışır?</summary>
-                <p data-tr="AI Laboratuvarı'nda prompt yazarsın, Gemini Imagen ile görsel üretilir. Ücretsiz deneyebilirsin!" data-en="Write a prompt in AI Lab, Gemini Imagen generates the image. Try it free!">AI Laboratuvarı'nda prompt yazarsın, Gemini Imagen ile görsel üretilir. Ücretsiz deneyebilirsin!</p>
-            </details>
-        </div>
-    </section>
-
-    <section id="blog" class="blog-section">
-        <h2 class="neon-text" data-tr="Blog & Haberler" data-en="Blog & News">Blog & Haberler</h2>
-        <div class="blog-grid">
-            <article class="blog-card">
-                <h4 data-tr="Gemini ile Görsel Üretimi" data-en="Image Generation with Gemini">Gemini ile Görsel Üretimi</h4>
-                <p data-tr="Imagen 4.0 tabanlı görsel üretim laboratuvarımız nasıl çalışıyor?" data-en="How our Imagen 4.0 based image lab works.">Imagen 4.0 tabanlı görsel üretim laboratuvarımız nasıl çalışıyor?</p>
-                <a href="#ai-lab" class="blog-link" data-tr="Dene →" data-en="Try →">Dene →</a>
-            </article>
-            <article class="blog-card">
-                <h4 data-tr="Telegram Bot Entegrasyonu" data-en="Telegram Bot Integration">Telegram Bot Entegrasyonu</h4>
-                <p data-tr="İş akışlarınızı Telegram ile otomatikleştirin." data-en="Automate your workflows with Telegram.">İş akışlarınızı Telegram ile otomatikleştirin.</p>
-                <a href="#iletisim" class="blog-link" data-tr="İletişim →" data-en="Contact →">İletişim →</a>
-            </article>
-            <article class="blog-card">
-                <h4 data-tr="AI Asistan ile Tanış" data-en="Meet the AI Assistant">AI Asistan ile Tanış</h4>
-                <p data-tr="Sohbet botumuz Gemini ile sorularınıza cevap veriyor." data-en="Our chat bot answers your questions with Gemini.">Sohbet botumuz Gemini ile sorularınıza cevap veriyor.</p>
-                <a href="#" onclick="toggleChat(); return false;" class="blog-link" data-tr="Sohbet Et →" data-en="Chat →">Sohbet Et →</a>
-            </article>
-        </div>
-    </section>
-
     <div id="project-modal" class="project-modal" onclick="closeProjectDetail(event)">
         <button class="modal-nav-btn modal-prev" onclick="event.stopPropagation(); modalNav(-1)">❮</button>
         <div class="project-modal-content" onclick="event.stopPropagation()">
@@ -225,7 +182,50 @@
         </div>
     </div>
 
-    <footer><p data-tr="© 2026 ÖMER.AI - Gelecek Burada Mühürlendi." data-en="© 2026 ÖMER.AI - Future Sealed Here.">&copy; 2026 ÖMER.AI - Gelecek Burada Mühürlendi.</p></footer>
+    <footer>
+        <section id="sss" class="faq-section footer-section">
+            <h2 class="neon-text" data-tr="Sık Sorulan Sorular" data-en="FAQ">Sık Sorulan Sorular</h2>
+            <div class="faq-list">
+                <details class="faq-item">
+                    <summary data-tr="Proje ne kadar sürer?" data-en="How long does a project take?">Proje ne kadar sürer?</summary>
+                    <p data-tr="Web projeleri 1-2 hafta, AI bot projeleri 2-3 hafta sürebilir." data-en="Web projects 1-2 weeks, AI bot projects 2-3 weeks.">Web projeleri 1-2 hafta, AI bot projeleri 2-3 hafta sürebilir.</p>
+                </details>
+                <details class="faq-item">
+                    <summary data-tr="Destek veriyor musunuz?" data-en="Do you provide support?">Destek veriyor musunuz?</summary>
+                    <p data-tr="Teslimattan sonra 1 ay ücretsiz destek." data-en="1 month free support after delivery.">Teslimattan sonra 1 ay ücretsiz destek.</p>
+                </details>
+                <details class="faq-item">
+                    <summary data-tr="Ödeme nasıl yapılır?" data-en="How do I pay?">Ödeme nasıl yapılır?</summary>
+                    <p data-tr="Havale/EFT veya kredi kartı. %50 ön ödeme ile başlıyoruz." data-en="Bank transfer or credit card. We start with 50% advance.">Havale/EFT veya kredi kartı. %50 ön ödeme ile başlıyoruz.</p>
+                </details>
+                <details class="faq-item">
+                    <summary data-tr="Görsel üretimi nasıl çalışır?" data-en="How does image generation work?">Görsel üretimi nasıl çalışır?</summary>
+                    <p data-tr="AI Laboratuvarı'nda prompt yazarsın, Gemini Imagen ile görsel üretilir. Ücretsiz deneyebilirsin!" data-en="Write a prompt in AI Lab, Gemini Imagen generates the image. Try it free!">AI Laboratuvarı'nda prompt yazarsın, Gemini Imagen ile görsel üretilir. Ücretsiz deneyebilirsin!</p>
+                </details>
+            </div>
+        </section>
+        <section id="blog" class="blog-section footer-section">
+            <h2 class="neon-text" data-tr="Blog & Haberler" data-en="Blog & News">Blog & Haberler</h2>
+            <div class="blog-grid">
+                <article class="blog-card">
+                    <h4 data-tr="Gemini ile Görsel Üretimi" data-en="Image Generation with Gemini">Gemini ile Görsel Üretimi</h4>
+                    <p data-tr="Imagen 4.0 tabanlı görsel üretim laboratuvarımız nasıl çalışıyor?" data-en="How our Imagen 4.0 based image lab works.">Imagen 4.0 tabanlı görsel üretim laboratuvarımız nasıl çalışıyor?</p>
+                    <a href="#ai-lab" class="blog-link" data-tr="Dene →" data-en="Try →">Dene →</a>
+                </article>
+                <article class="blog-card">
+                    <h4 data-tr="Telegram Bot Entegrasyonu" data-en="Telegram Bot Integration">Telegram Bot Entegrasyonu</h4>
+                    <p data-tr="İş akışlarınızı Telegram ile otomatikleştirin." data-en="Automate your workflows with Telegram.">İş akışlarınızı Telegram ile otomatikleştirin.</p>
+                    <a href="#iletisim" class="blog-link" data-tr="İletişim →" data-en="Contact →">İletişim →</a>
+                </article>
+                <article class="blog-card">
+                    <h4 data-tr="AI Asistan ile Tanış" data-en="Meet the AI Assistant">AI Asistan ile Tanış</h4>
+                    <p data-tr="Sohbet botumuz Gemini ile sorularınıza cevap veriyor." data-en="Our chat bot answers your questions with Gemini.">Sohbet botumuz Gemini ile sorularınıza cevap veriyor.</p>
+                    <a href="#" onclick="toggleChat(); return false;" class="blog-link" data-tr="Sohbet Et →" data-en="Chat →">Sohbet Et →</a>
+                </article>
+            </div>
+        </section>
+        <p class="footer-copyright" data-tr="© 2026 ÖMER.AI - Gelecek Burada Mühürlendi." data-en="© 2026 ÖMER.AI - Future Sealed Here.">&copy; 2026 ÖMER.AI - Gelecek Burada Mühürlendi.</p>
+    </footer>
     <script src="script.js"></script>
 </body>
 </html>
