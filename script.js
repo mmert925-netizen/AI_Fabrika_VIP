@@ -56,32 +56,47 @@ function scrollProjects() {
     }
 }
 
-// 2. ÖMER.AI Asistan Mesajlaşma Sistemi
+// 2. ÖMER.AI Asistan – Gemini tabanlı gerçek AI sohbet
+let chatHistory = [];
 function sendMessage() {
     const input = document.getElementById('user-input');
     const box = document.getElementById('chat-box');
     
-    if(input && input.value.trim() !== "") {
-        const userMsg = input.value.toLowerCase();
-        box.innerHTML += `<p style="color: #38bdf8; margin-bottom: 8px;"><b>Sen:</b> ${input.value}</p>`;
-        
-        let botResponse = "Şu an projeler üzerinde mühürleme yapıyorum patron, sana nasıl yardımcı olabilirim?";
-        
-        if(userMsg.includes("selam") || userMsg.includes("merhaba")) {
-            botResponse = "Merhaba! ÖMER.AI Yazılım Fabrikası'na hoş geldin.";
-        } else if(userMsg.includes("proje")) {
-            botResponse = "Yapay zeka modelleri ve otonom yazılımlar üretiyoruz. Sergimize göz atabilirsin!";
-        } else if(userMsg.includes("iletişim")) {
-            botResponse = "Formu doldurup 'Mührü Gönder' dersen mesajın doğrudan telefonuma düşer.";
-        }
+    if (!input || input.value.trim() === "") return;
 
-        setTimeout(() => {
-            box.innerHTML += `<p style="color: #f8fafc; margin-bottom: 8px;"><b>🤖 Bot:</b> ${botResponse}</p>`;
-            box.scrollTop = box.scrollHeight;
-        }, 800);
-        
-        input.value = '';
-    }
+    const userText = input.value.trim();
+    box.innerHTML += `<p class="chat-msg user"><b>Sen:</b> ${userText}</p>`;
+    box.scrollTop = box.scrollHeight;
+    input.value = '';
+    input.disabled = true;
+
+    const typingEl = document.createElement('p');
+    typingEl.className = 'chat-msg bot typing';
+    typingEl.innerHTML = '<b>🤖 Asistan:</b> <span class="typing-dots">...</span>';
+    box.appendChild(typingEl);
+    box.scrollTop = box.scrollHeight;
+
+    fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userText, history: chatHistory })
+    })
+    .then(res => res.json())
+    .then(data => {
+        typingEl.remove();
+        const reply = data.reply || data.error || (currentLang === "tr" ? "Bir yanıt alınamadı." : "Could not get a response.");
+        box.innerHTML += `<p class="chat-msg bot"><b>🤖 Asistan:</b> ${reply}</p>`;
+        chatHistory.push({ role: 'user', text: userText });
+        chatHistory.push({ role: 'model', text: reply });
+        if (chatHistory.length > 10) chatHistory = chatHistory.slice(-10);
+        box.scrollTop = box.scrollHeight;
+    })
+    .catch(() => {
+        typingEl.remove();
+        box.innerHTML += `<p class="chat-msg bot"><b>🤖 Asistan:</b> ${currentLang === "tr" ? "Bağlantı hatası. Tekrar dene." : "Connection error. Try again."}</p>`;
+        box.scrollTop = box.scrollHeight;
+    })
+    .finally(() => { input.disabled = false; input.focus(); });
 }
 
 // 3. Slider Mekanizması

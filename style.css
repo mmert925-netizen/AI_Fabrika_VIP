@@ -476,6 +476,11 @@ input:focus, textarea:focus {
 }
 .chat-close-btn:hover { background: rgba(0,0,0,0.3); }
 .chat-messages { height: 250px; padding: 15px; overflow-y: auto; background: var(--bg-color); display: flex; flex-direction: column; }
+.chat-msg { margin-bottom: 8px; word-break: break-word; }
+.chat-msg.user { color: #38bdf8; }
+.chat-msg.bot { color: #f8fafc; }
+.chat-msg.typing .typing-dots { opacity: 0.6; animation: blink 1s infinite; }
+@keyframes blink { 50% { opacity: 0.2; } }
 
 .chat-input {
     display: flex;
