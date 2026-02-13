@@ -1,3 +1,19 @@
+//// TOAST BİLDİRİMLERİ – alert() yerine geçici bildirimler
+function showToast(message, type = "info") {
+    const container = document.getElementById("toast-container");
+    if (!container) return;
+    const toast = document.createElement("div");
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    container.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add("toast-visible"));
+    const t = setTimeout(() => {
+        toast.classList.remove("toast-visible");
+        setTimeout(() => toast.remove(), 300);
+    }, 3500);
+    toast.onclick = () => { clearTimeout(t); toast.classList.remove("toast-visible"); setTimeout(() => toast.remove(), 300); };
+}
+
 //// API CACHE – Sık kullanılan GET çağrılarını kısa süreli cache'leme
 const API_CACHE = new Map();
 const CACHE_TTL_MS = 2 * 60 * 1000; // 2 dakika
@@ -1146,7 +1162,7 @@ function toggleVoiceSeal() {
 
     const rec = getVoiceRecognition();
     if (!rec) {
-        alert(currentLang === "tr" ? "Tarayıcınız sesli komut desteklemiyor. Chrome önerilir." : "Your browser does not support voice commands. Chrome recommended.");
+        showToast(currentLang === "tr" ? "Tarayıcınız sesli komut desteklemiyor. Chrome önerilir." : "Your browser does not support voice commands. Chrome recommended.", "warn");
         return;
     }
 
@@ -1202,7 +1218,7 @@ function startChatVoiceInput(e) {
     if (e) e.stopPropagation();
     const rec = getVoiceRecognition();
     if (!rec) {
-        alert(currentLang === "tr" ? "Tarayıcınız sesli giriş desteklemiyor. Chrome önerilir." : "Your browser doesn't support voice input. Chrome recommended.");
+        showToast(currentLang === "tr" ? "Tarayıcınız sesli giriş desteklemiyor. Chrome önerilir." : "Your browser doesn't support voice input. Chrome recommended.", "warn");
         return;
     }
     const btn = document.getElementById("chat-mic-btn");
@@ -1301,7 +1317,7 @@ function initNewsletterForm() {
         const email = form.querySelector('input[type="email"]').value.trim();
         if (!email) return;
         trackEvent("conversion", "newsletter_subscribe", "email_signup");
-        alert(currentLang === "tr" ? "Aboneliğiniz alındı! Teşekkürler." : "Subscription received! Thank you.");
+        showToast(currentLang === "tr" ? "Aboneliğiniz alındı! Teşekkürler." : "Subscription received! Thank you.", "success");
         form.reset();
     });
 }
@@ -1339,6 +1355,44 @@ function initBackToTop() {
     });
 }
 
+const SECTION_LABELS = { home: { tr: "Ana Sayfa", en: "Home" }, "ai-gallery": { tr: "AI Sergi", en: "AI Gallery" }, "live-stream": { tr: "Canlı Akış", en: "Live Stream" }, "ai-lab": { tr: "AI Laboratuvarı", en: "AI Lab" }, "web-sablon-lab": { tr: "Web Şablon", en: "Web Template" }, hizmetler: { tr: "Hizmetler", en: "Services" }, fiyatlandirma: { tr: "Fiyatlar", en: "Pricing" }, referanslar: { tr: "Referanslar", en: "References" }, testimonials: { tr: "Yorumlar", en: "Reviews" }, portal: { tr: "Müşteri Portalı", en: "Client Portal" }, iletisim: { tr: "İletişim", en: "Contact" }, blog: { tr: "Blog", en: "Blog" } };
+function initBreadcrumb() {
+    const bc = document.getElementById("breadcrumb");
+    if (!bc) return;
+    function update() {
+        const hash = _activeSectionId || (location.hash || "#home").slice(1);
+        const labels = SECTION_LABELS[hash];
+        const homeLabel = currentLang === "tr" ? "Ana Sayfa" : "Home";
+        const currentLabel = labels ? (labels[currentLang] || labels.tr) : hash;
+        bc.innerHTML = hash === "home" ? `<a href="#home">${homeLabel}</a>` : `<a href="#home">${homeLabel}</a><span class="breadcrumb-sep">›</span><span>${currentLabel}</span>`;
+    }
+    window.updateBreadcrumb = update;
+    update();
+    window.addEventListener("hashchange", update);
+    window.addEventListener("scroll", () => { if (document.querySelector("#nav-menu a.nav-active")) update(); });
+}
+
+let _activeSectionId = "home";
+function initScrollSpy() {
+    const navLinks = document.querySelectorAll("#nav-menu a[href^='#']");
+    const targetIds = [...navLinks].map(a => (a.getAttribute("href") || "").slice(1)).filter(Boolean);
+    const observed = targetIds.map(id => document.getElementById(id)).filter(Boolean);
+    if (!observed.length || !navLinks.length) return;
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const id = entry.target.id;
+            _activeSectionId = id;
+            navLinks.forEach(a => {
+                const href = (a.getAttribute("href") || "").slice(1);
+                a.classList.toggle("nav-active", href === id);
+            });
+            if (typeof window.updateBreadcrumb === "function") window.updateBreadcrumb();
+        });
+    }, { rootMargin: "-30% 0px -60% 0px", threshold: 0 });
+    observed.forEach(el => observer.observe(el));
+}
+
 function toggleTheme() {
     const currentTheme = document.documentElement.getAttribute("data-theme");
     const targetTheme = currentTheme === "light" ? "dark" : "light";
@@ -1356,6 +1410,7 @@ function toggleLang() {
     document.getElementById("lang-toggle").textContent = currentLang === "tr" ? "🌐 EN" : "🌐 TR";
 }
 function applyLang() {
+    if (typeof window.updateBreadcrumb === "function") window.updateBreadcrumb();
     document.querySelectorAll("[data-tr], [data-en], [data-title-tr], [data-title-en]").forEach(el => {
         if (el.hasAttribute("data-placeholder-tr") || el.hasAttribute("data-placeholder-en")) {
             const ph = el.getAttribute("data-placeholder-" + currentLang) || el.getAttribute("data-placeholder-tr");
@@ -1420,7 +1475,7 @@ function initPortalClient() {
             } else if (v) {
                 openDashboard(v.length > 3 ? 2 : 1);
             } else {
-                alert(currentLang === "tr" ? "Lütfen sipariş kodu veya e-posta girin." : "Please enter order code or email.");
+                showToast(currentLang === "tr" ? "Lütfen sipariş kodu veya e-posta girin." : "Please enter order code or email.", "warn");
             }
         });
         orderInput.addEventListener("keypress", (e) => { if (e.key === "Enter") loginBtn.click(); });
@@ -1537,9 +1592,12 @@ function removeFromGallery(index) {
 }
 function loadPatronunGundemi() {
     const contentEl = document.getElementById("patronun-gundemi-content");
+    const skeletonEl = document.getElementById("patronun-gundemi-skeleton");
     const refreshBtn = document.getElementById("patronun-gundemi-refresh");
     if (!contentEl) return;
     function setLoading(loading) {
+        if (skeletonEl) skeletonEl.style.display = loading ? "block" : "none";
+        contentEl.style.display = loading ? "none" : "block";
         contentEl.classList.toggle("loading", loading);
         if (refreshBtn) refreshBtn.disabled = loading;
         if (loading) contentEl.textContent = currentLang === "tr" ? "Haftalık AI bülteni yükleniyor..." : "Loading AI bulletin...";
@@ -1548,14 +1606,14 @@ function loadPatronunGundemi() {
         const txt = (data && data.summary) ? data.summary : (currentLang === "tr" ? "Bülten yüklenemedi. Yenile butonuna tıkla." : "Could not load bulletin. Click Refresh.");
         contentEl.textContent = txt;
         contentEl.classList.remove("loading");
+        setLoading(false);
     }
     setLoading(true);
     fetchWithCache("/api/ai-news-bulletin").then(r => r.json()).then(data => {
-        setLoading(false);
         render(data);
     }).catch(() => {
-        setLoading(false);
         contentEl.textContent = currentLang === "tr" ? "Bülten yüklenemedi. Yenile butonuna tıkla." : "Could not load bulletin. Click Refresh.";
+        setLoading(false);
     });
     if (refreshBtn) refreshBtn.onclick = function() { loadPatronunGundemi(); };
 }
@@ -1669,6 +1727,8 @@ document.addEventListener("DOMContentLoaded", function() {
     initGhostCommands();
     if (!window.OMERAI_MOBILE) initGpuLoadSimulation();
     initBackToTop();
+    initScrollSpy();
+    initBreadcrumb();
     initCookieBanner();
     initNewsletterForm();
     if ('serviceWorker' in navigator) {
@@ -1729,7 +1789,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             const errors = validateContactForm(name, email, message);
             if (errors.length > 0) {
-                alert(errors.join("\n"));
+                showToast(errors.join(" "), "warn");
                 return;
             }
 
@@ -1756,7 +1816,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (response.ok) {
                     addTokens(5);
                     trackEvent("conversion", "contact_form_submit", "telegram_success");
-                    alert("Mührün Telegram hattına fırlatıldı patron! 🚀 +5 Dijital Mühür kazandın!");
+                    showToast("Mührün Telegram hattına fırlatıldı patron! 🚀 +5 Dijital Mühür kazandın!", "success");
                     form.reset();
                     const wizard = document.getElementById("project-wizard");
                     if (wizard) {
@@ -1772,12 +1832,12 @@ document.addEventListener("DOMContentLoaded", function() {
                         if (backBtn) backBtn.style.display = "none";
                     }
                 } else {
-                    alert("Hata: Mesaj iletilemedi. Token veya ID kontrolü gerek.");
+                    showToast("Hata: Mesaj iletilemedi. Token veya ID kontrolü gerek.", "error");
                 }
             })
             .catch(error => {
                 console.error('Hata:', error);
-                alert("Bağlantı hatası oluştu!");
+                showToast("Bağlantı hatası oluştu!", "error");
             })
             .finally(() => {
                 submitBtn.disabled = false;
@@ -1832,7 +1892,7 @@ document.addEventListener("DOMContentLoaded", function() {
             trackEvent("engagement", "generate_image_click", "conversion");
             let prompt = promptInput.value.trim();
             if (!prompt) {
-                alert(currentLang === "tr" ? "Lütfen görsel açıklaması yazın." : "Please enter an image description.");
+                showToast(currentLang === "tr" ? "Lütfen görsel açıklaması yazın." : "Please enter an image description.", "warn");
                 return;
             }
             const styleVal = styleSelect ? styleSelect.value : "";
@@ -1886,17 +1946,17 @@ document.addEventListener("DOMContentLoaded", function() {
                                 saveToGallery(sealedUrl, serialNo);
                                 addGalleryBtn.style.display = "none";
                                 if (downloadBtn) downloadBtn.style.display = "none";
-                                alert(currentLang === "tr" ? "Mühürlü görsel galeriye eklendi!" : "Sealed image added to gallery!");
+                                showToast(currentLang === "tr" ? "Mühürlü görsel galeriye eklendi!" : "Sealed image added to gallery!", "success");
                             });
                         };
                     }
                 } else {
-                    alert(data.error || (currentLang === "tr" ? "Görsel üretilemedi." : "Image generation failed."));
+                    showToast(data.error || (currentLang === "tr" ? "Görsel üretilemedi." : "Image generation failed."), "error");
                 }
             }).catch(() => {
                 if (loadingEl) loadingEl.style.display = "none";
                 if (typeof window.gpuLoadCoolDown === "function") window.gpuLoadCoolDown();
-                alert("Görsel üretimi için backend API henüz bağlı değil.");
+                showToast("Görsel üretimi için backend API henüz bağlı değil.", "error");
             });
         });
     }
@@ -1945,12 +2005,12 @@ document.addEventListener("DOMContentLoaded", function() {
                     }
                     if (webCodeToggle) webCodeToggle.textContent = (webCodeToggle.getAttribute("data-" + (currentLang || "tr")) || webCodeToggle.getAttribute("data-tr") || "📄 Kodu Göster");
                 } else {
-                    alert(data.error || (currentLang === "tr" ? "Web şablonu üretilemedi." : "Web template generation failed."));
+                    showToast(data.error || (currentLang === "tr" ? "Web şablonu üretilemedi." : "Web template generation failed."), "error");
                 }
             }).catch(() => {
                 if (webLoadingEl) webLoadingEl.style.display = "none";
                 if (typeof window.gpuLoadCoolDown === "function") window.gpuLoadCoolDown();
-                alert(currentLang === "tr" ? "Web API bağlantı hatası." : "Web API connection error.");
+                showToast(currentLang === "tr" ? "Web API bağlantı hatası." : "Web API connection error.", "error");
             });
         });
     }

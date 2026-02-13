@@ -103,6 +103,12 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.5rem
         </ul>
     </nav>
 
+    <nav id="breadcrumb" class="breadcrumb-nav" aria-label="Breadcrumb">
+        <a href="#home" data-tr="Ana Sayfa" data-en="Home">Ana Sayfa</a>
+    </nav>
+
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
     <section id="home" class="hero">
         <div class="hero-text-wrap">
             <h1 data-tr="Yazılım ve Yapay Zeka Fabrikası" data-en="Software & AI Factory">Yazılım ve Yapay Zeka Fabrikası</h1>
@@ -212,7 +218,10 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.5rem
         <div class="lab-form-container">
             <textarea id="prompt-input" placeholder="Hayal ettiğin görseli buraya yaz patron..." rows="4" data-placeholder-tr="Hayal ettiğin görseli buraya yaz patron..." data-placeholder-en="Describe your vision here..."></textarea>
             <button id="generate-image-btn" class="neon-button" data-tr="Görseli Mühürle (Üret)" data-en="Generate Image">Görseli Mühürle (Üret)</button>
-            <div id="loading-indicator" class="loading-spinner" style="display: none;"></div>
+            <div id="loading-indicator" class="progress-bar-wrap" style="display: none;">
+                <div class="progress-bar"><div class="progress-bar-fill"></div></div>
+                <span class="progress-bar-label" data-tr="Görsel üretiliyor..." data-en="Generating image...">Görsel üretiliyor...</span>
+            </div>
         </div>
         <div id="image-output-container" class="image-output-container">
             <div class="image-result-wrapper">
@@ -251,7 +260,10 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.5rem
         <div class="lab-form-container">
             <textarea id="web-prompt-input" placeholder="Örn: restoran için landing page, siberpunk tarzı portfolyo, mağaza kartvizit sayfası..." rows="3" data-placeholder-tr="Örn: restoran için landing page, siberpunk tarzı portfolyo, mağaza kartvizit sayfası..." data-placeholder-en="E.g. landing page for restaurant, cyberpunk portfolio, store card page..."></textarea>
             <button id="generate-web-btn" class="neon-button" data-tr="Şablonu Mühürle (Üret)" data-en="Generate Template">Şablonu Mühürle (Üret)</button>
-            <div id="web-loading-indicator" class="loading-spinner" style="display: none;"></div>
+            <div id="web-loading-indicator" class="progress-bar-wrap" style="display: none;">
+                <div class="progress-bar"><div class="progress-bar-fill"></div></div>
+                <span class="progress-bar-label" data-tr="Şablon üretiliyor..." data-en="Generating template...">Şablon üretiliyor...</span>
+            </div>
         </div>
         <div id="web-output-container" class="web-output-container">
             <div id="web-preview-wrapper" class="web-preview-wrapper" style="display: none;">
@@ -619,7 +631,13 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.5rem
             <h2 class="neon-text" data-tr="Blog & Haberler" data-en="Blog & News">Blog & Haberler</h2>
             <div id="patronun-gundemi" class="patronun-gundemi">
                 <h3 class="patronun-gundemi-title" data-tr="Patronun Gündemi" data-en="Boss's Agenda">Patronun Gündemi</h3>
-                <p id="patronun-gundemi-content" class="patronun-gundemi-content">
+                <div id="patronun-gundemi-skeleton" class="skeleton-block" aria-hidden="true">
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line short"></div>
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line short"></div>
+                </div>
+                <p id="patronun-gundemi-content" class="patronun-gundemi-content" style="display: none;">
                     <span class="loading-dots" data-tr="Haftalık AI bülteni yükleniyor..." data-en="Loading AI bulletin...">Haftalık AI bülteni yükleniyor...</span>
                 </p>
                 <button id="patronun-gundemi-refresh" class="neon-button patron-refresh-btn" data-tr="Yenile" data-en="Refresh">Yenile</button>

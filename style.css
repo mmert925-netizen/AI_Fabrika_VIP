@@ -2250,3 +2250,103 @@ footer .footer-section.blog-section .blog-card h4 {
 }
 .cookie-banner.hidden { display: none !important; }
 .cookie-banner p { margin: 0; font-size: 0.9rem; flex: 1; min-width: 200px; }
+
+/* UX: Toast bildirimleri */
+.toast-container {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    pointer-events: none;
+}
+.toast-container .toast { pointer-events: auto; }
+.toast {
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s, transform 0.3s;
+    cursor: pointer;
+    max-width: 90vw;
+}
+.toast.toast-visible { opacity: 1; transform: translateY(0); }
+.toast-info { background: var(--card-bg); border: 1px solid var(--accent-color); color: var(--text-color); }
+.toast-success { background: rgba(34, 197, 94, 0.2); border: 1px solid #22c55e; color: #86efac; }
+.toast-warn { background: rgba(234, 179, 8, 0.2); border: 1px solid #eab308; color: #fde047; }
+.toast-error { background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #fca5a5; }
+
+/* UX: Skeleton loader */
+.skeleton-block { margin: 0.5rem 0; }
+.skeleton-line {
+    height: 12px;
+    background: linear-gradient(90deg, var(--input-bg) 25%, rgba(94, 234, 212, 0.15) 50%, var(--input-bg) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+}
+.skeleton-line.short { width: 60%; }
+@keyframes skeleton-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* UX: Progress bar */
+.progress-bar-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 0.5rem 0;
+}
+.progress-bar {
+    height: 6px;
+    background: var(--input-bg);
+    border-radius: 3px;
+    overflow: hidden;
+}
+.progress-bar-fill {
+    height: 100%;
+    width: 30%;
+    background: linear-gradient(90deg, var(--accent-color), #5eead4);
+    border-radius: 3px;
+    animation: progress-pulse 1.2s ease-in-out infinite;
+}
+@keyframes progress-pulse {
+    0%, 100% { transform: translateX(-100%); }
+    50% { transform: translateX(350%); }
+}
+.progress-bar-label { font-size: 0.85rem; opacity: 0.9; }
+
+/* UX: Breadcrumb */
+.breadcrumb-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 2rem;
+    font-size: 0.85rem;
+    background: rgba(0,0,0,0.2);
+    border-bottom: 1px solid rgba(94, 234, 212, 0.2);
+}
+@media (max-width: 768px) {
+    .breadcrumb-nav { padding: 0.4rem 1rem; font-size: 0.8rem; }
+}
+.breadcrumb-nav a {
+    color: var(--text-color);
+    text-decoration: none;
+    opacity: 0.8;
+}
+.breadcrumb-nav a:hover { opacity: 1; color: var(--accent-color); }
+.breadcrumb-nav .breadcrumb-sep { opacity: 0.5; }
+
+/* UX: Scroll spy – aktif menü vurgulama */
+#nav-menu a.nav-active {
+    color: var(--accent-color) !important;
+    font-weight: 600;
+    text-shadow: 0 0 8px rgba(34, 211, 238, 0.5);
+}
