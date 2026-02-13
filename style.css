@@ -799,6 +799,7 @@ h1 { font-size: 3.5rem; color: var(--accent-color); margin-bottom: 10px; }
 .sealed-image-container {
     position: relative;
     display: inline-block;
+    max-width: 100%;
     border-radius: 12px;
     overflow: hidden;
     border: 2px solid var(--accent-color);
@@ -807,7 +808,10 @@ h1 { font-size: 3.5rem; color: var(--accent-color); margin-bottom: 10px; }
 .sealed-image-container img {
     display: block;
     max-width: 100%;
+    width: 100%;
+    height: auto;
     vertical-align: top;
+    object-fit: contain;
 }
 .seal-band {
     display: flex;
@@ -967,6 +971,8 @@ body.neuro-sync-lab #live-stream {
 .image-output-container {
     text-align: center;
     margin-top: 1rem;
+    max-width: 100%;
+    overflow: hidden;
 }
 #generated-image {
     max-width: 100%;
@@ -1800,7 +1806,10 @@ input:focus, textarea:focus {
     .live-stream-section { padding: 2rem 1rem; }
     .labs-wrapper { padding: 2rem 1.5rem 3rem; }
     .lab-container { padding: 2rem 1rem; }
-    #generated-image { min-width: 100%; width: 100%; }
+    .sealed-image-container { max-width: 100%; width: 100%; box-sizing: border-box; }
+    #generated-image { max-width: 100% !important; width: 100% !important; height: auto !important; min-width: 0 !important; object-fit: contain; }
+    .image-output-container { overflow: hidden; max-width: 100%; }
+    .image-result-wrapper { max-width: 100%; }
     .slider-wrapper { max-width: 100%; }
     .slider-container { max-width: 100%; }
     .generated-gallery-grid { grid-template-columns: 1fr; max-width: 100%; }
@@ -1859,10 +1868,13 @@ input:focus, textarea:focus {
     .slider-container { max-width: 100%; height: 400px; }
     .slider-btn { width: 44px; height: 44px; font-size: 18px; }
     .labs-wrapper { padding: 2rem 1rem 3rem; }
-    .lab-container { padding: 1.5rem 1rem; }
+    .lab-container { padding: 1.5rem 1rem; overflow-x: hidden; }
+    .labs-wrapper { overflow-x: hidden; }
     .live-stream-section { padding: 2rem 0.5rem; }
     .live-stream-track .live-stream-item { width: 180px; height: 130px; }
-    #generated-image { min-width: 100%; width: 100%; }
+    .sealed-image-container { max-width: 100%; width: 100%; box-sizing: border-box; }
+    #generated-image { max-width: 100% !important; width: 100% !important; height: auto !important; min-width: 0 !important; object-fit: contain; }
+    .image-output-container { overflow: hidden; max-width: 100%; }
     .generated-gallery-item img { min-height: 300px; }
     .generated-gallery-grid { grid-template-columns: 1fr; }
     .services-section { padding: 40px 1rem; }
