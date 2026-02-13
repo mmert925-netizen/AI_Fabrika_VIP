@@ -610,8 +610,15 @@
         <button class="neon-button cookie-accept" onclick="acceptCookies()" data-tr="Kabul Et" data-en="Accept">Kabul Et</button>
     </div>
     <button id="back-to-top" class="back-to-top" onclick="scrollToTop()" title="Yukarı çık" aria-label="Yukarı çık">↑</button>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.net.min.js"></script>
+    <script>
+      window.OMERAI_MOBILE = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+    </script>
+    <script>
+      if (!window.OMERAI_MOBILE) {
+        var t=document.createElement("script");t.src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js";t.defer=true;document.body.appendChild(t);
+        var v=document.createElement("script");v.src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.net.min.js";v.defer=true;document.body.appendChild(v);
+      }
+    </script>
     <script src="script.js"></script>
 </body>
 </html>

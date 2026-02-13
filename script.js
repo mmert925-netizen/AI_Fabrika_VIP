@@ -432,8 +432,9 @@ function checkTimeTokens() {
     sessionStorage.setItem("omerai_last_check", String(now));
 }
 
-// Dinamik arka plan (Vanta NET + Dark Matter partiküller)
+// Dinamik arka plan (Vanta NET + Dark Matter partiküller) – mobilde devre dışı (performans)
 function initVanta() {
+    if (window.OMERAI_MOBILE) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const isLight = document.documentElement.getAttribute("data-theme") === "light";
     if (isLight) {
@@ -457,6 +458,7 @@ function initVanta() {
 // Karanlık Madde - Vanta Black + fare etrafında dağılan neon mavi partiküller
 let darkMatterRAF = null;
 function initDarkMatter() {
+    if (window.OMERAI_MOBILE) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (darkMatterRAF) cancelAnimationFrame(darkMatterRAF);
     const canvas = document.getElementById("dark-matter-canvas");
@@ -1504,6 +1506,7 @@ function validateContactForm(name, email, message) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
+    if (window.OMERAI_MOBILE) document.body.classList.add("mobile-view");
     const savedTheme = localStorage.getItem("theme") || "dark";
     document.documentElement.setAttribute("data-theme", savedTheme);
 
@@ -1548,7 +1551,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("lang-toggle").textContent = currentLang === "tr" ? "🌐 EN" : "🌐 TR";
 
     initGhostCommands();
-    initGpuLoadSimulation();
+    if (!window.OMERAI_MOBILE) initGpuLoadSimulation();
     initBackToTop();
     initCookieBanner();
     initNewsletterForm();
