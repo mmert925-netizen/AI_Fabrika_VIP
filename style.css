@@ -239,6 +239,29 @@ nav .theme-switch-wrapper { display: flex; gap: 0.5rem; align-items: center; }
     font-size: 0.9rem;
 }
 #sound-toggle:hover, #lang-toggle:hover { background: var(--accent-color); color: var(--bg-color); }
+.nav-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: 1px solid var(--accent-color);
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 8px;
+}
+.nav-hamburger span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: var(--accent-color);
+    transition: 0.3s;
+}
+.nav-hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
 nav ul { list-style: none; display: flex; gap: 20px; margin: 0; }
 nav a { color: var(--text-color); text-decoration: none; transition: 0.3s; font-weight: 500; }
 nav a:hover { color: var(--accent-color); }
@@ -1786,10 +1809,26 @@ input:focus, textarea:focus {
     .matrix-terminal { padding: 1.2rem; max-width: 100%; }
     .terminal-status .status-line, .terminal-counter { font-size: 0.9rem; }
     .terminal-buttons { flex-direction: column; }
-    nav { padding: 1rem; }
+    nav { padding: 1rem; position: relative; }
+    .nav-hamburger { display: flex; }
     .gallery-filters { gap: 0.4rem; margin-bottom: 1rem; }
     .filter-btn { padding: 6px 12px; font-size: 0.8rem; }
-    nav ul { display: none; }
+    nav ul {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        background: var(--nav-bg);
+        padding: 1rem;
+        gap: 0;
+        border-top: 1px solid var(--border-color);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    nav ul.open { display: flex; }
+    nav ul li { padding: 0.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    nav ul li:last-child { border-bottom: none; }
     .chat-wrapper { right: 5%; bottom: 10px; }
     .system-log { width: 260px; bottom: 75px; right: 5%; max-height: 140px; }
     .health-check-panel { width: 200px; bottom: 75px; left: 5%; }
@@ -1873,3 +1912,82 @@ footer .footer-section.blog-section .blog-card h4 {
     margin: 0;
     border-top: 1px solid var(--border-color);
 }
+
+/* Yukarı çık butonu */
+.back-to-top {
+    position: fixed;
+    bottom: 90px;
+    right: 24px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    color: #0f172a;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s, transform 0.2s;
+    z-index: 999;
+    box-shadow: 0 4px 15px rgba(34, 211, 238, 0.4);
+}
+.back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+}
+.back-to-top:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(34, 211, 238, 0.5);
+}
+
+/* Newsletter */
+.newsletter-section { text-align: center; padding: 1.5rem 2rem; }
+.newsletter-desc { font-size: 0.9rem; opacity: 0.9; margin-bottom: 1rem; }
+.newsletter-form {
+    display: flex;
+    gap: 8px;
+    max-width: 400px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.newsletter-form input {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px 14px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 8px;
+}
+
+/* Trust badges */
+.trust-badges {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 1rem;
+    opacity: 0.8;
+}
+.trust-badge { font-size: 1.5rem; }
+
+/* Cookie banner */
+.cookie-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--nav-bg);
+    border-top: 1px solid var(--accent-color);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    z-index: 9998;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+}
+.cookie-banner.hidden { display: none !important; }
+.cookie-banner p { margin: 0; font-size: 0.9rem; flex: 1; min-width: 200px; }

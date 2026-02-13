@@ -1162,6 +1162,65 @@ function toggleChat() {
 }
 
 // 4b. Tema (Karanlık/Aydınlık) Yönetimi
+// Cookie banner (KVKK)
+function acceptCookies() {
+    localStorage.setItem("omerai_cookies_accepted", "1");
+    const banner = document.getElementById("cookie-banner");
+    if (banner) banner.classList.add("hidden");
+}
+function initCookieBanner() {
+    if (localStorage.getItem("omerai_cookies_accepted") === "1") {
+        const banner = document.getElementById("cookie-banner");
+        if (banner) banner.classList.add("hidden");
+    }
+}
+
+// Newsletter formu
+function initNewsletterForm() {
+    const form = document.getElementById("newsletter-form");
+    if (!form) return;
+    form.addEventListener("submit", function(e) {
+        e.preventDefault();
+        const email = form.querySelector('input[type="email"]').value.trim();
+        if (!email) return;
+        alert(currentLang === "tr" ? "Aboneliğiniz alındı! Teşekkürler." : "Subscription received! Thank you.");
+        form.reset();
+    });
+}
+
+// Mobil hamburger menü
+function toggleMobileNav() {
+    const menu = document.getElementById("nav-menu");
+    const btn = document.getElementById("nav-hamburger");
+    if (!menu || !btn) return;
+    menu.classList.toggle("open");
+    btn.classList.toggle("open");
+    btn.setAttribute("aria-expanded", menu.classList.contains("open"));
+}
+
+// Menü linkine tıklanınca mobil menüyü kapat
+document.addEventListener("click", function(e) {
+    if (window.innerWidth > 768) return;
+    const menu = document.getElementById("nav-menu");
+    const btn = document.getElementById("nav-hamburger");
+    if (menu?.classList.contains("open") && e.target.closest("nav a")) {
+        menu.classList.remove("open");
+        if (btn) { btn.classList.remove("open"); btn.setAttribute("aria-expanded", "false"); }
+    }
+});
+
+// Yukarı çık butonu
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+function initBackToTop() {
+    const btn = document.getElementById("back-to-top");
+    if (!btn) return;
+    window.addEventListener("scroll", () => {
+        btn.classList.toggle("visible", window.scrollY > 400);
+    });
+}
+
 function toggleTheme() {
     const currentTheme = document.documentElement.getAttribute("data-theme");
     const targetTheme = currentTheme === "light" ? "dark" : "light";
@@ -1490,6 +1549,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     initGhostCommands();
     initGpuLoadSimulation();
+    initBackToTop();
+    initCookieBanner();
+    initNewsletterForm();
     initNeuroSync();
     initProcessedDataCounter();
     initSystemLog();

@@ -4,7 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ÖMER.AI | Yapay Zeka Fabrikası</title>
+    <meta name="description" content="Yazılım ve yapay zeka fabrikası. Gemini ve Imagen ile görsel üretimi, chatbot, web tasarım, Telegram entegrasyonu. Geleceği kodla, görselleri mühürle.">
+    <meta name="keywords" content="yapay zeka, AI, Gemini, Imagen, web tasarım, chatbot, Telegram bot, görsel üretimi, ÖMER.AI">
+    <meta name="author" content="ÖMER.AI">
+    <meta property="og:title" content="ÖMER.AI | Yapay Zeka Fabrikası">
+    <meta property="og:description" content="Yazılım ve yapay zeka fabrikası. Gemini ve Imagen ile görsel üretimi, chatbot, web tasarım. Geleceği kodla, görselleri mühürle.">
+    <meta property="og:image" content="https://ai-fabrika-vip.vercel.app/img/proje1.jpg">
+    <meta property="og:url" content="https://ai-fabrika-vip.vercel.app">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="tr_TR">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ÖMER.AI | Yapay Zeka Fabrikası">
+    <meta name="twitter:description" content="Yazılım ve yapay zeka fabrikası. Gemini ve Imagen ile görsel üretimi, chatbot, web tasarım.">
     <link rel="stylesheet" href="style.css">
+    <!-- Analytics: GA4 veya Plausible ID'nizi .env veya buraya ekleyin -->
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script> -->
+    <!-- <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script> -->
 </head>
 <body>
     <div id="vanta-bg" class="vanta-background" aria-hidden="true"></div>
@@ -21,7 +36,10 @@
             <button id="lang-toggle" onclick="toggleLang()" title="Dil / Language">🌐 EN</button>
         </div>
         <div class="logo">ÖMER.AI</div>
-        <ul>
+        <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileNav()" aria-label="Menü" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+        <ul id="nav-menu">
             <li><a href="#home" data-tr="Ana Sayfa" data-en="Home">Ana Sayfa</a></li>
             <li><a href="#ai-gallery" data-tr="AI Sergi" data-en="AI Gallery">AI Sergi</a></li>
             <li><a href="#live-stream" data-tr="Canlı Akış" data-en="Live Stream">Canlı Akış</a></li>
@@ -85,12 +103,12 @@
             <button class="slider-btn prev" onclick="moveSlider(-1)">❮</button>
             <div class="slider-container">
                 <div class="slider-track" id="slider-track">
-                    <div class="slide" data-project="1" data-category="cyberpunk" onclick="openProjectDetail(1)"><img src="img/proje1.jpg" alt="AI 1"></div>
-                    <div class="slide" data-project="2" data-category="karakter" onclick="openProjectDetail(2)"><img src="img/proje2.jpg" alt="AI 2"></div>
-                    <div class="slide" data-project="3" data-category="soyut" onclick="openProjectDetail(3)"><img src="img/proje3.jpg" alt="AI 3"></div>
-                    <div class="slide" data-project="4" data-category="mimari" onclick="openProjectDetail(4)"><img src="img/proje4.jpg" alt="AI 4"></div>
-                    <div class="slide" data-project="5" data-category="logo" onclick="openProjectDetail(5)"><img src="img/proje5.jpg" alt="AI 5"></div>
-                    <div class="slide" data-project="6" data-category="doga" onclick="openProjectDetail(6)"><img src="img/proje6.jpg" alt="AI 6"></div>
+                    <div class="slide" data-project="1" data-category="cyberpunk" onclick="openProjectDetail(1)"><img src="img/proje1.jpg" alt="AI 1" loading="lazy"></div>
+                    <div class="slide" data-project="2" data-category="karakter" onclick="openProjectDetail(2)"><img src="img/proje2.jpg" alt="AI 2" loading="lazy"></div>
+                    <div class="slide" data-project="3" data-category="soyut" onclick="openProjectDetail(3)"><img src="img/proje3.jpg" alt="AI 3" loading="lazy"></div>
+                    <div class="slide" data-project="4" data-category="mimari" onclick="openProjectDetail(4)"><img src="img/proje4.jpg" alt="AI 4" loading="lazy"></div>
+                    <div class="slide" data-project="5" data-category="logo" onclick="openProjectDetail(5)"><img src="img/proje5.jpg" alt="AI 5" loading="lazy"></div>
+                    <div class="slide" data-project="6" data-category="doga" onclick="openProjectDetail(6)"><img src="img/proje6.jpg" alt="AI 6" loading="lazy"></div>
                 </div>
             </div>
             <button class="slider-btn next" onclick="moveSlider(1)">❯</button>
@@ -405,12 +423,12 @@
             <h2 class="vip-title">◈ VIP ÜRETİM HATTI ◈</h2>
             <p class="vip-desc">Gizli erişim aktif. Özel projeler.</p>
             <div class="vip-gallery">
-                <div class="vip-item" onclick="openProjectDetail(7)"><img src="img/proje7.jpg" alt="VIP 1"></div>
-                <div class="vip-item" onclick="openProjectDetail(8)"><img src="img/proje8.jpg" alt="VIP 2"></div>
-                <div class="vip-item" onclick="openProjectDetail(9)"><img src="img/proje9.jpg" alt="VIP 3"></div>
-                <div class="vip-item" onclick="openProjectDetail(10)"><img src="img/proje10.jpg" alt="VIP 4"></div>
-                <div class="vip-item" onclick="openProjectDetail(11)"><img src="img/proje11.jpg" alt="VIP 5"></div>
-                <div class="vip-item" onclick="openProjectDetail(12)"><img src="img/proje12.jpg" alt="VIP 6"></div>
+                <div class="vip-item" onclick="openProjectDetail(7)"><img src="img/proje7.jpg" alt="VIP 1" loading="lazy"></div>
+                <div class="vip-item" onclick="openProjectDetail(8)"><img src="img/proje8.jpg" alt="VIP 2" loading="lazy"></div>
+                <div class="vip-item" onclick="openProjectDetail(9)"><img src="img/proje9.jpg" alt="VIP 3" loading="lazy"></div>
+                <div class="vip-item" onclick="openProjectDetail(10)"><img src="img/proje10.jpg" alt="VIP 4" loading="lazy"></div>
+                <div class="vip-item" onclick="openProjectDetail(11)"><img src="img/proje11.jpg" alt="VIP 5" loading="lazy"></div>
+                <div class="vip-item" onclick="openProjectDetail(12)"><img src="img/proje12.jpg" alt="VIP 6" loading="lazy"></div>
             </div>
             <button class="vip-close" onclick="closeVipSection()">✕</button>
         </div>
@@ -534,8 +552,26 @@
                 </article>
             </div>
         </section>
+        <section class="newsletter-section footer-section">
+            <h3 class="neon-text" data-tr="Bültene Abone Ol" data-en="Subscribe to Newsletter">Bültene Abone Ol</h3>
+            <p class="newsletter-desc" data-tr="AI ve yazılım gündeminden haberdar ol." data-en="Stay updated on AI and software news.">AI ve yazılım gündeminden haberdar ol.</p>
+            <form id="newsletter-form" class="newsletter-form">
+                <input type="email" name="email" placeholder="E-posta adresin" required data-placeholder-tr="E-posta adresin" data-placeholder-en="Your email">
+                <button type="submit" class="neon-button" data-tr="Abone Ol" data-en="Subscribe">Abone Ol</button>
+            </form>
+        </section>
+        <div class="trust-badges">
+            <span class="trust-badge" title="Güvenli">🔒</span>
+            <span class="trust-badge" title="Hızlı Teslimat">⚡</span>
+            <span class="trust-badge" title="7/24 Destek">🛟</span>
+        </div>
         <p class="footer-copyright" data-tr="© 2026 ÖMER.AI - Gelecek Burada Mühürlendi." data-en="© 2026 ÖMER.AI - Future Sealed Here.">&copy; 2026 ÖMER.AI - Gelecek Burada Mühürlendi.</p>
     </footer>
+    <div id="cookie-banner" class="cookie-banner">
+        <p data-tr="Bu site deneyiminizi iyileştirmek için çerez kullanır. Devam ederek çerez kullanımını kabul etmiş olursunuz." data-en="This site uses cookies to improve your experience. By continuing, you accept cookie usage.">Bu site deneyiminizi iyileştirmek için çerez kullanır. Devam ederek çerez kullanımını kabul etmiş olursunuz.</p>
+        <button class="neon-button cookie-accept" onclick="acceptCookies()" data-tr="Kabul Et" data-en="Accept">Kabul Et</button>
+    </div>
+    <button id="back-to-top" class="back-to-top" onclick="scrollToTop()" title="Yukarı çık" aria-label="Yukarı çık">↑</button>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.net.min.js"></script>
     <script src="script.js"></script>
