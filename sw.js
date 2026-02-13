@@ -1,4 +1,4 @@
-const CACHE = 'omerai-v2';
+const CACHE = 'omerai-v3';
 const ASSETS = ['/', '/index.html', '/style.css', '/script.js', '/manifest.json'];
 
 self.addEventListener('install', (e) => {

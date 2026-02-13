@@ -179,6 +179,8 @@ body {
 body.mobile-view #vanta-bg,
 body.mobile-view #dark-matter-canvas,
 body.mobile-view #gpu-load-canvas { display: none !important; }
+body.mobile-view #system-log,
+body.mobile-view #health-check-panel { display: none !important; }
 body.mobile-view .chat-container.chat-closed { display: none !important; }
 body.mobile-view .chat-toggle-btn.visible { display: flex !important; }
 .cursor-glow {
