@@ -885,21 +885,37 @@ body:not(.no-motion) .token-badge #token-count {
 .references-section {
     padding: 4rem 2rem;
     text-align: center;
-    background: rgba(30, 58, 79, 0.15);
-    backdrop-filter: blur(10px);
+    background: linear-gradient(180deg, rgba(30, 58, 79, 0.08) 0%, rgba(34, 211, 238, 0.04) 50%, rgba(30, 58, 79, 0.08) 100%);
+    backdrop-filter: blur(12px);
+    position: relative;
+    overflow: hidden;
 }
-[data-theme="light"] .references-section { background: rgba(241, 245, 249, 0.5); }
+.references-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.4), transparent);
+    opacity: 0.6;
+}
+[data-theme="light"] .references-section {
+    background: linear-gradient(180deg, rgba(241, 245, 249, 0.9) 0%, rgba(34, 211, 238, 0.05) 50%, rgba(241, 245, 249, 0.9) 100%);
+}
 .references-intro {
     color: var(--text-color);
-    opacity: 0.85;
+    opacity: 0.9;
     margin-bottom: 2rem;
     font-size: 1rem;
+    letter-spacing: 0.02em;
 }
 .references-logos {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 2rem;
+    gap: 1.25rem;
     max-width: 900px;
     margin: 0 auto;
 }
@@ -907,22 +923,39 @@ body:not(.no-motion) .token-badge #token-count {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
-    padding: 1rem 1.5rem;
-    background: rgba(30, 58, 79, 0.4);
-    border: 1px solid rgba(34, 211, 238, 0.3);
-    border-radius: 12px;
-    min-width: 120px;
-    transition: 0.3s;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 1.25rem 1.5rem;
+    background: linear-gradient(145deg, rgba(30, 58, 79, 0.5) 0%, rgba(30, 58, 79, 0.25) 100%);
+    border: 1px solid rgba(34, 211, 238, 0.25);
+    border-radius: 16px;
+    min-width: 130px;
+    transition: 0.3s ease;
 }
 .ref-item:hover {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 15px rgba(34, 211, 238, 0.2);
-    transform: translateY(-2px);
+    border-color: rgba(34, 211, 238, 0.5);
+    box-shadow: 0 8px 24px rgba(34, 211, 238, 0.15), 0 0 0 1px rgba(34, 211, 238, 0.2);
+    transform: translateY(-3px);
 }
-[data-theme="light"] .ref-item { background: rgba(255, 255, 255, 0.6); }
-.ref-logo { font-size: 2rem; }
-.ref-name { font-size: 0.85rem; color: var(--text-color); font-weight: 600; }
+[data-theme="light"] .ref-item {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(241, 245, 249, 0.8) 100%);
+    border-color: rgba(34, 211, 238, 0.2);
+}
+[data-theme="light"] .ref-item:hover {
+    box-shadow: 0 8px 24px rgba(34, 211, 238, 0.12);
+}
+.ref-logo {
+    font-size: 2.25rem;
+    filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.3));
+    transition: transform 0.3s;
+}
+.ref-item:hover .ref-logo { transform: scale(1.1); }
+.ref-name {
+    font-size: 0.85rem;
+    color: var(--text-color);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
 
 /* Testimonials – Cam efekti */
 .testimonials-section {
@@ -1997,9 +2030,29 @@ input:focus, textarea:focus {
     .wizard-option { padding: 10px 14px; font-size: 0.9rem; }
     .wizard-report-stats { flex-direction: column; gap: 0.5rem; }
     .references-section { padding: 3rem 1rem; }
-    .references-logos { gap: 1rem; }
-    .ref-item { min-width: 100px; padding: 0.75rem 1rem; }
-    .ref-logo { font-size: 1.5rem; }
+    .references-logos {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: 1rem;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        padding: 0.5rem 1rem 1rem;
+        margin: 0 -1rem;
+        scrollbar-width: thin;
+    }
+    .references-logos::-webkit-scrollbar { height: 6px; }
+    .references-logos::-webkit-scrollbar-track { background: rgba(34, 211, 238, 0.1); border-radius: 3px; }
+    .references-logos::-webkit-scrollbar-thumb { background: rgba(34, 211, 238, 0.3); border-radius: 3px; }
+    .ref-item {
+        flex: 0 0 auto;
+        min-width: 110px;
+        max-width: 110px;
+        padding: 1rem;
+        scroll-snap-align: center;
+    }
+    .ref-logo { font-size: 1.75rem; }
     .demo-chips { justify-content: center; }
     .demo-chip { font-size: 0.75rem; padding: 5px 10px; }
 }
