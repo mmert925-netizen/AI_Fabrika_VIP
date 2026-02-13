@@ -1,0 +1,24 @@
+{
+  "name": "ÖMER.AI | Yapay Zeka Fabrikası",
+  "short_name": "ÖMER.AI",
+  "description": "Yazılım ve yapay zeka fabrikası. Geleceği kodla, görselleri mühürle.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e3a4f",
+  "theme_color": "#22d3ee",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/img/proje1.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "/img/proje1.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}

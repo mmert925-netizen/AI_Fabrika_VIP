@@ -1552,6 +1552,9 @@ document.addEventListener("DOMContentLoaded", function() {
     initBackToTop();
     initCookieBanner();
     initNewsletterForm();
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
     initNeuroSync();
     initProcessedDataCounter();
     initSystemLog();
