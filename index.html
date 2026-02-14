@@ -656,4 +656,36 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.5rem
         </section>
         
                 
-     
+        <section class="newsletter-section footer-section">
+            <h3 class="neon-text" data-tr="Bültene Abone Ol" data-en="Subscribe to Newsletter">Bültene Abone Ol</h3>
+            <p class="newsletter-desc" data-tr="AI ve yazılım gündeminden haberdar ol." data-en="Stay updated on AI and software news.">AI ve yazılım gündeminden haberdar ol.</p>
+            <form id="newsletter-form" class="newsletter-form">
+                <input type="email" name="email" placeholder="E-posta adresin" required data-placeholder-tr="E-posta adresin" data-placeholder-en="Your email">
+                <button type="submit" class="neon-button" data-tr="Abone Ol" data-en="Subscribe">Abone Ol</button>
+            </form>
+        </section>
+        <div class="trust-badges">
+            <span class="trust-badge" title="Güvenli">🔒</span>
+            <span class="trust-badge" title="Hızlı Teslimat">⚡</span>
+            <span class="trust-badge" title="7/24 Destek">🛟</span>
+        </div>
+        <p class="footer-copyright" data-tr="© 2026 ÖMER.AI - Gelecek Burada Mühürlendi." data-en="© 2026 ÖMER.AI - Future Sealed Here.">&copy; 2026 ÖMER.AI - Gelecek Burada Mühürlendi.</p>
+    </footer>
+    <div id="cookie-banner" class="cookie-banner">
+        <p data-tr="Bu site deneyiminizi iyileştirmek için çerez kullanır. Devam ederek çerez kullanımını kabul etmiş olursunuz." data-en="This site uses cookies to improve your experience. By continuing, you accept cookie usage.">Bu site deneyiminizi iyileştirmek için çerez kullanır. Devam ederek çerez kullanımını kabul etmiş olursunuz.</p>
+        <button class="neon-button cookie-accept" onclick="acceptCookies()" data-tr="Kabul Et" data-en="Accept">Kabul Et</button>
+    </div>
+    <button id="back-to-top" class="back-to-top" onclick="scrollToTop()" title="Yukarı çık" aria-label="Yukarı çık">↑</button>
+    <script>
+      window.OMERAI_MOBILE = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+      if (window.OMERAI_MOBILE) localStorage.setItem("chatOpen", "false");
+    </script>
+    <script>
+      if (!window.OMERAI_MOBILE) {
+        var t=document.createElement("script");t.src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js";t.defer=true;document.body.appendChild(t);
+        var v=document.createElement("script");v.src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.net.min.js";v.defer=true;document.body.appendChild(v);
+      }
+    </script>
+    <script src="script.js"></script>
+    </body>
+</html>
