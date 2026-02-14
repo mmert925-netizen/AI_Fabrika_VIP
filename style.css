@@ -2577,28 +2577,15 @@ footer .footer-section.blog-section .blog-card h4 {
     gap: 1rem;
     margin-top: 1rem;
     justify-content: center;
+    margin-bottom: 20px; /* Mühür bandı için boşluk */
 }
 
-.video-demo {
-    background: rgba(34, 211, 238, 0.1);
-    border: 1px solid var(--accent-color);
-    color: var(--accent-color);
-}
-
-.video-demo:hover {
-    background: rgba(34, 211, 238, 0.2);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(34, 211, 238, 0.4);
-}
-
-/* Mühür bandı wrapper */
 .seal-band-wrapper {
     text-align: center;
-    margin-top: 15px;
+    margin-top: 0;
     display: none; /* Sadece video üretildiğinde göster */
 }
 
-/* Video seal band - video dışına taşı */
 #video-seal-band {
     position: relative;
     background: rgba(30, 58, 79, 0.95);
