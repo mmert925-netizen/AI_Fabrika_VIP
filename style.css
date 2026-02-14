@@ -2347,6 +2347,140 @@ footer .footer-section.blog-section .blog-card h4 {
 /* UX: Scroll spy – aktif menü vurgulama */
 #nav-menu a.nav-active {
     color: var(--accent-color) !important;
-    font-weight: 600;
-    text-shadow: 0 0 8px rgba(34, 211, 238, 0.5);
+}
+
+/* 8. SESLİ KOMUT SİSTEMİ - Voice Input System */
+.prompt-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.voice-button {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    background: rgba(34, 211, 238, 0.1);
+    border: 1px solid var(--accent-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.voice-button:hover {
+    background: rgba(34, 211, 238, 0.2);
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(34, 211, 238, 0.5);
+}
+
+.voice-button.recording {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: #ef4444;
+    animation: voice-recording-pulse 1.5s ease-in-out infinite;
+}
+
+.voice-button.recording .voice-icon {
+    color: #ef4444;
+}
+
+.voice-icon {
+    font-size: 16px;
+    color: var(--accent-color);
+    transition: color 0.3s ease;
+}
+
+.voice-pulse {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    border: 2px solid var(--accent-color);
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.voice-button.recording .voice-pulse {
+    animation: voice-pulse-ring 1.5s ease-out infinite;
+}
+
+@keyframes voice-recording-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes voice-pulse-ring {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* Voice feedback toast */
+.voice-feedback-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--card-bg);
+    border: 1px solid var(--accent-color);
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    z-index: 10000;
+    max-width: 300px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(34, 211, 238, 0.3);
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+}
+
+.voice-feedback-toast.recording {
+    border-color: #ef4444;
+    box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
+}
+
+.voice-feedback-toast .voice-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+}
+
+.voice-feedback-toast .voice-text {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-top: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .voice-button {
+        width: 35px;
+        height: 35px;
+        bottom: 0.3rem;
+        right: 0.3rem;
+    }
+    
+    .voice-icon {
+        font-size: 14px;
+    }
+    
+    .voice-feedback-toast {
+        right: 10px;
+        top: 10px;
+        max-width: 250px;
+    }
 }

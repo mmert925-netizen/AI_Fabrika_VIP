@@ -272,6 +272,234 @@ function scheduleRevert(backups) {
     }, 2800);
 }
 
+// 8. SESLİ KOMUT SİSTEMİ - Voice Input System
+class VoiceInputSystem {
+    constructor() {
+        this.recognition = null;
+        this.isRecording = false;
+        this.currentButton = null;
+        this.currentTextarea = null;
+        this.feedbackToast = null;
+        this.init();
+    }
+
+    init() {
+        // Web Speech API desteğini kontrol et
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+            console.warn('Speech recognition not supported');
+            return;
+        }
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        this.recognition = new SpeechRecognition();
+        
+        // Konfigürasyon
+        this.recognition.continuous = false;
+        this.recognition.interimResults = true;
+        this.recognition.lang = 'tr-TR'; // Türkçe dil desteği
+        this.recognition.maxAlternatives = 1;
+
+        // Event handlers
+        this.recognition.onstart = () => this.onRecognitionStart();
+        this.recognition.onresult = (event) => this.onRecognitionResult(event);
+        this.recognition.onerror = (event) => this.onRecognitionError(event);
+        this.recognition.onend = () => this.onRecognitionEnd();
+
+        // Butonları event listener'la bağla
+        this.bindVoiceButtons();
+    }
+
+    bindVoiceButtons() {
+        // Görsel üretim sesli butonu
+        const voiceBtn = document.getElementById('voice-input-btn');
+        const promptInput = document.getElementById('prompt-input');
+        
+        if (voiceBtn && promptInput) {
+            voiceBtn.addEventListener('click', () => {
+                this.toggleRecording(voiceBtn, promptInput);
+            });
+        }
+
+        // Web şablon sesli butonu
+        const webVoiceBtn = document.getElementById('web-voice-input-btn');
+        const webPromptInput = document.getElementById('web-prompt-input');
+        
+        if (webVoiceBtn && webPromptInput) {
+            webVoiceBtn.addEventListener('click', () => {
+                this.toggleRecording(webVoiceBtn, webPromptInput);
+            });
+        }
+    }
+
+    toggleRecording(button, textarea) {
+        if (this.isRecording) {
+            this.stopRecording();
+        } else {
+            this.startRecording(button, textarea);
+        }
+    }
+
+    startRecording(button, textarea) {
+        if (!this.recognition) {
+            showToast('Sesli komut cihazınızda desteklenmiyor', 'error');
+            return;
+        }
+
+        this.currentButton = button;
+        this.currentTextarea = textarea;
+        this.isRecording = true;
+
+        // Buton durumunu güncelle
+        button.classList.add('recording');
+        
+        // Feedback toast göster
+        this.showFeedbackToast('🎤 Dinliyorum...', true);
+
+        try {
+            this.recognition.start();
+        } catch (error) {
+            console.error('Speech recognition start error:', error);
+            this.stopRecording();
+        }
+    }
+
+    stopRecording() {
+        if (this.recognition && this.isRecording) {
+            this.recognition.stop();
+        }
+    }
+
+    onRecognitionStart() {
+        console.log('Voice recognition started');
+    }
+
+    onRecognitionResult(event) {
+        let finalTranscript = '';
+        let interimTranscript = '';
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+                finalTranscript += transcript;
+            } else {
+                interimTranscript += transcript;
+            }
+        }
+
+        // Interim sonuçları göster
+        if (interimTranscript) {
+            this.updateFeedbackToast(`🎤 ${interimTranscript}...`, true);
+        }
+
+        // Final sonucu textarea'ya ekle
+        if (finalTranscript) {
+            const currentValue = this.currentTextarea.value;
+            const newValue = currentValue ? `${currentValue} ${finalTranscript}` : finalTranscript;
+            this.currentTextarea.value = newValue;
+            
+            // Otomatik olarak textarea'ya focus ve cursor'u sona taşı
+            this.currentTextarea.focus();
+            this.currentTextarea.setSelectionRange(newValue.length, newValue.length);
+        }
+    }
+
+    onRecognitionError(event) {
+        console.error('Speech recognition error:', event.error);
+        let errorMessage = 'Sesli komut hatası';
+        
+        switch (event.error) {
+            case 'no-speech':
+                errorMessage = 'Ses algılanamadı';
+                break;
+            case 'audio-capture':
+                errorMessage = 'Mikrofon erişimi engellenmiş';
+                break;
+            case 'not-allowed':
+                errorMessage = 'Mikrofon izni reddedildi';
+                break;
+            case 'network':
+                errorMessage = 'Ağ hatası';
+                break;
+            default:
+                errorMessage = 'Bilinmeyen hata';
+        }
+
+        this.showFeedbackToast(`❌ ${errorMessage}`, false);
+        showToast(errorMessage, 'error');
+        this.stopRecording();
+    }
+
+    onRecognitionEnd() {
+        console.log('Voice recognition ended');
+        this.isRecording = false;
+        
+        if (this.currentButton) {
+            this.currentButton.classList.remove('recording');
+        }
+
+        // Başarılı sonuç varsa başarı mesajı göster
+        if (this.currentTextarea && this.currentTextarea.value) {
+            this.showFeedbackToast('✅ Ses metne dönüştürüldü', false);
+            setTimeout(() => this.hideFeedbackToast(), 2000);
+        } else {
+            this.hideFeedbackToast();
+        }
+
+        this.currentButton = null;
+        this.currentTextarea = null;
+    }
+
+    showFeedbackToast(message, isRecording) {
+        this.hideFeedbackToast(); // Önceki toast'ı temizle
+
+        this.feedbackToast = document.createElement('div');
+        this.feedbackToast.className = `voice-feedback-toast ${isRecording ? 'recording' : ''}`;
+        this.feedbackToast.innerHTML = `
+            <div class="voice-status">
+                <span class="voice-icon">${isRecording ? '🎤' : '✅'}</span>
+                <span>${message}</span>
+            </div>
+            ${isRecording ? '<div class="voice-text">Konuşmaya devam edin, bittiğinde otomatik duracak</div>' : ''}
+        `;
+
+        document.body.appendChild(this.feedbackToast);
+
+        // Animasyon için küçük bir gecikme
+        requestAnimationFrame(() => {
+            this.feedbackToast.style.opacity = '1';
+            this.feedbackToast.style.transform = 'translateY(0)';
+        });
+    }
+
+    updateFeedbackToast(message, isRecording) {
+        if (this.feedbackToast) {
+            const statusElement = this.feedbackToast.querySelector('.voice-status span:last-child');
+            if (statusElement) {
+                statusElement.textContent = message;
+            }
+        }
+    }
+
+    hideFeedbackToast() {
+        if (this.feedbackToast) {
+            this.feedbackToast.style.opacity = '0';
+            this.feedbackToast.style.transform = 'translateY(-10px)';
+            setTimeout(() => {
+                if (this.feedbackToast && this.feedbackToast.parentNode) {
+                    this.feedbackToast.parentNode.removeChild(this.feedbackToast);
+                }
+                this.feedbackToast = null;
+            }, 300);
+        }
+    }
+}
+
+// Voice input sistemini başlat
+let voiceInputSystem;
+document.addEventListener('DOMContentLoaded', () => {
+    voiceInputSystem = new VoiceInputSystem();
+});
+
 // 7. Ghost in the Machine – Gizli terminal komutları
 const GHOST_COMMANDS = ["override_49", "admin_omer"];
 function triggerGhostIfCommand() {
