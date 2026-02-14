@@ -94,6 +94,7 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.5rem
             <li><a href="#live-stream" data-tr="Canlı Akış" data-en="Live Stream">Canlı Akış</a></li>
             <li><a href="#ai-lab" data-tr="AI Laboratuvarı" data-en="AI Lab">AI Laboratuvarı</a></li>
             <li><a href="#web-sablon-lab" data-tr="Web Şablon" data-en="Web Template">Web Şablon</a></li>
+            <li><a href="#video-lab" data-tr="Video Lab" data-en="Video Lab">Video Lab</a></li>
             <li><a href="#hizmetler" data-tr="Hizmetler" data-en="Services">Hizmetler</a></li>
             <li><a href="#fiyatlandirma" data-tr="Fiyatlar" data-en="Pricing">Fiyatlar</a></li>
             <li><a href="#referanslar" data-tr="Referanslar" data-en="References">Referanslar</a></li>
@@ -290,6 +291,82 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.5rem
                 <pre id="web-code-output" class="web-code-output" style="display: none;"></pre>
             </div>
             <p id="web-placeholder" style="color: var(--text-color); opacity: 0.7;" data-tr="Üretilen şablon burada belirecek..." data-en="Generated template will appear here...">Üretilen şablon burada belirecek...</p>
+        </div>
+    </div>
+
+    <div id="video-lab" class="lab-container video-lab lab-panel">
+        <div class="lab-header">
+            <span class="lab-icon">🎬</span>
+            <h2 class="neon-text" data-tr="Video Üretim Laboratuvarı" data-en="Video Production Lab">Video Üretim Laboratuvarı</h2>
+        </div>
+        <p class="video-lab-desc" data-tr="Prompt ile video üret. Sora ve Runway AI ile sinematik videolar mühürle." data-en="Generate videos with prompts. Cinematic videos sealed with Sora and Runway AI.">Prompt ile video üret. Sora ve Runway AI ile sinematik videolar mühürle.</p>
+        
+        <div class="video-settings">
+            <div class="setting-row">
+                <label data-tr="Video Süresi" data-en="Video Duration">Video Süresi</label>
+                <select id="video-duration">
+                    <option value="5s" data-tr="5 saniye" data-en="5 seconds">5 saniye</option>
+                    <option value="10s" data-tr="10 saniye" data-en="10 seconds">10 saniye</option>
+                    <option value="15s" data-tr="15 saniye" data-en="15 seconds">15 saniye</option>
+                    <option value="30s" data-tr="30 saniye" data-en="30 seconds">30 saniye</option>
+                </select>
+            </div>
+            <div class="setting-row">
+                <label data-tr="Video Stili" data-en="Video Style">Video Stili</label>
+                <select id="video-style">
+                    <option value="sinematik, film tarzı, cinematic" data-tr="Sinematik" data-en="Cinematic">Sinematik</option>
+                    <option value="animasyon, 3D animasyon, animation" data-tr="3D Animasyon" data-en="3D Animation">3D Animasyon</option>
+                    <option value="dokümantal, belgesel, documentary" data-tr="Belgesel" data-en="Documentary">Belgesel</option>
+                    <option value="müzik klip, müzik videosu, music video" data-tr="Müzik Klip" data-en="Music Video">Müzik Klip</option>
+                    <option value="reklam, commercial, advertisement" data-tr="Reklam" data-en="Commercial">Reklam</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="demo-prompts" id="video-demo-prompts">
+            <span class="demo-label" data-tr="Örnek videolar – tıkla dene:" data-en="Sample videos – click to try:">Örnek videolar – tıkla dene:</span>
+            <div class="demo-chips">
+                <button type="button" class="demo-chip video-demo" data-prompt="Neon ışıklı siberpunk şehir, drone ile havadan çekim, gece, sinematik">🌃 Siberpunk Şehir</button>
+                <button type="button" class="demo-chip video-demo" data-prompt="Ormanda yürüyen robot, doğa ve teknoloji uyumu, 4K, belgesel tarzı">🤖 Robot Orman</button>
+                <button type="button" class="demo-chip video-demo" data-prompt="Uzay istasyonundan dünya manzarası, yavaş çekim, epik müzik">🌍 Uzdan Dünya</button>
+                <button type="button" class="demo-chip video-demo" data-prompt="Futuristik araba şehirde sürüş, hızlı aksiyon, gece, neon">🏎️ Futuristik Araç</button>
+                <button type="button" class="demo-chip video-demo" data-prompt="Sahilde gün batımı, sakin atmosfer, sinematik drone çekimi">🌅 Gün Batımı</button>
+            </div>
+        </div>
+
+        <div class="lab-form-container">
+            <div class="prompt-input-wrapper">
+                <textarea id="video-prompt-input" placeholder="Üretmek istediğin videoyu anlat patron..." rows="4" data-placeholder-tr="Üretmek istediğin videoyu anlat patron..." data-placeholder-en="Describe the video you want to produce..."></textarea>
+                <button id="video-voice-input-btn" class="voice-button" title="Sesli komutla yaz 🎤" data-title-tr="Sesli komutla yaz 🎤" data-title-en="Voice input 🎤">
+                    <span class="voice-icon">🎤</span>
+                    <span class="voice-pulse"></span>
+                </button>
+            </div>
+            <button id="generate-video-btn" class="neon-button" data-tr="Videoyu Mühürle (Üret)" data-en="Generate Video">Videoyu Mühürle (Üret)</button>
+            <div id="video-loading-indicator" class="progress-bar-wrap" style="display: none;">
+                <div class="progress-bar"><div class="progress-bar-fill"></div></div>
+                <span class="progress-bar-label" data-tr="Video üretiliyor..." data-en="Generating video...">Video üretiliyor...</span>
+            </div>
+        </div>
+
+        <div id="video-output-container" class="video-output-container">
+            <div class="video-result-wrapper">
+                <div class="sealed-video-container" id="sealed-video-container" style="display: none;">
+                    <video id="generated-video" controls autoplay muted loop>
+                        <source src="" type="video/mp4">
+                        Tarayıcınız videoyu desteklemiyor.
+                    </video>
+                    <div class="seal-band" id="video-seal-band">
+                        <span class="seal-text">ÖMER.AI Fabrikası - Seri No: <span id="video-seal-serial">#0000</span></span>
+                        <div class="seal-qr" id="video-seal-qr" title="ÖMER.AI Doğrulama"></div>
+                    </div>
+                </div>
+                <div class="video-result-actions">
+                    <button id="download-video-btn" class="neon-button add-gallery-btn" style="display: none;" data-tr="Mühürlü İndir" data-en="Download with Seal">Mühürlü İndir</button>
+                    <button id="add-video-to-gallery-btn" class="neon-button add-gallery-btn" style="display: none;" data-tr="Galeriye Ekle" data-en="Add to Gallery">Galeriye Ekle</button>
+                </div>
+            </div>
+            <p id="video-placeholder" style="color: var(--text-color); opacity: 0.7;" data-tr="Üretilen video burada belirecek..." data-en="Generated video will appear here...">Üretilen video burada belirecek...</p>
         </div>
     </div>
     </section>

@@ -2484,3 +2484,139 @@ footer .footer-section.blog-section .blog-card h4 {
         max-width: 250px;
     }
 }
+
+/* 9. VIDEO LABORATUVARI - Video Production Lab */
+.video-lab {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    backdrop-filter: blur(10px);
+}
+
+.video-lab-desc {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    opacity: 0.9;
+    font-size: 1.1rem;
+}
+
+.video-settings {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    border: 1px solid rgba(94, 234, 212, 0.1);
+}
+
+.setting-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.setting-row label {
+    font-weight: 500;
+    color: var(--accent-color);
+    font-size: 0.9rem;
+}
+
+.setting-row select {
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.5rem;
+    color: var(--text-color);
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.setting-row select:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 8px rgba(34, 211, 238, 0.3);
+}
+
+.video-output-container {
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.sealed-video-container {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(34, 211, 238, 0.3);
+}
+
+#generated-video {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+}
+
+.video-result-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    justify-content: center;
+}
+
+.video-demo {
+    background: rgba(34, 211, 238, 0.1);
+    border: 1px solid var(--accent-color);
+    color: var(--accent-color);
+}
+
+.video-demo:hover {
+    background: rgba(34, 211, 238, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(34, 211, 238, 0.4);
+}
+
+/* Video seal band */
+#video-seal-band {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(30, 58, 79, 0.95);
+    border: 2px solid var(--accent-color);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 16px rgba(34, 211, 238, 0.4);
+    z-index: 10;
+}
+
+/* Responsive video lab */
+@media (max-width: 768px) {
+    .video-lab {
+        padding: 1.5rem;
+    }
+    
+    .video-settings {
+        grid-template-columns: 1fr;
+        gap: 0.8rem;
+        padding: 0.8rem;
+    }
+    
+    .video-result-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .video-result-actions .neon-button {
+        width: 100%;
+        max-width: 200px;
+    }
+}

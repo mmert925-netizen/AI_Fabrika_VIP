@@ -498,7 +498,280 @@ class VoiceInputSystem {
 let voiceInputSystem;
 document.addEventListener('DOMContentLoaded', () => {
     voiceInputSystem = new VoiceInputSystem();
+    initVideoLab();
 });
+
+// 9. VIDEO LABORATUVARI - Video Production System
+class VideoLabSystem {
+    constructor() {
+        this.isGenerating = false;
+        this.currentVideoData = null;
+        this.init();
+    }
+
+    init() {
+        this.bindVideoButtons();
+        this.bindVideoDemoChips();
+        this.bindVideoVoiceInput();
+    }
+
+    bindVideoButtons() {
+        const generateBtn = document.getElementById('generate-video-btn');
+        const downloadBtn = document.getElementById('download-video-btn');
+        const addToGalleryBtn = document.getElementById('add-video-to-gallery-btn');
+
+        if (generateBtn) {
+            generateBtn.addEventListener('click', () => this.generateVideo());
+        }
+
+        if (downloadBtn) {
+            downloadBtn.addEventListener('click', () => this.downloadVideo());
+        }
+
+        if (addToGalleryBtn) {
+            addToGalleryBtn.addEventListener('click', () => this.addToGallery());
+        }
+    }
+
+    bindVideoDemoChips() {
+        const demoChips = document.querySelectorAll('.video-demo');
+        demoChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                const prompt = chip.getAttribute('data-prompt');
+                const textarea = document.getElementById('video-prompt-input');
+                if (textarea) {
+                    textarea.value = prompt;
+                    textarea.focus();
+                }
+            });
+        });
+    }
+
+    bindVideoVoiceInput() {
+        const voiceBtn = document.getElementById('video-voice-input-btn');
+        const textarea = document.getElementById('video-prompt-input');
+        
+        if (voiceBtn && textarea && voiceInputSystem) {
+            voiceBtn.addEventListener('click', () => {
+                voiceInputSystem.toggleRecording(voiceBtn, textarea);
+            });
+        }
+    }
+
+    async generateVideo() {
+        if (this.isGenerating) return;
+
+        const promptInput = document.getElementById('video-prompt-input');
+        const durationSelect = document.getElementById('video-duration');
+        const styleSelect = document.getElementById('video-style');
+
+        const prompt = promptInput?.value?.trim();
+        const duration = durationSelect?.value || '10s';
+        const style = styleSelect?.value || 'sinematik';
+
+        if (!prompt) {
+            showToast('Lütfen bir video prompt\'u girin', 'error');
+            return;
+        }
+
+        this.isGenerating = true;
+        this.showLoading(true);
+
+        try {
+            // Video üretim API'si çağrısı
+            const response = await fetch('/api/generate-video.js', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    prompt,
+                    duration,
+                    style
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Video üretimi başarısız');
+            }
+
+            const videoData = await response.json();
+            this.currentVideoData = videoData;
+            this.displayVideo(videoData);
+            
+            trackEvent('conversion', 'video_generation', 'success', 1);
+            showToast('Video başarıyla üretildi!', 'success');
+
+        } catch (error) {
+            console.error('Video generation error:', error);
+            
+            // Demo placeholder video
+            const placeholderData = this.generatePlaceholderVideo(prompt, duration, style);
+            this.currentVideoData = placeholderData;
+            this.displayVideo(placeholderData);
+            
+            showToast('Demo video üretildi (gerçek API entegrasyonu gerekli)', 'info');
+        } finally {
+            this.isGenerating = false;
+            this.showLoading(false);
+        }
+    }
+
+    generatePlaceholderVideo(prompt, duration, style) {
+        const placeholderVideos = [
+            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+        ];
+        
+        const randomVideo = placeholderVideos[Math.floor(Math.random() * placeholderVideos.length)];
+        
+        return {
+            videoUrl: randomVideo,
+            thumbnailUrl: `https://picsum.photos/seed/${encodeURIComponent(prompt)}/800/450.jpg`,
+            duration: duration,
+            resolution: '1920x1080',
+            createdAt: new Date().toISOString(),
+            prompt: prompt,
+            style: style,
+            serialNumber: this.generateSerialNumber(),
+            isPlaceholder: true
+        };
+    }
+
+    generateSerialNumber() {
+        const timestamp = Date.now().toString(36).toUpperCase();
+        const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+        return `VID-${timestamp}-${random}`;
+    }
+
+    displayVideo(videoData) {
+        const container = document.getElementById('sealed-video-container');
+        const video = document.getElementById('generated-video');
+        const serialSpan = document.getElementById('video-seal-serial');
+        const placeholder = document.getElementById('video-placeholder');
+        const downloadBtn = document.getElementById('download-video-btn');
+        const addToGalleryBtn = document.getElementById('add-video-to-gallery-btn');
+
+        if (container && video) {
+            video.src = videoData.videoUrl;
+            video.load(); // Videoyu yeniden yükle
+            
+            if (serialSpan) {
+                serialSpan.textContent = videoData.serialNumber;
+            }
+
+            container.style.display = 'block';
+            
+            if (placeholder) {
+                placeholder.style.display = 'none';
+            }
+
+            if (downloadBtn && addToGalleryBtn) {
+                downloadBtn.style.display = 'inline-block';
+                addToGalleryBtn.style.display = 'inline-block';
+            }
+
+            // QR kod oluştur (placeholder)
+            this.generateQRCode(videoData.serialNumber);
+        }
+    }
+
+    generateQRCode(serialNumber) {
+        const qrElement = document.getElementById('video-seal-qr');
+        if (qrElement) {
+            // Placeholder QR kod (gerçek QR kütüphanesi gerekli)
+            qrElement.innerHTML = `
+                <svg width="60" height="60" viewBox="0 0 60 60" style="background: white; border-radius: 4px;">
+                    <rect x="10" y="10" width="8" height="8" fill="black"/>
+                    <rect x="20" y="10" width="8" height="8" fill="black"/>
+                    <rect x="30" y="10" width="8" height="8" fill="black"/>
+                    <rect x="10" y="20" width="8" height="8" fill="black"/>
+                    <rect x="30" y="20" width="8" height="8" fill="black"/>
+                    <rect x="10" y="30" width="8" height="8" fill="black"/>
+                    <rect x="20" y="30" width="8" height="8" fill="black"/>
+                    <rect x="30" y="30" width="8" height="8" fill="black"/>
+                    <text x="20" y="55" font-size="8" text-anchor="middle" fill="black">${serialNumber.substring(0, 8)}</text>
+                </svg>
+            `;
+        }
+    }
+
+    async downloadVideo() {
+        if (!this.currentVideoData) return;
+
+        try {
+            const response = await fetch(this.currentVideoData.videoUrl);
+            const blob = await response.blob();
+            
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `omerai-video-${this.currentVideoData.serialNumber}.mp4`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+
+            showToast('Video indirildi', 'success');
+            trackEvent('conversion', 'video_download', 'success', 1);
+
+        } catch (error) {
+            console.error('Video download error:', error);
+            showToast('Video indirilemedi', 'error');
+        }
+    }
+
+    addToGallery() {
+        if (!this.currentVideoData) return;
+
+        try {
+            const gallery = JSON.parse(localStorage.getItem('omerai-video-gallery') || '[]');
+            
+            const videoItem = {
+                id: Date.now(),
+                ...this.currentVideoData,
+                addedAt: new Date().toISOString()
+            };
+            
+            gallery.unshift(videoItem);
+            
+            if (gallery.length > 50) {
+                gallery.splice(50);
+            }
+            
+            localStorage.setItem('omerai-video-gallery', JSON.stringify(gallery));
+            
+            showToast('Video galeriye eklendi', 'success');
+            trackEvent('conversion', 'video_gallery_add', 'success', 1);
+
+        } catch (error) {
+            console.error('Gallery add error:', error);
+            showToast('Galeriye eklenemedi', 'error');
+        }
+    }
+
+    showLoading(show) {
+        const loadingIndicator = document.getElementById('video-loading-indicator');
+        const generateBtn = document.getElementById('generate-video-btn');
+
+        if (loadingIndicator) {
+            loadingIndicator.style.display = show ? 'flex' : 'none';
+        }
+
+        if (generateBtn) {
+            generateBtn.disabled = show;
+            generateBtn.textContent = show ? 'Üretiliyor...' : 'Videoyu Mühürle (Üret)';
+        }
+    }
+}
+
+// Video laboratuvarını başlat
+function initVideoLab() {
+    if (document.getElementById('video-lab')) {
+        window.videoLabSystem = new VideoLabSystem();
+    }
+}
 
 // 7. Ghost in the Machine – Gizli terminal komutları
 const GHOST_COMMANDS = ["override_49", "admin_omer"];
