@@ -1616,8 +1616,16 @@ function loadPatronunGundemi() {
         render(data);
     }).catch((err) => {
         console.error("API error:", err);
-        contentEl.textContent = currentLang === "tr" ? "Bülten yüklenemedi. Yenile butonuna tıkla." : "Could not load bulletin. Click Refresh.";
-        setLoading(false);
+        // Fallback: Try the other endpoint
+        console.log("Trying fallback endpoint...");
+        fetch("/api/ai-news-bulletin").then(r => r.json()).then(data => {
+            console.log("Fallback API response:", data);
+            render(data);
+        }).catch((fallbackErr) => {
+            console.error("Fallback API error:", fallbackErr);
+            contentEl.textContent = currentLang === "tr" ? "Bülten yüklenemedi. Yenile butonuna tıkla." : "Could not load bulletin. Click Refresh.";
+            setLoading(false);
+        });
     });
     if (refreshBtn) refreshBtn.onclick = function() { loadPatronunGundemi(); };
 }
