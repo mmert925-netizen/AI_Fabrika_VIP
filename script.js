@@ -497,31 +497,46 @@ class VoiceInputSystem {
 // Voice input sistemini başlat
 let voiceInputSystem;
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded, initializing systems...');
     voiceInputSystem = new VoiceInputSystem();
     initVideoLab();
+    console.log('All systems initialized');
 });
 
 // 9. VIDEO LABORATUVARI - Video Production System
 class VideoLabSystem {
     constructor() {
+        console.log('VideoLabSystem constructor called');
         this.isGenerating = false;
         this.currentVideoData = null;
         this.init();
     }
 
     init() {
+        console.log('Initializing VideoLabSystem...');
         this.bindVideoButtons();
         this.bindVideoDemoChips();
         this.bindVideoVoiceInput();
+        console.log('VideoLabSystem initialized');
     }
 
     bindVideoButtons() {
+        console.log('Binding video buttons...');
         const generateBtn = document.getElementById('generate-video-btn');
         const downloadBtn = document.getElementById('download-video-btn');
         const addToGalleryBtn = document.getElementById('add-video-to-gallery-btn');
 
+        console.log('Video buttons found:', {
+            generateBtn: !!generateBtn,
+            downloadBtn: !!downloadBtn,
+            addToGalleryBtn: !!addToGalleryBtn
+        });
+
         if (generateBtn) {
-            generateBtn.addEventListener('click', () => this.generateVideo());
+            generateBtn.addEventListener('click', () => {
+                console.log('Generate video button clicked');
+                this.generateVideo();
+            });
         }
 
         if (downloadBtn) {
@@ -559,15 +574,27 @@ class VideoLabSystem {
     }
 
     async generateVideo() {
-        if (this.isGenerating) return;
+        console.log('generateVideo called');
+        if (this.isGenerating) {
+            console.log('Already generating, skipping...');
+            return;
+        }
 
         const promptInput = document.getElementById('video-prompt-input');
         const durationSelect = document.getElementById('video-duration');
         const styleSelect = document.getElementById('video-style');
 
+        console.log('Elements found:', {
+            promptInput: !!promptInput,
+            durationSelect: !!durationSelect,
+            styleSelect: !!styleSelect
+        });
+
         const prompt = promptInput?.value?.trim();
         const duration = durationSelect?.value || '10s';
         const style = styleSelect?.value || 'sinematik';
+
+        console.log('Video params:', { prompt, duration, style });
 
         if (!prompt) {
             showToast('Lütfen bir video prompt\'u girin', 'error');
@@ -578,13 +605,14 @@ class VideoLabSystem {
         this.showLoading(true);
 
         try {
-            // Demo placeholder video doğrudan kullan
-            console.log('Generating demo video...');
+            // API çağrısı yerine doğrudan placeholder kullan
+            console.log('Using placeholder video directly (no API call)...');
             const placeholderData = this.generatePlaceholderVideo(prompt, duration, style);
+            console.log('Placeholder data:', placeholderData);
             this.currentVideoData = placeholderData;
             this.displayVideo(placeholderData);
             
-            showToast('Demo video üretildi (gerçek API entegrasyonu gerekli)', 'info');
+            showToast('Demo video hazırlandı!', 'success');
             trackEvent('conversion', 'video_generation', 'demo', 1);
 
         } catch (error) {
@@ -597,17 +625,16 @@ class VideoLabSystem {
     }
 
     generatePlaceholderVideo(prompt, duration, style) {
-        // Çalışan placeholder videolar
-        const placeholderVideos = [
-            'https://www.w3schools.com/html/mov_bbb.mp4',
-            'https://sample-videos.com/video321/mp4/720/big_buck_bunny_720p_1mb.mp4',
-            'https://sample-videos.com/video321/mp4/480/big_buck_bunny_480p_1mb.mp4'
+        console.log('Generating placeholder video for:', { prompt, duration, style });
+        // Çalışan demo video URL'leri
+        const demoVideoUrls = [
+            'https://www.w3schools.com/html/mov_bbb.mp4', // Big Buck Bunny
+            'http://techslides.com/demos/sample-videos/small.mp4' // Small MP4
         ];
-        
-        const randomVideo = placeholderVideos[Math.floor(Math.random() * placeholderVideos.length)];
-        
+        const randomVideoUrl = demoVideoUrls[Math.floor(Math.random() * demoVideoUrls.length)];
+
         return {
-            videoUrl: randomVideo,
+            videoUrl: randomVideoUrl,
             thumbnailUrl: `https://picsum.photos/seed/${encodeURIComponent(prompt)}/800/450.jpg`,
             duration: duration,
             resolution: '1280x720',
@@ -626,12 +653,23 @@ class VideoLabSystem {
     }
 
     displayVideo(videoData) {
+        console.log('displayVideo called with:', videoData);
+        
         const container = document.getElementById('sealed-video-container');
         const video = document.getElementById('generated-video');
         const serialSpan = document.getElementById('video-seal-serial');
         const placeholder = document.getElementById('video-placeholder');
         const downloadBtn = document.getElementById('download-video-btn');
         const addToGalleryBtn = document.getElementById('add-video-to-gallery-btn');
+
+        console.log('Display elements found:', {
+            container: !!container,
+            video: !!video,
+            serialSpan: !!serialSpan,
+            placeholder: !!placeholder,
+            downloadBtn: !!downloadBtn,
+            addToGalleryBtn: !!addToGalleryBtn
+        });
 
         if (container && video) {
             console.log('Displaying video:', videoData.videoUrl);
@@ -661,19 +699,25 @@ class VideoLabSystem {
                 serialSpan.textContent = videoData.serialNumber;
             }
 
+            // Container'ı göster
             container.style.display = 'block';
+            console.log('Container display set to block');
             
             if (placeholder) {
                 placeholder.style.display = 'none';
+                console.log('Placeholder hidden');
             }
 
             if (downloadBtn && addToGalleryBtn) {
                 downloadBtn.style.display = 'inline-block';
                 addToGalleryBtn.style.display = 'inline-block';
+                console.log('Action buttons shown');
             }
 
             // QR kod oluştur
             this.generateQRCode(videoData.serialNumber);
+        } else {
+            console.error('Required video elements not found!');
         }
     }
 
