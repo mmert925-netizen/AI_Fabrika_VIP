@@ -818,7 +818,7 @@ class VideoLabSystem {
         if (qrElement) {
             // Placeholder QR kod (gerçek QR kütüphanesi gerekli)
             qrElement.innerHTML = `
-                <svg width="60" height="60" viewBox="0 0 60 60" style="background: white; border-radius: 4px;">
+                <svg width="60" height="60" viewBox="0 0 60 60" style="background: white; border-radius: 4px; position: relative; z-index: 300;">
                     <rect x="10" y="10" width="8" height="8" fill="black"/>
                     <rect x="20" y="10" width="8" height="8" fill="black"/>
                     <rect x="30" y="10" width="8" height="8" fill="black"/>

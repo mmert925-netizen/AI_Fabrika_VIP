@@ -2603,7 +2603,14 @@ footer .footer-section.blog-section .blog-card h4 {
     padding: 0.5rem 1rem;
     backdrop-filter: blur(10px);
     box-shadow: 0 4px 16px rgba(34, 211, 238, 0.4);
-    z-index: 100;
+    z-index: 200;
+}
+
+/* QR kod için özel stil */
+#video-seal-qr {
+    position: relative;
+    z-index: 250;
+    display: inline-block;
 }
 
 /* Video container için pozisyon relatif */
@@ -2627,7 +2634,7 @@ footer .footer-section.blog-section .blog-card h4 {
     object-fit: contain;
     background: #000;
     position: relative;
-    z-index: 15;
+    z-index: 5;
 }
 
 /* Video yükleme durumları */
