@@ -2606,27 +2606,9 @@ footer .footer-section.blog-section .blog-card h4 {
     z-index: 200;
 }
 
-/* QR kod için özel stil - sağ üst köşe */
+/* QR kodu tamamen gizle */
 #video-seal-qr {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    z-index: 250;
-    display: inline-block;
-    background: rgba(30, 58, 79, 0.95);
-    border: 2px solid var(--accent-color);
-    border-radius: 8px;
-    padding: 8px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 16px rgba(34, 211, 238, 0.4);
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-#video-seal-qr:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(34, 211, 238, 0.6);
-    border-color: #5eead4;
+    display: none !important;
 }
 
 /* Video container için pozisyon relatif */

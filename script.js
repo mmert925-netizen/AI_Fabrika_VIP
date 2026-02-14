@@ -814,28 +814,14 @@ class VideoLabSystem {
     }
 
     generateQRCode(serialNumber) {
+        // QR kodu tamamen kaldır - sadece seri numarası mühür bandında görünecek
         const qrElement = document.getElementById('video-seal-qr');
         if (qrElement) {
-            // Placeholder QR kod (gerçek QR kütüphanesi gerekli)
-            qrElement.innerHTML = `
-                <svg width="50" height="50" viewBox="0 0 50 50" style="background: white; border-radius: 4px; display: block;" title="ÖMER.AI Doğrulama Kodu">
-                    <rect x="8" y="8" width="6" height="6" fill="black"/>
-                    <rect x="16" y="8" width="6" height="6" fill="black"/>
-                    <rect x="24" y="8" width="6" height="6" fill="black"/>
-                    <rect x="8" y="16" width="6" height="6" fill="black"/>
-                    <rect x="24" y="16" width="6" height="6" fill="black"/>
-                    <rect x="8" y="24" width="6" height="6" fill="black"/>
-                    <rect x="16" y="24" width="6" height="6" fill="black"/>
-                    <rect x="24" y="24" width="6" height="6" fill="black"/>
-                    <text x="25" y="45" font-size="6" text-anchor="middle" fill="black">${serialNumber.substring(0, 6)}</text>
-                </svg>
-            `;
-            
-            // Tıklama olayı ekle
-            qrElement.addEventListener('click', () => {
-                showToast(`Seri No: ${serialNumber}`, 'info');
-            });
+            qrElement.style.display = 'none';
+            qrElement.innerHTML = '';
         }
+        
+        console.log('QR kod hidden, serial number in seal band:', serialNumber);
     }
 
     async downloadVideo() {
