@@ -701,5 +701,25 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.5rem
       }
     </script>
     <script src="script.js"></script>
+    <script>
+        // Force reload Patronun Gundemi with correct API
+        setTimeout(() => {
+            const contentEl = document.getElementById("patronun-gundemi-content");
+            if (contentEl && contentEl.textContent.includes("yüklenemedi")) {
+                console.log("Force loading Patronun Gundemi...");
+                fetch("/api/as-news-bulletin")
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data && data.summary) {
+                            contentEl.textContent = data.summary;
+                            contentEl.style.display = "block";
+                            const skeletonEl = document.getElementById("patronun-gundemi-skeleton");
+                            if (skeletonEl) skeletonEl.style.display = "none";
+                        }
+                    })
+                    .catch(err => console.error("Force load failed:", err));
+            }
+        }, 2000);
+    </script>
 </body>
 </html>
