@@ -9,8 +9,16 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'GET') return res.status(405).json({ error: 'Sadece GET desteklenir' });
 
-  const apiKey = process.env.gemini_api_key || process.env.GEMINI_API_KEY;
-  if (!apiKey) return res.status(500).json({ error: 'GEMINI_API_KEY tanımlı değil' });
+  const apiKey = process.env.GEMINI_API_KEY || process.env.gemini_api_key;
+  if (!apiKey) {
+    console.warn('⚠️ GEMINI_API_KEY tanımlı değil - fallback mode');
+    return res.status(200).json({
+      summary: '⚡ AI Bülteni şuan hazırlanıyor. Vercel Environment Variables ayarını tamamla.',
+      title: 'Patronun Gündemi',
+      headlines: [],
+      isFallback: true
+    });
+  }
 
   try {
     const feeds = [
@@ -46,13 +54,42 @@ ${headlines.join('\n')}
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
       generationConfig: { temperature: 0.6, maxOutputTokens: 512 }
     };
-    const aiRes = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-    const data = await aiRes.json();
-    const summary = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || headlines.slice(0, 3).join('. ');
-
-    return res.status(200).json({ summary, title: 'Patronun Gündemi', headlines: headlines.slice(0, 5) });
+    
+    try {
+      const aiRes = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), timeout: 8000 });
+      
+      if (!aiRes.ok) {
+        const errData = await aiRes.json().catch(() => ({}));
+        console.error('Gemini API error:', aiRes.status, errData);
+        return res.status(200).json({
+          summary: headlines.slice(0, 3).join('. '),
+          title: 'Patronun Gündemi',
+          headlines: headlines.slice(0, 5),
+          isRaw: true,
+          note: 'API fallback'
+        });
+      }
+      
+      const data = await aiRes.json();
+      const summary = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || headlines.slice(0, 3).join('. ');
+      return res.status(200).json({ summary, title: 'Patronun Gündemi', headlines: headlines.slice(0, 5) });
+    } catch (aiErr) {
+      console.error('Gemini AI fetch error:', aiErr);
+      return res.status(200).json({
+        summary: headlines.slice(0, 3).join('. '),
+        title: 'Patronun Gündemi',
+        headlines: headlines.slice(0, 5),
+        isRaw: true
+      });
+    }
   } catch (err) {
-    console.error('ai-news-bulletin error:', err);
-    return res.status(500).json({ error: err.message || 'Sunucu hatası', summary: null, title: 'Patronun Gündemi', headlines: [] });
+    console.error('as-news-bulletin error:', err);
+    return res.status(200).json({
+      summary: 'Haber akışı şuan uygulanamıyor. Sayfayı yenileyerek deneyin.',
+      title: 'Patronun Gündemi',
+      headlines: [],
+      isFallback: true,
+      errorMsg: err.message
+    });
   }
 }

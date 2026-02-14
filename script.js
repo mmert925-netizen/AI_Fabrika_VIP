@@ -1604,8 +1604,11 @@ function loadPatronunGundemi() {
     }
     
     function render(data) {
-        const txt = (data && data.summary) ? data.summary : (currentLang === "tr" ? "Bu hafta teknoloji dünyası sakin. Önemli bir gelişme yok." : "Tech world is quiet this week. No major developments.");
-        contentEl.textContent = txt;
+        if (data && data.summary) {
+            contentEl.textContent = data.summary;
+        } else {
+            contentEl.textContent = currentLang === "tr" ? "Bu hafta teknoloji dünyası sakin. Önemli bir gelişme yok." : "Tech world is quiet this week. No major developments.";
+        }
         contentEl.classList.remove("loading");
         setLoading(false);
     }
@@ -1614,14 +1617,20 @@ function loadPatronunGundemi() {
     console.log("Fetching /api/as-news-bulletin...");
     
     fetch("/api/as-news-bulletin")
-        .then(r => r.json())
+        .then(r => {
+            if (!r.ok) throw new Error(`HTTP ${r.status}`);
+            return r.json();
+        })
         .then(data => {
             console.log("API response:", data);
             render(data);
         })
         .catch((err) => {
             console.error("API error:", err);
-            render(null);
+            contentEl.textContent = currentLang === "tr" ? 
+                "Haber akışı şuan alınamıyor. Tekrar deneyin." : 
+                "News feed unavailable. Please retry.";
+            setLoading(false);
         });
 }
 function renderGeneratedGallery() {
@@ -1751,6 +1760,7 @@ document.addEventListener("DOMContentLoaded", function() {
     renderFilteredSlides();
     setupGalleryFilters();
     loadPatronunGundemi();
+    document.getElementById("patronun-gundemi-refresh")?.addEventListener("click", loadPatronunGundemi);
     updateTokenUI();
     if (getTokens() === 0) addTokens(3);
     const soundBtn = document.getElementById("sound-toggle");
