@@ -2374,14 +2374,12 @@ footer .footer-section.blog-section .blog-card h4 {
 .prompt-input-wrapper {
     position: relative;
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
     gap: 0.5rem;
 }
 
 .voice-button {
-    position: absolute;
-    bottom: 0.5rem;
-    right: 0.5rem;
+    flex-shrink: 0;
     background: rgba(34, 211, 238, 0.1);
     border: 1px solid var(--accent-color);
     border-radius: 50%;
@@ -2393,6 +2391,7 @@ footer .footer-section.blog-section .blog-card h4 {
     cursor: pointer;
     transition: all 0.3s ease;
     z-index: 10;
+    order: -1;
 }
 
 .voice-button:hover {
