@@ -1849,26 +1849,32 @@ function ensureChatOpen() {
     if (chat && chat.classList.contains("chat-closed")) toggleChat();
 }
 
-// Sesli giriş – input yanındaki mikrofondan doğrudan sohbet
+// Chat input mikrofon butonu geri eklendi
+// startChatVoiceInput fonksiyonu tekrar aktif
 function startChatVoiceInput(e) {
     if (e) e.stopPropagation();
     const rec = getVoiceRecognition();
     if (!rec) {
-        showToast(currentLang === "tr" ? "Tarayıcınız sesli giriş desteklemiyor. Chrome önerilir." : "Your browser doesn't support voice input. Chrome recommended.", "warn");
+        showToast('Tarayıcınız sesli girişi desteklemiyor.', 'error');
         return;
     }
-    const btn = document.getElementById("chat-mic-btn");
-    if (btn) btn.classList.add("listening");
-    rec.lang = currentLang === "tr" ? "tr-TR" : "en-US";
-    rec.continuous = false;
-    rec.interimResults = false;
-    rec.onresult = (ev) => {
-        const text = (ev.results[0][0].transcript || "").trim();
-        if (text) sendMessage(text);
-    };
-    rec.onend = () => { if (btn) btn.classList.remove("listening"); };
-    rec.onerror = () => { if (btn) btn.classList.remove("listening"); };
-    rec.start();
+
+    const micBtn = document.getElementById('chat-mic-btn');
+    const input = document.getElementById('user-input');
+
+    if (!micBtn || !input) return;
+
+    if (rec.isRecording) {
+        rec.stop();
+        micBtn.classList.remove('recording');
+        micBtn.innerHTML = '🎤';
+        micBtn.title = 'Sesli yaz';
+    } else {
+        rec.start();
+        micBtn.classList.add('recording');
+        micBtn.innerHTML = '🔴';
+        micBtn.title = 'Durdur';
+    }
 }
 
 function executeVoiceCommand(text) {
