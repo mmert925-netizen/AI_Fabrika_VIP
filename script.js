@@ -1590,49 +1590,7 @@ function removeFromGallery(index) {
     renderGeneratedGallery();
     renderLiveStream();
 }
-function loadPatronunGundemi() {
-    const contentEl = document.getElementById("patronun-gundemi-content");
-    const refreshBtn = document.querySelector(".patron-refresh-btn");
-    console.log("Patronun Gündemi loading...", { contentEl, refreshBtn });
-    if (!contentEl) return;
-    
-    function setLoading(loading) {
-        contentEl.style.display = loading ? "none" : "block";
-        contentEl.classList.toggle("loading", loading);
-        if (refreshBtn) refreshBtn.disabled = loading;
-        if (loading) contentEl.textContent = currentLang === "tr" ? "Haftalık AI bülteni yükleniyor..." : "Loading AI bulletin...";
-    }
-    
-    function render(data) {
-        if (data && data.summary) {
-            contentEl.textContent = data.summary;
-        } else {
-            contentEl.textContent = currentLang === "tr" ? "Bu hafta teknoloji dünyası sakin. Önemli bir gelişme yok." : "Tech world is quiet this week. No major developments.";
-        }
-        contentEl.classList.remove("loading");
-        setLoading(false);
-    }
-    
-    setLoading(true);
-    console.log("Fetching /api/as-news-bulletin...");
-    
-    fetch("/api/as-news-bulletin")
-        .then(r => {
-            if (!r.ok) throw new Error(`HTTP ${r.status}`);
-            return r.json();
-        })
-        .then(data => {
-            console.log("API response:", data);
-            render(data);
-        })
-        .catch((err) => {
-            console.error("API error:", err);
-            contentEl.textContent = currentLang === "tr" ? 
-                "Haber akışı şuan alınamıyor. Tekrar deneyin." : 
-                "News feed unavailable. Please retry.";
-            setLoading(false);
-        });
-}
+
 function renderGeneratedGallery() {
     const container = document.getElementById("generated-gallery");
     if (!container) return;
@@ -1759,8 +1717,6 @@ document.addEventListener("DOMContentLoaded", function() {
     renderLiveStream();
     renderFilteredSlides();
     setupGalleryFilters();
-    loadPatronunGundemi();
-    document.getElementById("patronun-gundemi-refresh")?.addEventListener("click", loadPatronunGundemi);
     updateTokenUI();
     if (getTokens() === 0) addTokens(3);
     const soundBtn = document.getElementById("sound-toggle");

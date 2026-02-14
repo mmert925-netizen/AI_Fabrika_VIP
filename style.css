@@ -1649,31 +1649,7 @@ input:focus, textarea:focus {
 
 /* 7d. BLOG */
 .blog-section { padding: 4rem 2rem; }
-.patronun-gundemi {
-    max-width: 700px;
-    margin: 0 auto 2.5rem;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    padding: 1.5rem;
-    background: rgba(30, 58, 79, 0.6);
-    border: 2px solid var(--accent-color);
-    border-radius: 12px;
-    box-shadow: 0 0 20px rgba(34, 211, 238, 0.15);
-}
-[data-theme="light"] .patronun-gundemi { background: rgba(241, 245, 249, 0.8); }
-.patronun-gundemi-title {
-    color: var(--accent-color);
-    font-size: 1.3rem;
-    margin: 0 0 1rem;
-}
-.patronun-gundemi-content {
-    color: var(--text-color);
-    line-height: 1.7;
-    font-size: 0.95rem;
-    margin: 0 0 1rem;
-    white-space: pre-wrap;
-}
-.patronun-gundemi-content.loading { opacity: 0.7; }
+
 .loading-dots::after { content: ''; animation: loading-dots 1.5s infinite; }
 @keyframes loading-dots {
     0%, 20% { content: '.'; }
