@@ -1611,7 +1611,7 @@ function loadPatronunGundemi() {
     }
     setLoading(true);
     console.log("Fetching /api/as-news-bulletin...");
-    fetchWithCache("/api/as-news-bulletin").then(r => r.json()).then(data => {
+    fetch("/api/as-news-bulletin").then(r => r.json()).then(data => {
         console.log("API response:", data);
         render(data);
     }).catch((err) => {
