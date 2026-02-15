@@ -2001,7 +2001,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Video Laboratuvarı – client-side 4K video üretimi (tarayıcı kaydı)
+    // Video Laboratuvarı – Sora/Runway API entegrasyonu
     const videoGenBtn = document.getElementById("generate-video-btn");
     const videoPromptInput = document.getElementById("video-prompt-input");
     const videoLoadingEl = document.getElementById("video-loading-indicator");
@@ -2010,192 +2010,111 @@ document.addEventListener("DOMContentLoaded", function() {
     const videoPreview = document.getElementById("video-preview");
     const videoDownloadBtn = document.getElementById("video-download-btn");
     const videoResSelect = document.getElementById("video-res-select");
-
-    function parseRes(val) {
-        if (!val) return { w: 3840, h: 2160 };
-        const parts = val.split('x');
-        return { w: parseInt(parts[0], 10) || 3840, h: parseInt(parts[1], 10) || 2160 };
-    }
+    const videoDurationSelect = document.getElementById("video-duration-select");
+    const videoProviderSelect = document.getElementById("video-provider-select");
 
     if (videoGenBtn && videoPromptInput) {
         videoGenBtn.addEventListener("click", async function() {
-            trackEvent("engagement", "generate_video_click", "conversion");
+            trackEvent("engagement", "generate_video_click", "sora_runway");
             const prompt = videoPromptInput.value.trim();
-            if (!prompt) { showToast(currentLang === 'tr' ? 'Lütfen video açıklaması yazın.' : 'Please enter a video description.', 'warn'); return; }
-            const res = parseRes(videoResSelect ? videoResSelect.value : '3840x2160');
-            const fps = 15; // daha hafif kayıt için 15fps
-            const durationSec = 8; // 8 saniye demo
-            const totalFrames = Math.max(1, Math.round(fps * durationSec));
+            if (!prompt) { 
+                showToast(currentLang === 'tr' ? 'Lütfen video açıklaması yazın.' : 'Please enter a video description.', 'warn'); 
+                return; 
+            }
+
+            const provider = videoProviderSelect ? videoProviderSelect.value : 'sora';
+            const resolution = videoResSelect ? videoResSelect.value : '1280x720';
+            const duration = parseInt(videoDurationSelect ? videoDurationSelect.value : '15');
+
+            // VIP kontrolü
+            if ((resolution === '3840x2160' || duration > 15) && !isVipUser()) {
+                showToast(currentLang === 'tr' ? '4K ve uzun videolar VIP üyelik gerektirir.' : '4K and long videos require VIP membership.', 'error');
+                return;
+            }
 
             if (videoLoadingEl) videoLoadingEl.style.display = 'block';
             if (videoPlaceholder) videoPlaceholder.style.display = 'block';
             if (videoPreviewWrapper) videoPreviewWrapper.style.display = 'none';
 
             try {
-                // Create canvas and draw animated frames
-                const canvas = document.createElement('canvas');
-                canvas.width = res.w;
-                canvas.height = res.h;
-                const ctx = canvas.getContext('2d');
-
-                // simple animated background + prompt text
-                let frame = 0;
-                const stream = canvas.captureStream(fps);
-                const recordedChunks = [];
-                let mime = 'video/webm;codecs=vp9';
-                if (!MediaRecorder.isTypeSupported(mime)) mime = 'video/webm;codecs=vp8';
-                if (!MediaRecorder.isTypeSupported(mime)) mime = 'video/webm';
-                const recorder = new MediaRecorder(stream, { mimeType: mime });
-                recorder.ondataavailable = e => { if (e.data && e.data.size) recordedChunks.push(e.data); };
-
-                recorder.start();
-
-                await new Promise((resolve) => {
-                    const interval = 1000 / fps;
-                    const id = setInterval(() => {
-                        // draw background gradient that shifts
-                        const t = frame / totalFrames;
-                        const g = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-                        g.addColorStop(0, `rgba(${Math.floor(20 + 100 * t)}, ${30 + Math.floor(120 * (1 - t))}, ${40 + Math.floor(100 * t)}, 1)`);
-                        g.addColorStop(1, `rgba(${40 + Math.floor(120 * (1 - t))}, ${60 + Math.floor(80 * t)}, ${80 + Math.floor(60 * (1 - t))}, 1)`);
-                        ctx.fillStyle = g;
-                        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                        // moving light
-                        ctx.globalAlpha = 0.12;
-                        ctx.beginPath();
-                        ctx.ellipse(canvas.width * (0.2 + 0.6 * Math.sin(t * Math.PI * 2)), canvas.height * 0.4, canvas.width * 0.5, canvas.height * 0.6, 0, 0, Math.PI * 2);
-                        ctx.fillStyle = '#22d3ee';
-                        ctx.fill();
-                        ctx.globalAlpha = 1;
-
-                        // Draw prompt text centered
-                        const padding = Math.max(40, Math.floor(canvas.width * 0.02));
-                        ctx.fillStyle = 'rgba(255,255,255,0.95)';
-                        const fontSize = Math.max(24, Math.floor(canvas.width / 40));
-                        ctx.font = `bold ${fontSize}px Inter, Arial, sans-serif`;
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'middle';
-                        const lines = wrapText(ctx, prompt, canvas.width - padding * 2);
-                        const startY = canvas.height / 2 - (lines.length - 1) * (fontSize * 0.6);
-                        for (let i = 0; i < lines.length; i++) {
-                            ctx.fillText(lines[i], canvas.width / 2, startY + i * fontSize * 0.9);
-                        }
-
-                        frame++;
-                        if (frame >= totalFrames) {
-                            clearInterval(id);
-                            // stop recorder after a tick to flush
-                            setTimeout(() => { recorder.stop(); resolve(); }, 150);
-                        }
-                    }, interval);
+                const response = await fetch('/api/generate-video', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        prompt: prompt,
+                        provider: provider,
+                        resolution: resolution,
+                        duration: duration
+                    })
                 });
 
-                // Wait for stop
-                await new Promise((resolve) => { recorder.onstop = resolve; });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Video üretilemedi');
+                }
 
-                const blob = new Blob(recordedChunks, { type: mime });
-                // Attempt client-side compression ~6:1 by downscaling resolution
-                let usedBlob = blob;
-                try {
-                    const SCALE = Math.sqrt(1 / 6); // ~0.408 linear scale -> area ~1/6
-                    usedBlob = await compressVideoBlob(blob, SCALE, fps);
-                } catch (compErr) {
-                    console.warn('Video compression failed, using original blob.', compErr);
-                    usedBlob = blob;
+                const data = await response.json();
+                
+                if (data.videoUrl) {
+                    // Videoyu göster
+                    if (videoPreview) {
+                        videoPreview.src = data.videoUrl;
+                        videoPreview.type = data.mimeType || 'video/mp4';
+                    }
+                    
+                    if (videoPreviewWrapper) {
+                        videoPreviewWrapper.style.display = 'block';
+                    }
+                    
+                    if (videoPlaceholder) {
+                        videoPlaceholder.style.display = 'none';
+                    }
+
+                    // Download butonu
+                    if (videoDownloadBtn) {
+                        videoDownloadBtn.onclick = () => {
+                            const a = document.createElement('a');
+                            a.href = data.videoUrl;
+                            a.download = `omerai-video-${Date.now()}.mp4`;
+                            a.click();
+                        };
+                    }
+
+                    showToast(currentLang === 'tr' ? 'Video başarıyla üretildi!' : 'Video generated successfully!', 'success');
+                    trackEvent("conversion", "video_generated", provider);
+                } else {
+                    throw new Error('Video URL alınamadı');
                 }
-                const url = URL.createObjectURL(usedBlob);
-                if (videoPreview) {
-                    videoPreview.src = url;
-                    videoPreview.load();
-                }
-                if (videoPlaceholder) videoPlaceholder.style.display = 'none';
-                if (videoPreviewWrapper) videoPreviewWrapper.style.display = 'block';
-                if (videoDownloadBtn) {
-                    videoDownloadBtn.style.display = 'inline-block';
-                    videoDownloadBtn.onclick = () => {
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = 'omerai-video-' + Date.now() + '.webm';
-                        a.click();
-                    };
-                }
-                trackEvent('conversion', 'generate_video_success', 'video_created');
-            } catch (err) {
-                console.error('Video üretim hatası:', err);
-                showToast(currentLang === 'tr' ? 'Video üretilemedi. Tarayıcı sınırlamaları veya bellek sorunu olabilir.' : 'Video generation failed. Browser limitations or memory issue.', 'error');
+
+            } catch (error) {
+                console.error('Video generation error:', error);
+                showToast(currentLang === 'tr' ? `Hata: ${error.message}` : `Error: ${error.message}`, 'error');
             } finally {
                 if (videoLoadingEl) videoLoadingEl.style.display = 'none';
             }
         });
     }
 
-    // Compress video blob by playing it and re-recording at scaled resolution
-    async function compressVideoBlob(blob, scale = 0.408, targetFps = 15) {
-        if (!window.MediaRecorder) throw new Error('MediaRecorder not supported');
-        const originalUrl = URL.createObjectURL(blob);
-        const v = document.createElement('video');
-        v.muted = true;
-        v.playsInline = true;
-        v.src = originalUrl;
-
-        await new Promise((resolve, reject) => {
-            const t = setTimeout(() => reject(new Error('video load timeout')), 5000);
-            v.onloadedmetadata = () => { clearTimeout(t); resolve(); };
-            v.onerror = () => { clearTimeout(t); reject(new Error('video load error')); };
-        });
-
-        const ow = v.videoWidth || 3840;
-        const oh = v.videoHeight || 2160;
-        const w = Math.max(16, Math.round(ow * scale));
-        const h = Math.max(16, Math.round(oh * scale));
-
-        const canvas = document.createElement('canvas');
-        canvas.width = w; canvas.height = h;
-        const ctx = canvas.getContext('2d');
-
-        const stream = canvas.captureStream(targetFps);
-        const chunks = [];
-        let mime = 'video/webm;codecs=vp9';
-        if (!MediaRecorder.isTypeSupported(mime)) mime = 'video/webm;codecs=vp8';
-        if (!MediaRecorder.isTypeSupported(mime)) mime = 'video/webm';
-        const rec = new MediaRecorder(stream, { mimeType: mime });
-        rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
-
-        return await new Promise((resolve, reject) => {
-            rec.onerror = (e) => { reject(e); };
-            rec.onstop = () => {
-                try {
-                    const out = new Blob(chunks, { type: mime });
-                    resolve(out);
-                } catch (e) { reject(e); }
-            };
-
-            rec.start();
-            v.currentTime = 0;
-            const drawInterval = 1000 / targetFps;
-            let rafId = null;
-
-            function drawFrame() {
-                try {
-                    ctx.drawImage(v, 0, 0, w, h);
-                } catch (_) {}
-            }
-
-            v.play().then(() => {
-                const id = setInterval(() => {
-                    drawFrame();
-                    if (v.ended) {
-                        clearInterval(id);
-                        setTimeout(() => rec.stop(), 120);
-                    }
-                }, drawInterval);
-            }).catch(err => {
-                rec.stop();
-                reject(err);
-            });
-        }).finally(() => { try { v.pause(); v.src = ''; URL.revokeObjectURL(originalUrl); } catch (_) {} });
+    // VIP kontrolü
+    function isVipUser() {
+        // Token sistemine göre VIP kontrolü
+        const tokenCount = parseInt(localStorage.getItem('omerai_tokens') || '0');
+        return tokenCount >= 50; // 50+ token = VIP
     }
+
+    // Demo prompt chips için event listener
+    document.querySelectorAll('.video-demo').forEach(chip => {
+        chip.addEventListener('click', function() {
+            const input = document.getElementById('video-prompt-input');
+            const prompt = this.getAttribute('data-prompt');
+            if (input && prompt) {
+                input.value = prompt;
+                input.focus();
+                document.getElementById("video-lab")?.scrollIntoView({ behavior: "smooth", block: "center" });
+                trackEvent("engagement", "demo_prompt_click", "video_" + (this.textContent || "").trim());
+            }
+        });
+    });
 
     // Helper: wrap text into lines for canvas
     function wrapText(ctx, text, maxWidth) {

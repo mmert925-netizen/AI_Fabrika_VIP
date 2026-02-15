@@ -244,9 +244,9 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.5rem
     <div id="video-lab" class="lab-container video-lab lab-panel">
         <div class="lab-header">
             <span class="lab-icon">🎬</span>
-            <h2 class="neon-text" data-tr="Video Üretim Laboratuvarı" data-en="Video Production Lab">Video Üretim Laboratuvarı</h2>
+            <h2 class="neon-text" data-tr="Video Üretim Laboratuvarı - Sora/Runway Entegrasyonu" data-en="Video Production Lab - Sora/Runway Integration">Video Üretim Laboratuvarı - Sora/Runway Entegrasyonu</h2>
         </div>
-        <p class="video-lab-desc" data-tr="Kısa videolar, tanıtımlar ve sosyal medya klipleri üretin." data-en="Generate short videos, promos and social clips.">Kısa videolar, tanıtımlar ve sosyal medya klipleri üretin.</p>
+        <p class="video-lab-desc" data-tr="Sora ve Runway API ile profesyonel video üretimi. Metinden videoya yapay zeka destekli üretim." data-en="Professional video production with Sora and Runway API. AI-powered text-to-video generation.">Sora ve Runway API ile profesyonel video üretimi. Metinden videoya yapay zeka destekli üretim.</p>
         <div class="demo-prompts" id="video-demo-prompts">
             <span class="demo-label" data-tr="Örnek promptlar – tıkla dene:" data-en="Sample prompts – click to try:">Örnek promptlar – tıkla dene:</span>
             <div class="demo-chips">
@@ -260,14 +260,26 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.5rem
             </div>
         </div>
         <div class="lab-form-container">
+            <label for="video-provider-select" style="width:100%;text-align:left;">Video Sağlayıcı:</label>
+            <select id="video-provider-select" style="max-width:220px; margin-bottom:6px;">
+                <option value="sora">OpenAI Sora</option>
+                <option value="runway">Runway ML</option>
+            </select>
             <label for="video-res-select" style="width:100%;text-align:left;">Çözünürlük:</label>
             <select id="video-res-select" style="max-width:220px; margin-bottom:6px;">
-                <option value="3840x2160">4K (3840×2160)</option>
                 <option value="1920x1080">Full HD (1920×1080)</option>
                 <option value="1280x720">HD (1280×720)</option>
+                <option value="3840x2160">4K (3840×2160) - VIP</option>
+            </select>
+            <label for="video-duration-select" style="width:100%;text-align:left;">Süre:</label>
+            <select id="video-duration-select" style="max-width:220px; margin-bottom:6px;">
+                <option value="10">10 saniye</option>
+                <option value="15">15 saniye</option>
+                <option value="30">30 saniye - VIP</option>
+                <option value="60">60 saniye - VIP</option>
             </select>
             <textarea id="video-prompt-input" placeholder="Örn: 15s ürün tanıtımı, synthwave müzik, dinamik kesimler..." rows="3" data-placeholder-tr="Örn: 15s ürün tanıtımı..." data-placeholder-en="E.g. 15s product promo..."></textarea>
-            <button id="generate-video-btn" class="neon-button" data-tr="Videoyu Mühürle (Üret)" data-en="Generate Video">Videoyu Mühürle (Üret)</button>
+            <button id="generate-video-btn" class="neon-button" data-tr="Videoyu Mühürle (Sora/Runway)" data-en="Generate Video (Sora/Runway)">Videoyu Mühürle (Sora/Runway)</button>
             <div id="video-loading-indicator" class="progress-bar-wrap" style="display: none;">
                 <div class="progress-bar"><div class="progress-bar-fill"></div></div>
                 <span class="progress-bar-label" data-tr="Video üretiliyor..." data-en="Generating video...">Video üretiliyor...</span>
