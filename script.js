@@ -167,7 +167,7 @@ function playWelcomeVoice() {
     if (!isSoundEnabled()) return;
     if (!window.speechSynthesis) return;
     const doSpeak = () => {
-        const u = new SpeechSynthesisUtterance(currentLang === "tr" ? "Sisteme hoş geldin patron, üretim hattı hazır." : "Welcome to the system, boss, the production line is ready.");
+        const u = new SpeechSynthesisUtterance(currentLang === "tr" ? "Sisteme hoş geldin, üretim hattı hazır." : "Welcome to the system, the production line is ready.");
         u.rate = 0.9;
         u.pitch = 1;
         u.volume = 1;
@@ -1262,8 +1262,8 @@ function showChatWelcome() {
     const box = document.getElementById("chat-box");
     if (!box || box.children.length > 0) return;
     const welcome = currentLang === "tr"
-        ? "Merhaba patron! 👋 Ben ÖMER.AI Asistan. Görsel üretebilir, web şablonu mühürleyebilir, post yazabilir, fiyat/süre tahmini verebilirim. Ne yapmamı istersin?"
-        : "Hello boss! 👋 I'm ÖMER.AI Assistant. I can generate images, create web templates, write posts, give price/time estimates. What would you like?";
+        ? "Merhaba! 👋 Ben ÖMER.AI Asistan. Görsel üretebilir, web şablonu mühürleyebilir, post yazabilir, fiyat/süre tahmini verebilirim. Ne yapmamı istersin?"
+        : "Hello! 👋 I'm ÖMER.AI Assistant. I can generate images, create web templates, write posts, give price/time estimates. What would you like?";
     box.innerHTML = `<p class="chat-msg bot"><b>🤖 Asistan:</b> <span class="bot-reply-content">${parseMarkdown(welcome)}</span></p>`;
     const suggestions = currentLang === "tr"
         ? ["Bana bir görsel çiz", "Fiyatlar nedir?", "Web tasarımı yap"]
@@ -1789,7 +1789,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (response.ok) {
                     addTokens(5);
                     trackEvent("conversion", "contact_form_submit", "telegram_success");
-                    showToast("Mührün Telegram hattına fırlatıldı patron! 🚀 +5 Dijital Mühür kazandın!", "success");
+                    showToast("Mührün Telegram hattına fırlatıldı! 🚀 +5 Dijital Mühür kazandın!", "success");
                     form.reset();
                     const wizard = document.getElementById("project-wizard");
                     if (wizard) {

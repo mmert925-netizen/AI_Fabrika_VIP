@@ -1656,7 +1656,6 @@ input:focus, textarea:focus {
     40% { content: '..'; }
     60%, 100% { content: '...'; }
 }
-.patron-refresh-btn { font-size: 0.85rem; padding: 6px 14px; }
 .blog-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));

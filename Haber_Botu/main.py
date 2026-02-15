@@ -24,7 +24,7 @@ def haber_islem():
     feed = feedparser.parse(res.content)
     if feed.entries:
         baslik = feed.entries[0].title
-        prompt = f"Bu haberi Ömer patrona kısa özetle: {baslik}"
+        prompt = f"Bu haberi kısa özetle: {baslik}"
         ai_res = client.models.generate_content(model='gemini-2.0-flash', contents=prompt)
         requests.post(f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage", 
                       json={"chat_id": TELEGRAM_CHAT_ID, "text": ai_res.text})
