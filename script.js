@@ -2042,14 +2042,8 @@ function loadNewsCarousel() {
                         </div>
                     `;
                 });
-                if (carousel) carousel.innerHTML = html;
-                
-                // Auto-scroll başlat
-                startNewsCarouselAutoScroll();
-                
-                // Hover durduruyor ve başlatıyor
-                carousel.addEventListener('mouseenter', stopNewsCarouselAutoScroll);
-                carousel.addEventListener('mouseleave', startNewsCarouselAutoScroll);
+                // İçeriği iki kere ekleyerek CSS transform döngüsü ile seamless akış sağlıyoruz
+                if (carousel) carousel.innerHTML = html + html;
             } else {
                 if (carousel) {
                     carousel.innerHTML = '<div class="news-carousel-loading">⚠️ Haberler yüklenemedi. Lütfen daha sonra tekrar deneyin.</div>';
@@ -2089,7 +2083,7 @@ function stopNewsCarouselAutoScroll() {
         newsCarouselAutoScroll = null;
     }
 }
-
+// Manuel navigasyon için scroll fonksiyonu (nav butonları kullanıyorsa korunur)
 function scrollNewsCarousel(direction) {
     const carousel = document.getElementById('news-carousel');
     if (carousel) {

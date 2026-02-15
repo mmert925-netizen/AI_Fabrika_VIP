@@ -108,32 +108,35 @@ html {
     object-fit: cover;
     display: block;
 }
-.vip-close {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: transparent;
-    border: 1px solid #ff6666;
-    color: #ff6666;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 1.2rem;
-    transition: 0.2s;
-}
-.vip-close:hover {
-    background: #ff6666;
-    color: #000;
+.news-carousel {
+    display: flex;
+    gap: 1.5rem;
+    padding-bottom: 0.5rem;
+    /* CSS animation based continuous scroll (matches Canlı AI Üretim Akışı) */
+    animation: news-scroll 30s linear infinite;
+    width: max-content;
 }
 
-/* Matrix Modu (Easter Egg - O tuşu) */
-body.matrix-mode {
-    animation: matrix-glitch 0.4s ease-in-out infinite;
+.news-carousel:hover {
+    animation-play-state: paused;
 }
-body.matrix-mode .matrix-ascii {
-    font-family: 'Consolas', 'Monaco', monospace;
-    font-size: 5px;
+
+.news-carousel::-webkit-scrollbar {
+    height: 4px;
+}
+
+.news-carousel::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.news-carousel::-webkit-scrollbar-thumb {
+    background: rgba(94, 234, 212, 0.3);
+    border-radius: 2px;
+}
+
+.news-carousel::-webkit-scrollbar-thumb:hover {
+    background: rgba(94, 234, 212, 0.5);
+}
     line-height: 1.1;
     color: #39ff14;
     background: #000;
@@ -2506,6 +2509,11 @@ footer .footer-section.blog-section .blog-card h4 {
     color: rgba(94, 234, 212, 0.7);
     font-size: 0.95rem;
     width: 100%;
+}
+
+@keyframes news-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
 }
 
 @media (max-width: 768px) {
