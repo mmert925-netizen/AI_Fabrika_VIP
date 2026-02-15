@@ -14,7 +14,7 @@ function showToast(message, type = "info") {
     toast.onclick = () => { clearTimeout(t); toast.classList.remove("toast-visible"); setTimeout(() => toast.remove(), 300); };
 }
 
-//// API CACHE – Sık kullanılan GET çağrılarını kısa süreli cache'leme
+//// API CACHE – Sık kullanılan GET çağrılarını kısa süreli cacheme
 const API_CACHE = new Map();
 const CACHE_TTL_MS = 0; // Cache devre dışı
 function fetchWithCache(url, options = {}) {
@@ -386,6 +386,19 @@ function initDemoPrompts() {
                 input.focus();
                 document.getElementById("web-sablon-lab")?.scrollIntoView({ behavior: "smooth", block: "center" });
                 trackEvent("engagement", "demo_prompt_click", "web_" + (this.textContent || "").trim());
+            }
+        });
+    });
+    // Video demo prompts
+    document.querySelectorAll(".demo-chip.video-demo").forEach(btn => {
+        btn.addEventListener("click", function() {
+            const prompt = this.getAttribute("data-prompt");
+            const input = document.getElementById("video-prompt-input");
+            if (input && prompt) {
+                input.value = prompt;
+                input.focus();
+                document.getElementById("video-lab")?.scrollIntoView({ behavior: "smooth", block: "center" });
+                trackEvent("engagement", "demo_prompt_click", "video_" + (this.textContent || "").trim());
             }
         });
     });
@@ -1986,6 +1999,143 @@ document.addEventListener("DOMContentLoaded", function() {
                 showToast(currentLang === "tr" ? "Web API bağlantı hatası." : "Web API connection error.", "error");
             });
         });
+    }
+
+    // Video Laboratuvarı – client-side 4K video üretimi (tarayıcı kaydı)
+    const videoGenBtn = document.getElementById("generate-video-btn");
+    const videoPromptInput = document.getElementById("video-prompt-input");
+    const videoLoadingEl = document.getElementById("video-loading-indicator");
+    const videoPreviewWrapper = document.getElementById("video-preview-wrapper");
+    const videoPlaceholder = document.getElementById("video-placeholder");
+    const videoPreview = document.getElementById("video-preview");
+    const videoDownloadBtn = document.getElementById("video-download-btn");
+    const videoResSelect = document.getElementById("video-res-select");
+
+    function parseRes(val) {
+        if (!val) return { w: 3840, h: 2160 };
+        const parts = val.split('x');
+        return { w: parseInt(parts[0], 10) || 3840, h: parseInt(parts[1], 10) || 2160 };
+    }
+
+    if (videoGenBtn && videoPromptInput) {
+        videoGenBtn.addEventListener("click", async function() {
+            trackEvent("engagement", "generate_video_click", "conversion");
+            const prompt = videoPromptInput.value.trim();
+            if (!prompt) { showToast(currentLang === 'tr' ? 'Lütfen video açıklaması yazın.' : 'Please enter a video description.', 'warn'); return; }
+            const res = parseRes(videoResSelect ? videoResSelect.value : '3840x2160');
+            const fps = 15; // daha hafif kayıt için 15fps
+            const durationSec = 8; // 8 saniye demo
+            const totalFrames = Math.max(1, Math.round(fps * durationSec));
+
+            if (videoLoadingEl) videoLoadingEl.style.display = 'block';
+            if (videoPlaceholder) videoPlaceholder.style.display = 'block';
+            if (videoPreviewWrapper) videoPreviewWrapper.style.display = 'none';
+
+            try {
+                // Create canvas and draw animated frames
+                const canvas = document.createElement('canvas');
+                canvas.width = res.w;
+                canvas.height = res.h;
+                const ctx = canvas.getContext('2d');
+
+                // simple animated background + prompt text
+                let frame = 0;
+                const stream = canvas.captureStream(fps);
+                const recordedChunks = [];
+                let mime = 'video/webm;codecs=vp9';
+                if (!MediaRecorder.isTypeSupported(mime)) mime = 'video/webm;codecs=vp8';
+                if (!MediaRecorder.isTypeSupported(mime)) mime = 'video/webm';
+                const recorder = new MediaRecorder(stream, { mimeType: mime });
+                recorder.ondataavailable = e => { if (e.data && e.data.size) recordedChunks.push(e.data); };
+
+                recorder.start();
+
+                await new Promise((resolve) => {
+                    const interval = 1000 / fps;
+                    const id = setInterval(() => {
+                        // draw background gradient that shifts
+                        const t = frame / totalFrames;
+                        const g = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                        g.addColorStop(0, `rgba(${Math.floor(20 + 100 * t)}, ${30 + Math.floor(120 * (1 - t))}, ${40 + Math.floor(100 * t)}, 1)`);
+                        g.addColorStop(1, `rgba(${40 + Math.floor(120 * (1 - t))}, ${60 + Math.floor(80 * t)}, ${80 + Math.floor(60 * (1 - t))}, 1)`);
+                        ctx.fillStyle = g;
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                        // moving light
+                        ctx.globalAlpha = 0.12;
+                        ctx.beginPath();
+                        ctx.ellipse(canvas.width * (0.2 + 0.6 * Math.sin(t * Math.PI * 2)), canvas.height * 0.4, canvas.width * 0.5, canvas.height * 0.6, 0, 0, Math.PI * 2);
+                        ctx.fillStyle = '#22d3ee';
+                        ctx.fill();
+                        ctx.globalAlpha = 1;
+
+                        // Draw prompt text centered
+                        const padding = Math.max(40, Math.floor(canvas.width * 0.02));
+                        ctx.fillStyle = 'rgba(255,255,255,0.95)';
+                        const fontSize = Math.max(24, Math.floor(canvas.width / 40));
+                        ctx.font = `bold ${fontSize}px Inter, Arial, sans-serif`;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        const lines = wrapText(ctx, prompt, canvas.width - padding * 2);
+                        const startY = canvas.height / 2 - (lines.length - 1) * (fontSize * 0.6);
+                        for (let i = 0; i < lines.length; i++) {
+                            ctx.fillText(lines[i], canvas.width / 2, startY + i * fontSize * 0.9);
+                        }
+
+                        frame++;
+                        if (frame >= totalFrames) {
+                            clearInterval(id);
+                            // stop recorder after a tick to flush
+                            setTimeout(() => { recorder.stop(); resolve(); }, 150);
+                        }
+                    }, interval);
+                });
+
+                // Wait for stop
+                await new Promise((resolve) => { recorder.onstop = resolve; });
+
+                const blob = new Blob(recordedChunks, { type: mime });
+                const url = URL.createObjectURL(blob);
+                if (videoPreview) {
+                    videoPreview.src = url;
+                    videoPreview.load();
+                }
+                if (videoPlaceholder) videoPlaceholder.style.display = 'none';
+                if (videoPreviewWrapper) videoPreviewWrapper.style.display = 'block';
+                if (videoDownloadBtn) {
+                    videoDownloadBtn.style.display = 'inline-block';
+                    videoDownloadBtn.onclick = () => {
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'omerai-video-' + Date.now() + '.webm';
+                        a.click();
+                    };
+                }
+                trackEvent('conversion', 'generate_video_success', 'video_created');
+            } catch (err) {
+                console.error('Video üretim hatası:', err);
+                showToast(currentLang === 'tr' ? 'Video üretilemedi. Tarayıcı sınırlamaları veya bellek sorunu olabilir.' : 'Video generation failed. Browser limitations or memory issue.', 'error');
+            } finally {
+                if (videoLoadingEl) videoLoadingEl.style.display = 'none';
+            }
+        });
+    }
+
+    // Helper: wrap text into lines for canvas
+    function wrapText(ctx, text, maxWidth) {
+        const words = text.split(/\s+/);
+        const lines = [];
+        let line = '';
+        for (let i = 0; i < words.length; i++) {
+            const test = line ? line + ' ' + words[i] : words[i];
+            const w = ctx.measureText(test).width;
+            if (w > maxWidth && line) {
+                lines.push(line);
+                line = words[i];
+            } else line = test;
+        }
+        if (line) lines.push(line);
+        return lines.slice(0, 6); // max 6 lines to avoid overflow
     }
 
     if (webDownloadBtn) {

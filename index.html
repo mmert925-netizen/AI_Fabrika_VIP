@@ -253,9 +253,19 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.5rem
                 <button type="button" class="demo-chip video-demo" data-prompt="15s ürün tanıtımı, dinamik kurgu, synthwave müzik">🎞️ Tanıtım</button>
                 <button type="button" class="demo-chip video-demo" data-prompt="60s mini belgesel, anlatıcı sesi, doğal görüntüler">📽️ Belgesel</button>
                 <button type="button" class="demo-chip video-demo" data-prompt="10s Reels tarzı sosyal medya klibi, hızlı kesimler">🔊 Sosyal Klip</button>
+                <button type="button" class="demo-chip video-demo" data-prompt="30s ürün lansmanı, yavaş kamera, epik müzik">🚀 Lansman</button>
+                <button type="button" class="demo-chip video-demo" data-prompt="20s eğitim klibi, ekran animasyonları, voice-over">📚 Eğitim</button>
+                <button type="button" class="demo-chip video-demo" data-prompt="8s loopable arka plan video, ambient motion graphics">🔁 Loop Arkaplan</button>
+                <button type="button" class="demo-chip video-demo" data-prompt="10s testimonial video, müşteri konuşması, sıcak ton">🗣️ Müşteri Görüşü</button>
             </div>
         </div>
         <div class="lab-form-container">
+            <label for="video-res-select" style="width:100%;text-align:left;">Çözünürlük:</label>
+            <select id="video-res-select" style="max-width:220px; margin-bottom:6px;">
+                <option value="3840x2160">4K (3840×2160)</option>
+                <option value="1920x1080">Full HD (1920×1080)</option>
+                <option value="1280x720">HD (1280×720)</option>
+            </select>
             <textarea id="video-prompt-input" placeholder="Örn: 15s ürün tanıtımı, synthwave müzik, dinamik kesimler..." rows="3" data-placeholder-tr="Örn: 15s ürün tanıtımı..." data-placeholder-en="E.g. 15s product promo..."></textarea>
             <button id="generate-video-btn" class="neon-button" data-tr="Videoyu Mühürle (Üret)" data-en="Generate Video">Videoyu Mühürle (Üret)</button>
             <div id="video-loading-indicator" class="progress-bar-wrap" style="display: none;">
