@@ -686,6 +686,26 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.5rem
         var v=document.createElement("script");v.src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.net.min.js";v.defer=true;document.body.appendChild(v);
       }
     </script>
+    
+    <!-- Teknoloji Haber Modalı -->
+    <div id="news-modal" class="news-modal" style="display:none;">
+        <div class="news-modal-content">
+            <div class="news-modal-header">
+                <h2>📰 Teknoloji & Yapay Zeka Haberleri</h2>
+                <button class="news-modal-close" onclick="closeNewsModal()">&times;</button>
+            </div>
+            <div class="news-modal-insight">
+                <p id="news-insight" class="news-insight-text">Haberler yükleniyor...</p>
+            </div>
+            <div id="news-list" class="news-list">
+                <div class="news-loading">⏳ Haberler alınıyor lütfen bekleyin...</div>
+            </div>
+            <div class="news-modal-footer">
+                <button class="neon-button" onclick="refreshNewsFeed()">🔄 Yenile</button>
+            </div>
+        </div>
+    </div>
+    
     <script src="script.js"></script>
     </body>
 </html>
