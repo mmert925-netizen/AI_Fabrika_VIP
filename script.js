@@ -2015,10 +2015,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
-//// NEWS CAROUSEL FONKSİYONLARI
-let newsCarouselAutoScroll = null;
-
-function loadNewsCarousel() {
     const carousel = document.getElementById('news-carousel');
     if (carousel) {
         carousel.innerHTML = '<div class="news-carousel-loading">⏳ Haberler yükleniyor...</div>';
@@ -2042,14 +2038,8 @@ function loadNewsCarousel() {
                         </div>
                     `;
                 });
-                if (carousel) carousel.innerHTML = html;
-                
-                // Auto-scroll başlat
-                startNewsCarouselAutoScroll();
-                
-                // Hover durduruyor ve başlatıyor
-                carousel.addEventListener('mouseenter', stopNewsCarouselAutoScroll);
-                carousel.addEventListener('mouseleave', startNewsCarouselAutoScroll);
+                // Animasyon için içeriği iki kere ekle (-50% translateX'de seamless loop için)
+                if (carousel) carousel.innerHTML = html + html;
             } else {
                 if (carousel) {
                     carousel.innerHTML = '<div class="news-carousel-loading">⚠️ Haberler yüklenemedi. Lütfen daha sonra tekrar deneyin.</div>';
@@ -2064,39 +2054,6 @@ function loadNewsCarousel() {
         });
 }
 
-function startNewsCarouselAutoScroll() {
-    // Eğer zaten çalışıyorsa başlama
-    if (newsCarouselAutoScroll) return;
-    
-    const carousel = document.getElementById('news-carousel');
-    if (!carousel) return;
-    
-    newsCarouselAutoScroll = setInterval(() => {
-        // Carousel'ın sona ulaşıp ulaşmadığını kontrol et
-        if (carousel.scrollLeft + carousel.clientWidth >= carousel.scrollWidth - 10) {
-            // Sona ulaştıysa başa dön
-            carousel.scrollLeft = 0;
-        } else {
-            // Sola kaydır
-            carousel.scrollLeft += 320; // Bir kartın genişliği
-        }
-    }, 4000); // Her 4 saniyede bir
-}
-
-function stopNewsCarouselAutoScroll() {
-    if (newsCarouselAutoScroll) {
-        clearInterval(newsCarouselAutoScroll);
-        newsCarouselAutoScroll = null;
-    }
-}
-
-function scrollNewsCarousel(direction) {
-    const carousel = document.getElementById('news-carousel');
-    if (carousel) {
-        const scrollAmount = 320; // Haber kartı genişliği + gap
-        carousel.scrollLeft += scrollAmount * direction;
-    }
-}
 
 // Sayfa yüklendiğinde haberleri yükle
 document.addEventListener('DOMContentLoaded', function() {
