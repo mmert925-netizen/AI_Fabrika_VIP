@@ -2095,7 +2095,16 @@ document.addEventListener("DOMContentLoaded", function() {
                 await new Promise((resolve) => { recorder.onstop = resolve; });
 
                 const blob = new Blob(recordedChunks, { type: mime });
-                const url = URL.createObjectURL(blob);
+                // Attempt client-side compression ~6:1 by downscaling resolution
+                let usedBlob = blob;
+                try {
+                    const SCALE = Math.sqrt(1 / 6); // ~0.408 linear scale -> area ~1/6
+                    usedBlob = await compressVideoBlob(blob, SCALE, fps);
+                } catch (compErr) {
+                    console.warn('Video compression failed, using original blob.', compErr);
+                    usedBlob = blob;
+                }
+                const url = URL.createObjectURL(usedBlob);
                 if (videoPreview) {
                     videoPreview.src = url;
                     videoPreview.load();
@@ -2119,6 +2128,73 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (videoLoadingEl) videoLoadingEl.style.display = 'none';
             }
         });
+    }
+
+    // Compress video blob by playing it and re-recording at scaled resolution
+    async function compressVideoBlob(blob, scale = 0.408, targetFps = 15) {
+        if (!window.MediaRecorder) throw new Error('MediaRecorder not supported');
+        const originalUrl = URL.createObjectURL(blob);
+        const v = document.createElement('video');
+        v.muted = true;
+        v.playsInline = true;
+        v.src = originalUrl;
+
+        await new Promise((resolve, reject) => {
+            const t = setTimeout(() => reject(new Error('video load timeout')), 5000);
+            v.onloadedmetadata = () => { clearTimeout(t); resolve(); };
+            v.onerror = () => { clearTimeout(t); reject(new Error('video load error')); };
+        });
+
+        const ow = v.videoWidth || 3840;
+        const oh = v.videoHeight || 2160;
+        const w = Math.max(16, Math.round(ow * scale));
+        const h = Math.max(16, Math.round(oh * scale));
+
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+
+        const stream = canvas.captureStream(targetFps);
+        const chunks = [];
+        let mime = 'video/webm;codecs=vp9';
+        if (!MediaRecorder.isTypeSupported(mime)) mime = 'video/webm;codecs=vp8';
+        if (!MediaRecorder.isTypeSupported(mime)) mime = 'video/webm';
+        const rec = new MediaRecorder(stream, { mimeType: mime });
+        rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+
+        return await new Promise((resolve, reject) => {
+            rec.onerror = (e) => { reject(e); };
+            rec.onstop = () => {
+                try {
+                    const out = new Blob(chunks, { type: mime });
+                    resolve(out);
+                } catch (e) { reject(e); }
+            };
+
+            rec.start();
+            v.currentTime = 0;
+            const drawInterval = 1000 / targetFps;
+            let rafId = null;
+
+            function drawFrame() {
+                try {
+                    ctx.drawImage(v, 0, 0, w, h);
+                } catch (_) {}
+            }
+
+            v.play().then(() => {
+                const id = setInterval(() => {
+                    drawFrame();
+                    if (v.ended) {
+                        clearInterval(id);
+                        setTimeout(() => rec.stop(), 120);
+                    }
+                }, drawInterval);
+            }).catch(err => {
+                rec.stop();
+                reject(err);
+            });
+        }).finally(() => { try { v.pause(); v.src = ''; URL.revokeObjectURL(originalUrl); } catch (_) {} });
     }
 
     // Helper: wrap text into lines for canvas
