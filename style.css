@@ -1051,7 +1051,7 @@ body.neuro-sync-lab #live-stream {
 /* 5b. LAB'LAR – Üretim + Web Şablon yan yana */
 .labs-wrapper {
     display: grid;
-    grid-template-columns: repeat(2, minmax(280px, 1fr));
+    grid-template-columns: repeat(3, minmax(280px, 1fr));
     gap: 2rem;
     padding: 4rem 380px;
     box-sizing: border-box;

@@ -240,6 +240,39 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.5rem
             <p id="image-placeholder" style="color: var(--text-color); opacity: 0.7;" data-tr="Üretilen eser burada belirecek..." data-en="Generated artwork will appear here...">Üretilen eser burada belirecek...</p>
         </div>
     </div>
+    
+    <div id="video-lab" class="lab-container video-lab lab-panel">
+        <div class="lab-header">
+            <span class="lab-icon">🎬</span>
+            <h2 class="neon-text" data-tr="Video Üretim Laboratuvarı" data-en="Video Production Lab">Video Üretim Laboratuvarı</h2>
+        </div>
+        <p class="video-lab-desc" data-tr="Kısa videolar, tanıtımlar ve sosyal medya klipleri üretin." data-en="Generate short videos, promos and social clips.">Kısa videolar, tanıtımlar ve sosyal medya klipleri üretin.</p>
+        <div class="demo-prompts" id="video-demo-prompts">
+            <span class="demo-label" data-tr="Örnek promptlar – tıkla dene:" data-en="Sample prompts – click to try:">Örnek promptlar – tıkla dene:</span>
+            <div class="demo-chips">
+                <button type="button" class="demo-chip video-demo" data-prompt="15s ürün tanıtımı, dinamik kurgu, synthwave müzik">🎞️ Tanıtım</button>
+                <button type="button" class="demo-chip video-demo" data-prompt="60s mini belgesel, anlatıcı sesi, doğal görüntüler">📽️ Belgesel</button>
+                <button type="button" class="demo-chip video-demo" data-prompt="10s Reels tarzı sosyal medya klibi, hızlı kesimler">🔊 Sosyal Klip</button>
+            </div>
+        </div>
+        <div class="lab-form-container">
+            <textarea id="video-prompt-input" placeholder="Örn: 15s ürün tanıtımı, synthwave müzik, dinamik kesimler..." rows="3" data-placeholder-tr="Örn: 15s ürün tanıtımı..." data-placeholder-en="E.g. 15s product promo..."></textarea>
+            <button id="generate-video-btn" class="neon-button" data-tr="Videoyu Mühürle (Üret)" data-en="Generate Video">Videoyu Mühürle (Üret)</button>
+            <div id="video-loading-indicator" class="progress-bar-wrap" style="display: none;">
+                <div class="progress-bar"><div class="progress-bar-fill"></div></div>
+                <span class="progress-bar-label" data-tr="Video üretiliyor..." data-en="Generating video...">Video üretiliyor...</span>
+            </div>
+        </div>
+        <div id="video-output-container" class="video-output-container">
+            <div id="video-preview-wrapper" class="video-preview-wrapper" style="display: none;">
+                <video id="video-preview" controls playsinline></video>
+                <div class="video-preview-actions">
+                    <button id="video-download-btn" class="neon-button add-gallery-btn" data-tr="📥 Video İndir" data-en="📥 Download Video">📥 Video İndir</button>
+                </div>
+            </div>
+            <p id="video-placeholder" style="color: var(--text-color); opacity: 0.7;" data-tr="Üretilen video burada belirecek..." data-en="Generated video will appear here...">Üretilen video burada belirecek...</p>
+        </div>
+    </div>
 
     <div id="web-sablon-lab" class="lab-container web-lab lab-panel">
         <div class="lab-header">
