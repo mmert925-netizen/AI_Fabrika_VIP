@@ -1181,6 +1181,31 @@ body.neuro-sync-lab #live-stream {
 }
 #generated-image:hover { transform: scale(1.01); }
 
+/* Video Üretim Laboratuvarı – üretilen video boyut sınırı */
+.video-output-container {
+    margin-top: 1rem;
+    text-align: center;
+    max-width: 100%;
+    overflow: hidden;
+}
+.video-preview-wrapper {
+    max-width: 100%;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 2px solid var(--accent-color);
+    box-shadow: 0 0 15px rgba(34, 211, 238, 0.2);
+    background: #000;
+}
+#video-preview {
+    display: block;
+    max-width: 100%;
+    width: 100%;
+    max-height: 65vh;
+    height: auto;
+    object-fit: contain;
+}
+.video-preview-actions { margin-top: 0.75rem; }
+
 /* Web Şablon Laboratuvarı */
 .web-lab { margin-top: 0; }
 .web-lab-desc { color: var(--text-color); opacity: 0.9; margin-bottom: 1rem; font-size: 0.9rem; }
@@ -1979,6 +2004,7 @@ input:focus, textarea:focus {
     .lab-container { padding: 2rem 1rem; }
     .sealed-image-container { max-width: 100%; width: 100%; box-sizing: border-box; }
     #generated-image { max-width: 100% !important; width: 100% !important; height: auto !important; min-width: 0 !important; object-fit: contain; }
+    #video-preview { max-width: 100% !important; max-height: 50vh !important; object-fit: contain; }
     .image-output-container { overflow: hidden; max-width: 100%; }
     .image-result-wrapper { max-width: 100%; }
     .slider-wrapper { max-width: 100%; }
@@ -2045,6 +2071,7 @@ input:focus, textarea:focus {
     .live-stream-track .live-stream-item { width: 180px; height: 130px; }
     .sealed-image-container { max-width: 100%; width: 100%; box-sizing: border-box; }
     #generated-image { max-width: 100% !important; width: 100% !important; height: auto !important; min-width: 0 !important; object-fit: contain; }
+    #video-preview { max-width: 100% !important; max-height: 45vh !important; object-fit: contain; }
     .image-output-container { overflow: hidden; max-width: 100%; }
     .generated-gallery-item img { min-height: 300px; }
     .generated-gallery-grid { grid-template-columns: 1fr; }
