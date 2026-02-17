@@ -1437,7 +1437,7 @@ function initBackToTop() {
     });
 }
 
-const SECTION_LABELS = { home: { tr: "Ana Sayfa", en: "Home" }, "ai-gallery": { tr: "AI Sergi", en: "AI Gallery" }, "live-stream": { tr: "Canlı Akış", en: "Live Stream" }, "ai-lab": { tr: "AI Laboratuvarı", en: "AI Lab" }, "web-sablon-lab": { tr: "Web Şablon", en: "Web Template" }, hizmetler: { tr: "Hizmetler", en: "Services" }, fiyatlandirma: { tr: "Fiyatlar", en: "Pricing" }, referanslar: { tr: "Referanslar", en: "References" }, testimonials: { tr: "Yorumlar", en: "Reviews" }, portal: { tr: "Müşteri Portalı", en: "Client Portal" }, iletisim: { tr: "İletişim", en: "Contact" }, blog: { tr: "Blog", en: "Blog" } };
+const SECTION_LABELS = { home: { tr: "Ana Sayfa", en: "Home" }, "ai-gallery": { tr: "AI Sergi", en: "AI Gallery" }, "live-stream": { tr: "Canlı Akış", en: "Live Stream" }, "ai-lab": { tr: "AI Laboratuvarı", en: "AI Lab" }, "video-lab": { tr: "Video Laboratuvarı", en: "Video Lab" }, "web-sablon-lab": { tr: "Web Şablon", en: "Web Template" }, hizmetler: { tr: "Hizmetler", en: "Services" }, fiyatlandirma: { tr: "Fiyatlar", en: "Pricing" }, referanslar: { tr: "Referanslar", en: "References" }, testimonials: { tr: "Yorumlar", en: "Reviews" }, portal: { tr: "Müşteri Portalı", en: "Client Portal" }, iletisim: { tr: "İletişim", en: "Contact" }, blog: { tr: "Blog", en: "Blog" }, sss: { tr: "SSS", en: "FAQ" } };
 function initBreadcrumb() {
     const bc = document.getElementById("breadcrumb");
     if (!bc) return;
