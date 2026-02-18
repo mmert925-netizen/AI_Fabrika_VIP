@@ -1,6 +1,8 @@
 /**
- * Vercel Serverless – Sora/Runway ile video üretimi
- * SORA_API_KEY veya RUNWAY_API_KEY ortam değişkenlerini eklemelisin
+ * Vercel Serverless – Replicate / Sora / Runway ile video üretimi
+ * Replicate: REPLICATE_API_TOKEN (ücretsiz deneme)
+ * Sora: SORA_API_KEY veya OPENAI_API_KEY
+ * Runway: RUNWAY_API_KEY
  */
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -10,7 +12,7 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Sadece POST desteklenir' });
 
-  const { prompt, duration = 15, resolution = '1280x720', provider = 'sora', aspect_ratio = '16:9' } = req.body || {};
+  const { prompt, duration = 15, resolution = '1280x720', provider = 'replicate', aspect_ratio = '16:9' } = req.body || {};
   if (!prompt || typeof prompt !== 'string') {
     return res.status(400).json({ error: 'Prompt gerekli' });
   }
@@ -22,7 +24,49 @@ export default async function handler(req, res) {
 
   try {
     let videoUrl = null;
+    let jobId = null;
     let mimeType = 'video/mp4';
+
+    // Replicate API – Minimax video-01 (ücretsiz deneme)
+    if (provider === 'replicate') {
+      const token = (process.env.REPLICATE_API_TOKEN || '').trim();
+      if (!token) {
+        return res.status(503).json({
+          error: 'Replicate API yapılandırılmamış.',
+          hint: 'Vercel: Settings > Environment Variables > REPLICATE_API_TOKEN ekleyin. replicate.com hesabından ücretsiz token alabilirsiniz.',
+          code: 'API_KEY_MISSING'
+        });
+      }
+      const repRes = await fetch('https://api.replicate.com/v1/predictions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          version: '5aa835260ff7f40f4069c41185f72036accf99e29957bb4a3b3a911f3b6c1912',
+          input: { prompt: cleanPrompt, prompt_optimizer: true }
+        })
+      });
+      if (!repRes.ok) {
+        const err = await repRes.json().catch(() => ({}));
+        const msg = err.detail || err.error || repRes.statusText;
+        return res.status(repRes.status).json({ error: `Replicate API Hatası: ${msg}` });
+      }
+      const repData = await repRes.json();
+      jobId = repData.id;
+      if (!jobId) {
+        return res.status(500).json({ error: 'Replicate job oluşturulamadı.' });
+      }
+      return res.status(200).json({
+        jobId,
+        status: 'processing',
+        provider: 'replicate',
+        prompt: cleanPrompt,
+        duration,
+        resolution
+      });
+    }
 
     // SORA API – tüm olası env var isimlerini dene
     if (provider === 'sora') {

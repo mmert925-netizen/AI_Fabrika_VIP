@@ -2188,37 +2188,51 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
 
                 const data = await response.json();
-                
-                if (data.videoUrl) {
-                    if (videoPreview) {
-                        videoPreview.src = data.videoUrl;
+
+                // Replicate: jobId dönerse poll et
+                let finalVideoUrl = data.videoUrl;
+                if (data.jobId && !finalVideoUrl) {
+                    const maxAttempts = 60;
+                    const pollInterval = 5000;
+                    for (let i = 0; i < maxAttempts; i++) {
+                        const statusRes = await fetch(`/api/video-status?jobId=${encodeURIComponent(data.jobId)}&provider=${provider}`);
+                        const statusData = await statusRes.json();
+                        if (statusData.videoUrl) {
+                            finalVideoUrl = statusData.videoUrl;
+                            break;
+                        }
+                        if (statusData.status === 'failed') {
+                            throw new Error(statusData.error || 'Video üretimi başarısız');
+                        }
+                        await new Promise(r => setTimeout(r, pollInterval));
                     }
-                    
+                    if (!finalVideoUrl) throw new Error(currentLang === 'tr' ? 'Video üretimi zaman aşımına uğradı.' : 'Video generation timed out.');
+                }
+
+                if (finalVideoUrl) {
+                    if (videoPreview) {
+                        videoPreview.src = finalVideoUrl;
+                    }
                     if (videoPreviewWrapper) videoPreviewWrapper.style.display = 'block';
                     if (videoPlaceholder) videoPlaceholder.style.display = 'none';
-
-                    // Meta bilgisi
                     if (videoPreviewMeta) {
-                        const metaParts = [resolution, duration + 's', provider === 'sora' ? 'Sora' : 'Runway'];
-                        videoPreviewMeta.textContent = metaParts.join(' · ');
+                        const providerLabel = provider === 'sora' ? 'Sora' : provider === 'runway' ? 'Runway' : 'Replicate';
+                        videoPreviewMeta.textContent = [resolution, duration + 's', providerLabel].join(' · ');
                     }
-
                     if (videoDownloadBtn) {
                         videoDownloadBtn.onclick = () => {
                             const a = document.createElement('a');
-                            a.href = data.videoUrl;
+                            a.href = finalVideoUrl;
                             a.download = `omerai-video-${Date.now()}.mp4`;
                             a.click();
                         };
                     }
-
                     if (videoFullscreenBtn && videoPreview) {
                         videoFullscreenBtn.onclick = () => {
                             if (videoPreview.requestFullscreen) videoPreview.requestFullscreen();
                             else if (videoPreview.webkitRequestFullscreen) videoPreview.webkitRequestFullscreen();
                         };
                     }
-
                     showToast(currentLang === 'tr' ? 'Video başarıyla üretildi!' : 'Video generated successfully!', 'success');
                     trackEvent("conversion", "video_generated", provider);
                 } else {
