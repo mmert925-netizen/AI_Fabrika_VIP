@@ -2064,7 +2064,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Video Laboratuvarı – Sora/Runway API entegrasyonu
+    // Video Laboratuvarı – Premium Sora/Runway entegrasyonu
     const videoGenBtn = document.getElementById("generate-video-btn");
     const videoPromptInput = document.getElementById("video-prompt-input");
     const videoLoadingEl = document.getElementById("video-loading-indicator");
@@ -2072,9 +2072,33 @@ document.addEventListener("DOMContentLoaded", function() {
     const videoPlaceholder = document.getElementById("video-placeholder");
     const videoPreview = document.getElementById("video-preview");
     const videoDownloadBtn = document.getElementById("video-download-btn");
+    const videoFullscreenBtn = document.getElementById("video-fullscreen-btn");
     const videoResSelect = document.getElementById("video-res-select");
     const videoDurationSelect = document.getElementById("video-duration-select");
     const videoProviderSelect = document.getElementById("video-provider-select");
+    const videoAspectSelect = document.getElementById("video-aspect-select");
+    const videoPreviewMeta = document.getElementById("video-preview-meta");
+    const videoCharCurrent = document.getElementById("video-char-current");
+    const videoSettingsToggle = document.getElementById("video-settings-toggle");
+    const videoSettingsPanel = document.getElementById("video-settings-panel");
+
+    // Ayarlar paneli toggle
+    if (videoSettingsToggle && videoSettingsPanel) {
+        videoSettingsToggle.addEventListener("click", () => {
+            const open = videoSettingsPanel.classList.toggle("video-settings-open");
+            videoSettingsToggle.setAttribute("aria-expanded", open);
+        });
+    }
+
+    // Karakter sayacı
+    if (videoPromptInput && videoCharCurrent) {
+        const updateCharCount = () => {
+            videoCharCurrent.textContent = videoPromptInput.value.length;
+        };
+        videoPromptInput.addEventListener("input", updateCharCount);
+        videoPromptInput.addEventListener("paste", () => setTimeout(updateCharCount, 0));
+        updateCharCount();
+    }
 
     if (videoGenBtn && videoPromptInput) {
         videoGenBtn.addEventListener("click", async function() {
@@ -2088,6 +2112,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const provider = videoProviderSelect ? videoProviderSelect.value : 'sora';
             const resolution = videoResSelect ? videoResSelect.value : '1280x720';
             const duration = parseInt(videoDurationSelect ? videoDurationSelect.value : '15');
+            const aspectRatio = videoAspectSelect ? videoAspectSelect.value : '16:9';
 
             // VIP kontrolü
             if ((resolution === '3840x2160' || duration > 15) && !isVipUser()) {
@@ -2095,8 +2120,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 return;
             }
 
-            if (videoLoadingEl) videoLoadingEl.style.display = 'block';
-            if (videoPlaceholder) videoPlaceholder.style.display = 'block';
+            if (videoLoadingEl) videoLoadingEl.style.display = 'flex';
+            if (videoPlaceholder) videoPlaceholder.style.display = 'none';
             if (videoPreviewWrapper) videoPreviewWrapper.style.display = 'none';
 
             try {
@@ -2107,39 +2132,45 @@ document.addEventListener("DOMContentLoaded", function() {
                         prompt: prompt,
                         provider: provider,
                         resolution: resolution,
-                        duration: duration
+                        duration: duration,
+                        aspect_ratio: aspectRatio
                     })
                 });
 
                 if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.error || 'Video üretilemedi');
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.error || 'Video üretilemedi');
                 }
 
                 const data = await response.json();
                 
                 if (data.videoUrl) {
-                    // Videoyu göster
                     if (videoPreview) {
                         videoPreview.src = data.videoUrl;
-                        videoPreview.type = data.mimeType || 'video/mp4';
                     }
                     
-                    if (videoPreviewWrapper) {
-                        videoPreviewWrapper.style.display = 'block';
-                    }
-                    
-                    if (videoPlaceholder) {
-                        videoPlaceholder.style.display = 'none';
+                    if (videoPreviewWrapper) videoPreviewWrapper.style.display = 'block';
+                    if (videoPlaceholder) videoPlaceholder.style.display = 'none';
+
+                    // Meta bilgisi
+                    if (videoPreviewMeta) {
+                        const metaParts = [resolution, duration + 's', provider === 'sora' ? 'Sora' : 'Runway'];
+                        videoPreviewMeta.textContent = metaParts.join(' · ');
                     }
 
-                    // Download butonu
                     if (videoDownloadBtn) {
                         videoDownloadBtn.onclick = () => {
                             const a = document.createElement('a');
                             a.href = data.videoUrl;
                             a.download = `omerai-video-${Date.now()}.mp4`;
                             a.click();
+                        };
+                    }
+
+                    if (videoFullscreenBtn && videoPreview) {
+                        videoFullscreenBtn.onclick = () => {
+                            if (videoPreview.requestFullscreen) videoPreview.requestFullscreen();
+                            else if (videoPreview.webkitRequestFullscreen) videoPreview.webkitRequestFullscreen();
                         };
                     }
 
@@ -2152,6 +2183,7 @@ document.addEventListener("DOMContentLoaded", function() {
             } catch (error) {
                 console.error('Video generation error:', error);
                 showToast(currentLang === 'tr' ? `Hata: ${error.message}` : `Error: ${error.message}`, 'error');
+                if (videoPlaceholder) videoPlaceholder.style.display = 'flex';
             } finally {
                 if (videoLoadingEl) videoLoadingEl.style.display = 'none';
             }
@@ -2160,12 +2192,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // VIP kontrolü
     function isVipUser() {
-        // Token sistemine göre VIP kontrolü
         const tokenCount = parseInt(localStorage.getItem('omerai_tokens') || '0');
-        return tokenCount >= 50; // 50+ token = VIP
+        return tokenCount >= 50;
     }
 
-    // Demo prompt chips için event listener
+    // Demo kartları
     document.querySelectorAll('.video-demo').forEach(chip => {
         chip.addEventListener('click', function() {
             const input = document.getElementById('video-prompt-input');
@@ -2173,8 +2204,9 @@ document.addEventListener("DOMContentLoaded", function() {
             if (input && prompt) {
                 input.value = prompt;
                 input.focus();
+                if (videoCharCurrent) videoCharCurrent.textContent = prompt.length;
                 document.getElementById("video-lab")?.scrollIntoView({ behavior: "smooth", block: "center" });
-                trackEvent("engagement", "demo_prompt_click", "video_" + (this.textContent || "").trim());
+                trackEvent("engagement", "demo_prompt_click", "video");
             }
         });
     });

@@ -137,14 +137,7 @@ html {
 .news-carousel::-webkit-scrollbar-thumb:hover {
     background: rgba(94, 234, 212, 0.5);
 }
-    line-height: 1.1;
-    color: #39ff14;
-    background: #000;
-    padding: 4px;
-    overflow: hidden;
-    white-space: pre;
-    letter-spacing: 0;
-}
+
 @keyframes matrix-glitch {
     0%, 100% { filter: none; }
     50% { filter: saturate(1.1); }
@@ -1181,13 +1174,255 @@ body.neuro-sync-lab #live-stream {
 }
 #generated-image:hover { transform: scale(1.01); }
 
-/* Video Üretim Laboratuvarı – üretilen video boyut sınırı (diğer içerikleri kapatmasın) */
+/* Video Üretim Laboratuvarı – Premium yeniden tasarım */
+.video-lab-premium {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+}
+.video-lab-premium::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+    opacity: 0.6;
+}
+.video-lab-header {
+    text-align: center;
+    margin-bottom: 0.25rem;
+}
+.video-lab-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--accent-color);
+    background: rgba(34, 211, 238, 0.12);
+    border: 1px solid rgba(34, 211, 238, 0.35);
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 0.5rem;
+}
+.video-lab-title { font-size: 1.15rem !important; margin: 0 !important; }
+.video-lab-desc {
+    font-size: 0.82rem;
+    color: var(--text-color);
+    opacity: 0.85;
+    margin: 0.4rem 0 0;
+    line-height: 1.4;
+}
+
+/* Video Lab – Ayarlar paneli */
+.video-lab-settings { margin: 0; }
+.video-settings-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 10px 14px;
+    background: rgba(34, 211, 238, 0.06);
+    border: 1px solid rgba(34, 211, 238, 0.25);
+    border-radius: 10px;
+    color: var(--accent-color);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.video-settings-toggle:hover {
+    background: rgba(34, 211, 238, 0.12);
+    border-color: rgba(34, 211, 238, 0.4);
+}
+.video-settings-chevron {
+    margin-left: auto;
+    font-size: 0.65rem;
+    transition: transform 0.25s;
+}
+.video-settings-toggle[aria-expanded="true"] .video-settings-chevron { transform: rotate(180deg); }
+.video-settings-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    padding: 1rem;
+    margin-top: 0.5rem;
+    background: rgba(15, 23, 42, 0.4);
+    border: 1px solid rgba(34, 211, 238, 0.15);
+    border-radius: 10px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.35s ease, opacity 0.25s, padding 0.25s;
+}
+.video-settings-panel.video-settings-open {
+    max-height: 220px;
+    opacity: 1;
+}
+.video-setting-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.video-setting-row label {
+    font-size: 0.75rem;
+    color: var(--accent-color);
+    opacity: 0.9;
+}
+.video-setting-select {
+    padding: 8px 10px;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(34, 211, 238, 0.3);
+    border-radius: 8px;
+    color: var(--text-color);
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+.video-setting-select:focus { outline: none; border-color: var(--accent-color); }
+
+/* Video Lab – Demo kartları */
+.video-lab-prompts .demo-label { margin-bottom: 0.6rem; }
+.video-demo-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+}
+.video-demo-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 8px;
+    background: rgba(34, 211, 238, 0.05);
+    border: 1px solid rgba(34, 211, 238, 0.2);
+    border-radius: 10px;
+    color: var(--accent-color);
+    font-size: 0.72rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.video-demo-card:hover {
+    background: rgba(34, 211, 238, 0.15);
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(34, 211, 238, 0.2);
+}
+.video-demo-icon { font-size: 1.2rem; }
+
+/* Video Lab – Form */
+.video-lab-form { display: flex; flex-direction: column; gap: 0.75rem; }
+.video-prompt-wrap {
+    position: relative;
+}
+.video-lab-form textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 12px 14px 28px;
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(34, 211, 238, 0.25);
+    border-radius: 10px;
+    color: var(--text-color);
+    font-size: 0.9rem;
+    resize: vertical;
+    transition: border-color 0.2s;
+}
+.video-lab-form textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.1);
+}
+.video-char-count {
+    position: absolute;
+    bottom: 8px;
+    right: 12px;
+    font-size: 0.7rem;
+    color: var(--text-color);
+    opacity: 0.6;
+}
+.video-generate-btn {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+.video-loading-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: rgba(15, 23, 42, 0.5);
+    border-radius: 10px;
+    border: 1px dashed rgba(34, 211, 238, 0.3);
+}
+.video-loading-skeleton {
+    height: 180px;
+    background: linear-gradient(90deg, rgba(34,211,238,0.05) 25%, rgba(34,211,238,0.15) 50%, rgba(34,211,238,0.05) 75%);
+    background-size: 200% 100%;
+    animation: video-skeleton-pulse 1.5s ease-in-out infinite;
+    border-radius: 10px;
+}
+@keyframes video-skeleton-pulse {
+    0%, 100% { background-position: 200% 0; }
+    50% { background-position: -200% 0; }
+}
+.video-loading-bar {
+    height: 4px;
+    background: rgba(34, 211, 238, 0.15);
+    border-radius: 4px;
+    overflow: hidden;
+}
+.video-loading-fill {
+    height: 100%;
+    width: 40%;
+    background: linear-gradient(90deg, var(--accent-color), #22d3ee);
+    border-radius: 4px;
+    animation: video-loading-move 1.2s ease-in-out infinite;
+}
+@keyframes video-loading-move {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(350%); }
+}
+.video-loading-label {
+    font-size: 0.8rem;
+    color: var(--accent-color);
+    opacity: 0.9;
+}
+
+/* Video Lab – Çıktı alanı */
 .video-output-container {
-    margin-top: 1rem;
+    margin-top: 0.5rem;
     text-align: center;
     max-width: 100%;
     overflow: hidden;
     box-sizing: border-box;
+    min-height: 200px;
+}
+.video-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 2rem 1rem;
+    background: rgba(34, 211, 238, 0.04);
+    border: 2px dashed rgba(34, 211, 238, 0.2);
+    border-radius: 12px;
+    min-height: 180px;
+}
+.video-placeholder-icon { font-size: 2.5rem; opacity: 0.5; }
+.video-placeholder p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--text-color);
+    opacity: 0.9;
+}
+.video-placeholder span {
+    font-size: 0.8rem;
+    color: var(--accent-color);
+    opacity: 0.7;
 }
 .video-preview-wrapper {
     max-width: min(640px, 100%);
@@ -1195,9 +1430,13 @@ body.neuro-sync-lab #live-stream {
     overflow: hidden;
     border-radius: 12px;
     border: 2px solid var(--accent-color);
-    box-shadow: 0 0 15px rgba(34, 211, 238, 0.2);
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.25);
     background: #000;
     box-sizing: border-box;
+}
+.video-preview-frame {
+    position: relative;
+    overflow: hidden;
 }
 #video-preview {
     display: block;
@@ -1208,8 +1447,31 @@ body.neuro-sync-lab #live-stream {
     object-fit: contain;
     vertical-align: top;
 }
-.video-preview-actions { margin-top: 0.75rem; }
+.video-preview-meta {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    color: var(--accent-color);
+    background: rgba(0,0,0,0.6);
+    opacity: 0.9;
+}
+.video-preview-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.video-action-btn { font-size: 0.85rem; padding: 8px 14px; }
 .video-lab { overflow: hidden; }
+
+@media (max-width: 640px) {
+    .video-demo-grid { grid-template-columns: repeat(4, 1fr); }
+    .video-settings-panel { grid-template-columns: 1fr; }
+    .video-settings-panel.video-settings-open { max-height: 320px; }
+}
+@media (max-width: 480px) {
+    .video-demo-grid { grid-template-columns: repeat(3, 1fr); }
+}
 
 /* Web Şablon Laboratuvarı */
 .web-lab { margin-top: 0; }

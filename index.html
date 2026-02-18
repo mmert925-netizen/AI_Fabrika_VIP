@@ -242,58 +242,119 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.5rem
         </div>
     </div>
     
-    <div id="video-lab" class="lab-container video-lab lab-panel">
-        <div class="lab-header">
-            <span class="lab-icon">🎬</span>
-            <h2 class="neon-text" data-tr="Video Üretim Laboratuvarı - Sora/Runway Entegrasyonu" data-en="Video Production Lab - Sora/Runway Integration">Video Üretim Laboratuvarı - Sora/Runway Entegrasyonu</h2>
+    <div id="video-lab" class="lab-container video-lab lab-panel video-lab-premium">
+        <div class="video-lab-header">
+            <div class="video-lab-badge" data-tr="Sora · Runway" data-en="Sora · Runway">Sora · Runway</div>
+            <h2 class="neon-text video-lab-title" data-tr="Video Üretim Laboratuvarı" data-en="Video Production Lab">Video Üretim Laboratuvarı</h2>
+            <p class="video-lab-desc" data-tr="Metinden videoya AI destekli üretim. Profesyonel kalitede kısa videolar." data-en="AI-powered text-to-video. Professional short-form content.">Metinden videoya AI destekli üretim. Profesyonel kalitede kısa videolar.</p>
         </div>
-        <p class="video-lab-desc" data-tr="Sora ve Runway API ile profesyonel video üretimi. Metinden videoya yapay zeka destekli üretim." data-en="Professional video production with Sora and Runway API. AI-powered text-to-video generation.">Sora ve Runway API ile profesyonel video üretimi. Metinden videoya yapay zeka destekli üretim.</p>
-        <div class="demo-prompts" id="video-demo-prompts">
-            <span class="demo-label" data-tr="Örnek promptlar – tıkla dene:" data-en="Sample prompts – click to try:">Örnek promptlar – tıkla dene:</span>
-            <div class="demo-chips">
-                <button type="button" class="demo-chip video-demo" data-prompt="15s ürün tanıtımı, dinamik kurgu, synthwave müzik">🎞️ Tanıtım</button>
-                <button type="button" class="demo-chip video-demo" data-prompt="60s mini belgesel, anlatıcı sesi, doğal görüntüler">📽️ Belgesel</button>
-                <button type="button" class="demo-chip video-demo" data-prompt="10s Reels tarzı sosyal medya klibi, hızlı kesimler">🔊 Sosyal Klip</button>
-                <button type="button" class="demo-chip video-demo" data-prompt="30s ürün lansmanı, yavaş kamera, epik müzik">🚀 Lansman</button>
-                <button type="button" class="demo-chip video-demo" data-prompt="20s eğitim klibi, ekran animasyonları, voice-over">📚 Eğitim</button>
-                <button type="button" class="demo-chip video-demo" data-prompt="8s loopable arka plan video, ambient motion graphics">🔁 Loop Arkaplan</button>
-                <button type="button" class="demo-chip video-demo" data-prompt="10s testimonial video, müşteri konuşması, sıcak ton">🗣️ Müşteri Görüşü</button>
-            </div>
-        </div>
-        <div class="lab-form-container">
-            <label for="video-provider-select" style="width:100%;text-align:left;">Video Sağlayıcı:</label>
-            <select id="video-provider-select" style="max-width:220px; margin-bottom:6px;">
-                <option value="sora">OpenAI Sora</option>
-                <option value="runway">Runway ML</option>
-            </select>
-            <label for="video-res-select" style="width:100%;text-align:left;">Çözünürlük:</label>
-            <select id="video-res-select" style="max-width:220px; margin-bottom:6px;">
-                <option value="1920x1080">Full HD (1920×1080)</option>
-                <option value="1280x720">HD (1280×720)</option>
-                <option value="3840x2160">4K (3840×2160) - VIP</option>
-            </select>
-            <label for="video-duration-select" style="width:100%;text-align:left;">Süre:</label>
-            <select id="video-duration-select" style="max-width:220px; margin-bottom:6px;">
-                <option value="10">10 saniye</option>
-                <option value="15">15 saniye</option>
-                <option value="30">30 saniye - VIP</option>
-                <option value="60">60 saniye - VIP</option>
-            </select>
-            <textarea id="video-prompt-input" placeholder="Örn: 15s ürün tanıtımı, synthwave müzik, dinamik kesimler..." rows="3" data-placeholder-tr="Örn: 15s ürün tanıtımı..." data-placeholder-en="E.g. 15s product promo..."></textarea>
-            <button id="generate-video-btn" class="neon-button" data-tr="Videoyu Mühürle (Sora/Runway)" data-en="Generate Video (Sora/Runway)">Videoyu Mühürle (Sora/Runway)</button>
-            <div id="video-loading-indicator" class="progress-bar-wrap" style="display: none;">
-                <div class="progress-bar"><div class="progress-bar-fill"></div></div>
-                <span class="progress-bar-label" data-tr="Video üretiliyor..." data-en="Generating video...">Video üretiliyor...</span>
-            </div>
-        </div>
-        <div id="video-output-container" class="video-output-container">
-            <div id="video-preview-wrapper" class="video-preview-wrapper" style="display: none;">
-                <video id="video-preview" controls playsinline></video>
-                <div class="video-preview-actions">
-                    <button id="video-download-btn" class="neon-button add-gallery-btn" data-tr="📥 Video İndir" data-en="📥 Download Video">📥 Video İndir</button>
+
+        <div class="video-lab-settings">
+            <button type="button" class="video-settings-toggle" id="video-settings-toggle" aria-expanded="false">
+                <span class="video-settings-icon">⚙️</span>
+                <span data-tr="Ayarlar" data-en="Settings">Ayarlar</span>
+                <span class="video-settings-chevron">▼</span>
+            </button>
+            <div class="video-settings-panel" id="video-settings-panel">
+                <div class="video-setting-row">
+                    <label for="video-provider-select" data-tr="Sağlayıcı" data-en="Provider">Sağlayıcı</label>
+                    <select id="video-provider-select" class="video-setting-select">
+                        <option value="sora">OpenAI Sora</option>
+                        <option value="runway">Runway ML</option>
+                    </select>
+                </div>
+                <div class="video-setting-row">
+                    <label for="video-res-select" data-tr="Çözünürlük" data-en="Resolution">Çözünürlük</label>
+                    <select id="video-res-select" class="video-setting-select">
+                        <option value="1280x720">HD 720p</option>
+                        <option value="1920x1080">Full HD 1080p</option>
+                        <option value="3840x2160">4K UHD · VIP</option>
+                    </select>
+                </div>
+                <div class="video-setting-row">
+                    <label for="video-duration-select" data-tr="Süre" data-en="Duration">Süre</label>
+                    <select id="video-duration-select" class="video-setting-select">
+                        <option value="5">5 sn</option>
+                        <option value="10">10 sn</option>
+                        <option value="15" selected>15 sn</option>
+                        <option value="30">30 sn · VIP</option>
+                        <option value="60">60 sn · VIP</option>
+                    </select>
+                </div>
+                <div class="video-setting-row">
+                    <label for="video-aspect-select" data-tr="En-boy" data-en="Aspect">En-boy</label>
+                    <select id="video-aspect-select" class="video-setting-select">
+                        <option value="16:9">16:9 Yatay</option>
+                        <option value="9:16">9:16 Dikey (Reels)</option>
+                        <option value="1:1">1:1 Kare</option>
+                    </select>
                 </div>
             </div>
-            <p id="video-placeholder" style="color: var(--text-color); opacity: 0.7;" data-tr="Üretilen video burada belirecek..." data-en="Generated video will appear here...">Üretilen video burada belirecek...</p>
+        </div>
+
+        <div class="video-lab-prompts" id="video-demo-prompts">
+            <span class="demo-label" data-tr="Hızlı şablonlar" data-en="Quick templates">Hızlı şablonlar</span>
+            <div class="video-demo-grid">
+                <button type="button" class="video-demo-card video-demo" data-prompt="15s ürün tanıtımı, dinamik kurgu, synthwave müzik">
+                    <span class="video-demo-icon">🎞️</span>
+                    <span data-tr="Tanıtım" data-en="Promo">Tanıtım</span>
+                </button>
+                <button type="button" class="video-demo-card video-demo" data-prompt="60s mini belgesel, anlatıcı sesi, doğal görüntüler">
+                    <span class="video-demo-icon">📽️</span>
+                    <span data-tr="Belgesel" data-en="Doc">Belgesel</span>
+                </button>
+                <button type="button" class="video-demo-card video-demo" data-prompt="10s Reels tarzı sosyal medya klibi, hızlı kesimler">
+                    <span class="video-demo-icon">🔊</span>
+                    <span data-tr="Sosyal" data-en="Social">Sosyal</span>
+                </button>
+                <button type="button" class="video-demo-card video-demo" data-prompt="30s ürün lansmanı, yavaş kamera, epik müzik">
+                    <span class="video-demo-icon">🚀</span>
+                    <span data-tr="Lansman" data-en="Launch">Lansman</span>
+                </button>
+                <button type="button" class="video-demo-card video-demo" data-prompt="20s eğitim klibi, ekran animasyonları, voice-over">
+                    <span class="video-demo-icon">📚</span>
+                    <span data-tr="Eğitim" data-en="Edu">Eğitim</span>
+                </button>
+                <button type="button" class="video-demo-card video-demo" data-prompt="8s loopable arka plan video, ambient motion graphics">
+                    <span class="video-demo-icon">🔁</span>
+                    <span data-tr="Loop" data-en="Loop">Loop</span>
+                </button>
+                <button type="button" class="video-demo-card video-demo" data-prompt="10s testimonial video, müşteri konuşması, sıcak ton">
+                    <span class="video-demo-icon">🗣️</span>
+                    <span data-tr="Testimonial" data-en="Testimonial">Testimonial</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="video-lab-form">
+            <div class="video-prompt-wrap">
+                <textarea id="video-prompt-input" rows="3" maxlength="1000" placeholder="Videonu tarif et: sahne, stil, hareket, atmosfer..." data-placeholder-tr="Videonu tarif et: sahne, stil, hareket, atmosfer..." data-placeholder-en="Describe your video: scene, style, motion, mood..."></textarea>
+                <span class="video-char-count"><span id="video-char-current">0</span>/1000</span>
+            </div>
+            <button id="generate-video-btn" class="neon-button video-generate-btn" data-tr="Videoyu Mühürle" data-en="Generate Video">Videoyu Mühürle</button>
+            <div id="video-loading-indicator" class="video-loading-wrap" style="display: none;">
+                <div class="video-loading-skeleton"></div>
+                <div class="video-loading-bar"><div class="video-loading-fill"></div></div>
+                <span class="video-loading-label" data-tr="Video üretiliyor... Bu birkaç dakika sürebilir." data-en="Generating video... This may take a few minutes.">Video üretiliyor... Bu birkaç dakika sürebilir.</span>
+            </div>
+        </div>
+
+        <div id="video-output-container" class="video-output-container">
+            <div id="video-preview-wrapper" class="video-preview-wrapper" style="display: none;">
+                <div class="video-preview-frame">
+                    <video id="video-preview" controls playsinline preload="metadata"></video>
+                    <div class="video-preview-meta" id="video-preview-meta"></div>
+                </div>
+                <div class="video-preview-actions">
+                    <button id="video-download-btn" class="neon-button video-action-btn" data-tr="📥 İndir" data-en="📥 Download">📥 İndir</button>
+                    <button id="video-fullscreen-btn" class="neon-button video-action-btn" data-tr="⛶ Tam ekran" data-en="⛶ Fullscreen">⛶ Tam ekran</button>
+                </div>
+            </div>
+            <div id="video-placeholder" class="video-placeholder">
+                <div class="video-placeholder-icon">🎬</div>
+                <p data-tr="Üretilen video burada belirecek" data-en="Generated video will appear here">Üretilen video burada belirecek</p>
+                <span data-tr="Prompt yazıp Videoyu Mühürle'ye tıkla" data-en="Write a prompt and click Generate">Prompt yazıp Videoyu Mühürle'ye tıkla</span>
+            </div>
         </div>
     </div>
 

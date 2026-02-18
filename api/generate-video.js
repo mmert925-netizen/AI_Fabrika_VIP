@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Sadece POST desteklenir' });
 
-  const { prompt, duration = 15, resolution = '1280x720', provider = 'sora' } = req.body || {};
+  const { prompt, duration = 15, resolution = '1280x720', provider = 'sora', aspect_ratio = '16:9' } = req.body || {};
   if (!prompt || typeof prompt !== 'string') {
     return res.status(400).json({ error: 'Prompt gerekli' });
   }
@@ -73,7 +73,7 @@ export default async function handler(req, res) {
           text_prompt: cleanPrompt,
           watermarked: false,
           duration: Math.min(duration, 30), // Runway limiti
-          ratio: '16:9'
+          ratio: aspect_ratio || '16:9'
         })
       });
 
