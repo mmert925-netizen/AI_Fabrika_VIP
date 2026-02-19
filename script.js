@@ -1777,12 +1777,23 @@ function createSealedImageDataUrl(dataUrl, serialNo) {
 
 // Görsel galeri kaydetme – üretilen görselleri localStorage'a ekle (Supabase sync ile)
 function getSavedGallery() {
-    try { return JSON.parse(localStorage.getItem(GALLERY_KEY) || "[]"); } catch { return []; }
+    try {
+        const raw = JSON.parse(localStorage.getItem(GALLERY_KEY) || "[]");
+        return raw.filter(item => item && item.src && !item.src.startsWith("data:"));
+    } catch { return []; }
 }
 function saveToGallery(src, serialNo) {
+    if (src && src.startsWith("data:")) return;
     const g = getSavedGallery();
     g.push({ src, serialNo: serialNo || 0, id: Date.now() });
-    localStorage.setItem(GALLERY_KEY, JSON.stringify(g));
+    try {
+        localStorage.setItem(GALLERY_KEY, JSON.stringify(g));
+    } catch (e) {
+        if (e.name === "QuotaExceededError") {
+            localStorage.removeItem(GALLERY_KEY);
+            localStorage.setItem(GALLERY_KEY, JSON.stringify([{ src, serialNo: serialNo || 0, id: Date.now() }]));
+        }
+    }
     renderGeneratedGallery();
     renderLiveStream();
     syncGalleryToSupabase();
@@ -1860,6 +1871,14 @@ function validateContactForm(name, email, message) {
 
 document.addEventListener("DOMContentLoaded", async function() {
     if (window.OMERAI_MOBILE) document.body.classList.add("mobile-view");
+    try {
+        const raw = JSON.parse(localStorage.getItem(GALLERY_KEY) || "[]");
+        const hasBase64 = Array.isArray(raw) && raw.some(item => item && item.src && item.src.startsWith("data:"));
+        if (hasBase64) {
+            const cleaned = raw.filter(item => item && item.src && !item.src.startsWith("data:"));
+            localStorage.setItem(GALLERY_KEY, JSON.stringify(cleaned));
+        }
+    } catch (_) {}
     await initSupabaseSync();
     if (typeof updateTokenUI === "function") updateTokenUI();
     if (typeof renderGeneratedGallery === "function") renderGeneratedGallery();
