@@ -15,7 +15,13 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Sadece POST' });
 
   if (!isSupabaseConfigured()) {
-    return res.status(503).json({ error: 'Supabase yapılandırılmamış' });
+    const missing = [];
+    if (!(process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL)) missing.push('SUPABASE_URL');
+    if (!(process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY)) missing.push('SUPABASE_SERVICE_ROLE_KEY veya SUPABASE_ANON_KEY');
+    return res.status(503).json({
+      error: 'Supabase yapılandırılmamış',
+      hint: 'Vercel → Settings → Environment Variables. Eksik: ' + (missing.join(', ') || 'bilinmiyor') + '. Preview için de ekleyin.'
+    });
   }
 
   const { image, device_id, serial_no } = req.body || {};

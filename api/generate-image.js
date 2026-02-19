@@ -27,46 +27,56 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Prompt boş olamaz' });
   }
 
-  try {
-    const model = 'gemini-2.5-flash-image';
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-    const body = {
-      contents: [{ parts: [{ text: cleanPrompt }] }],
-      generationConfig: { responseModalities: ['TEXT', 'IMAGE'] }
-    };
+  const models = ['gemini-2.5-flash-image', 'gemini-3-pro-image-preview'];
+  let lastError = null;
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
+  for (const model of models) {
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+      const body = {
+        contents: [{ parts: [{ text: cleanPrompt }] }],
+        generationConfig: { responseModalities: ['TEXT', 'IMAGE'] }
+      };
 
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({}));
-      const msg = err.error?.message || response.statusText;
-      return res.status(response.status).json({ error: msg });
-    }
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
 
-    const data = await response.json();
-    const parts = data.candidates?.[0]?.content?.parts || [];
-    let imageBase64 = null;
+      const data = await response.json().catch(() => ({}));
 
-    for (const part of parts) {
-      const inline = part.inlineData || part.inline_data;
-      if (inline?.data) {
-        imageBase64 = inline.data;
-        break;
+      if (!response.ok) {
+        lastError = data.error?.message || data.error || response.statusText;
+        console.warn(`generate-image ${model} failed:`, lastError);
+        continue;
       }
-    }
 
-    if (!imageBase64) {
-      return res.status(500).json({ error: 'Görsel üretilemedi. Model görsel üretimini desteklemiyor olabilir.' });
-    }
+      const parts = data.candidates?.[0]?.content?.parts || [];
+      let imageBase64 = null;
 
-    console.log('Görsel URL alındı: [base64 - Gemini]');
-    return res.status(200).json({ image: imageBase64, mimeType: 'image/png' });
-  } catch (err) {
-    console.error('generate-image error:', err);
-    return res.status(500).json({ error: err.message || 'Sunucu hatası' });
+      for (const part of parts) {
+        const inline = part.inlineData || part.inline_data;
+        if (inline?.data) {
+          imageBase64 = inline.data;
+          break;
+        }
+      }
+
+      if (imageBase64) {
+        console.log('Görsel URL alındı: [base64 - Gemini]', model);
+        return res.status(200).json({ image: imageBase64, mimeType: 'image/png' });
+      }
+
+      lastError = 'Model görsel döndürmedi';
+    } catch (err) {
+      lastError = err.message;
+      console.warn(`generate-image ${model} error:`, err.message);
+    }
   }
+
+  console.error('generate-image tüm modeller başarısız:', lastError);
+  return res.status(500).json({
+    error: lastError ? `Görsel üretilemedi: ${lastError}` : 'Görsel üretilemedi. Vercel → Logs kontrol et.'
+  });
 }
