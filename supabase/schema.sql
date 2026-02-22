@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS omerai_gallery (
 );
 
 CREATE INDEX IF NOT EXISTS idx_omerai_gallery_device ON omerai_gallery(device_id);
+CREATE INDEX IF NOT EXISTS idx_omerai_gallery_created ON omerai_gallery(created_at DESC);
 
 -- Kullanıcı tercihleri (token, tema, dil, portal, seri no)
 CREATE TABLE IF NOT EXISTS omerai_preferences (

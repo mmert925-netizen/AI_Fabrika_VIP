@@ -17,7 +17,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Gemini API anahtarı tanımlı değil. Vercel > Environment Variables' });
   }
 
-  const { message, history = [] } = req.body || {};
+  const { message, history = [], context = {} } = req.body || {};
   if (!message || typeof message !== 'string') {
     return res.status(400).json({ error: 'message gerekli' });
   }
@@ -27,7 +27,9 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Mesaj boş olamaz' });
   }
 
+  const ctx = `[OTONOM BAĞLAM - Kullanıcı durumu: Galeri ${context.gallery_count ?? '?'} görsel, ${context.tokens ?? '?'} token kredisi, tema ${context.theme || 'dark'}, dil ${context.lang || 'tr'}. Bu bilgiyi kullanarak kişiselleştirilmiş öneriler yap.]`;
   const systemPrompt = `Sen ÖMER.AI Fabrika'nın asistanısın. Yazılım ve yapay zeka fabrikası - "Geleceği kodla, görselleri mühürle" mottosuyla çalışıyoruz.
+${ctx}
 
 HİZMETLER:
 - Yapay Zeka Modelleme: Gemini ve Imagen 4.0 tabanlı botlar, otonom sistemler
@@ -57,7 +59,8 @@ SEN NE YAPARSIN:
 - SSS: Destek 1 ay ücretsiz. Ödeme Havale/EFT, %50 ön ödeme.
 - Samimi, yardımcı, kısa ama yeterli yanıtlar. Türkçe veya kullanıcının dilinde.
 - Emoji kullanabilirsin (orta düzey).
-- Bilmediğin konuda "İletişim formundan detaylı teklif alabilirsin" de.`;
+- Bilmediğin konuda "İletişim formundan detaylı teklif alabilirsin" de.
+- OTONOM: Bağlam bilgisini kullan. Galeri boşsa görsel üretmeyi öner. Token varsa HD modu hatırlat. Kişiselleştirilmiş öneriler ver.`;
 
   try {
     const model = 'gemini-2.0-flash';

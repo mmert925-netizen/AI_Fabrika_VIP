@@ -1194,11 +1194,17 @@ function sendMessage(customText) {
     }
 
 
-    // Normal sohbet (Gemini)
+    // Normal sohbet (Gemini) – otonom bağlam ile
+    const ctx = {
+      gallery_count: typeof getSavedGallery === "function" ? getSavedGallery().length : 0,
+      tokens: typeof getTokens === "function" ? getTokens() : 0,
+      theme: localStorage.getItem("theme") || "dark",
+      lang: currentLang || "tr"
+    };
     fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userText, history: chatHistory })
+        body: JSON.stringify({ message: userText, history: chatHistory, context: ctx })
     })
     .then(res => res.json())
     .then(data => {
@@ -1400,9 +1406,11 @@ function showChatWelcome() {
         ? "Merhaba! 👋 Ben ÖMER.AI Asistan. Görsel üretebilir, web şablonu mühürleyebilir, post yazabilir, fiyat/süre tahmini verebilirim. Ne yapmamı istersin?"
         : "Hello! 👋 I'm ÖMER.AI Assistant. I can generate images, create web templates, write posts, give price/time estimates. What would you like?";
     box.innerHTML = `<p class="chat-msg bot"><b>🤖 Asistan:</b> <span class="bot-reply-content">${parseMarkdown(welcome)}</span></p>`;
+    const gCount = typeof getSavedGallery === "function" ? getSavedGallery().length : 0;
+    const tokens = typeof getTokens === "function" ? getTokens() : 0;
     const suggestions = currentLang === "tr"
-        ? ["Bana bir görsel çiz", "Fiyatlar nedir?", "Web tasarımı yap"]
-        : ["Draw me an image", "What are the prices?", "Create a web design"];
+        ? (gCount === 0 ? ["Bana bir görsel çiz", "Fiyatlar nedir?", "Web tasarımı yap"] : tokens > 0 ? ["HD görsel üret", "Fiyatlar nedir?", "Proje önerisi ver"] : ["Bana bir görsel çiz", "Fiyatlar nedir?", "Web tasarımı yap"])
+        : (gCount === 0 ? ["Draw me an image", "What are the prices?", "Create a web design"] : tokens > 0 ? ["Generate HD image", "What are the prices?", "Suggest a project"] : ["Draw me an image", "What are the prices?", "Create a web design"]);
     window._lastSuggestions = suggestions;
     const chips = suggestions.map((s, i) => `<button class="suggestion-chip" data-idx="${i}" onclick="sendMessage(window._lastSuggestions?.[this.dataset.idx]||'')">${escapeHtml(s)}</button>`).join('');
     box.innerHTML += `<div class="suggestion-chips">${chips}</div>`;
