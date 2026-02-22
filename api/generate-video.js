@@ -118,7 +118,7 @@ export default async function handler(req, res) {
       if (!runwayApiKey) {
         return res.status(503).json({
           error: 'Runway API yapılandırılmamış.',
-          hint: 'Vercel: RUNWAY_API_KEY veya RUNWAYML_API_SECRET ekleyin. Anahtar: app.runwayml.com → Settings → API',
+          hint: 'Vercel: RUNWAY_API_KEY ekleyin. Anahtar: dev.runwayml.com → API Keys. Redeploy gerekli.',
           code: 'API_KEY_MISSING'
         });
       }
@@ -147,7 +147,7 @@ export default async function handler(req, res) {
         const msg = err.message || err.error || runwayResponse.statusText;
         const isAuth = runwayResponse.status === 401 || /unauthorized|invalid.*key/i.test(String(msg));
         const hint = isAuth
-          ? 'Runway API anahtarı geçersiz. app.runwayml.com → Settings → API Keys\'ten yeni anahtar alın.'
+          ? 'Runway API anahtarı geçersiz. dev.runwayml.com → Organization → API Keys\'ten anahtar alın. Vercel\'de Redeploy yapın.'
           : `Runway API Hatası: ${msg}`;
         return res.status(runwayResponse.status).json({ error: hint });
       }
