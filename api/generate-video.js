@@ -60,10 +60,11 @@ export default async function handler(req, res) {
         if (isQuota) {
           hint = 'Ücretsiz kota doldu. Devam için replicate.com/account/billing adresinden ödeme ekleyin.';
         } else if (isAuth) {
+          const diag = `[Token var: ${!!token}, uzunluk: ${token.length}, format: ${tokenValidFormat ? 'OK' : 'HATALI'}]`;
           if (!tokenValidFormat) {
-            hint = 'Token formatı hatalı. Replicate token "r8_" ile başlamalı (~40 karakter). replicate.com/account/api-tokens → Yeni token oluştur. Vercel\'de REPLICATE_API_TOKEN ekle (boşluk yok), Redeploy yap.';
+            hint = `Token formatı hatalı. ${diag} replicate.com/account/api-tokens → Yeni token.`;
           } else {
-            hint = 'Token geçersiz veya devre dışı. replicate.com/account/api-tokens → Yeni token oluştur. Vercel\'de REPLICATE_API_TOKEN güncelle, Redeploy yap.';
+            hint = `Token Replicate tarafından reddedildi (iptal/yanlış olabilir). ${diag}`;
           }
         } else {
           hint = `Replicate API Hatası: ${msg}`;
@@ -162,10 +163,11 @@ export default async function handler(req, res) {
         const isAuth = runwayResponse.status === 401 || /unauthorized|invalid.*key/i.test(String(msg));
         let hint;
         if (isAuth) {
+          const diag = `[Key var: ${!!runwayApiKey}, uzunluk: ${runwayApiKey.length}, format: ${keyValidFormat ? 'OK' : 'HATALI'}]`;
           if (!keyValidFormat) {
-            hint = 'Anahtar "key_" ile başlamalı, 128 hex karakter. Boşluk olmamalı. Vercel\'de RUNWAYML_API_SECRET kullan, Redeploy yap.';
+            hint = `Anahtar formatı hatalı. ${diag} key_ + 128 hex karakter olmalı.`;
           } else {
-            hint = 'Anahtar geçersiz veya devre dışı. dev.runwayml.com → API Keys\'te kontrol et. Billing\'de kredi var mı? Redeploy yaptın mı?';
+            hint = `Runway anahtarı reddedildi. ${diag} dev.runwayml.com → API Keys, Billing kontrol et.`;
           }
         } else {
           hint = `Runway API Hatası: ${msg}`;
