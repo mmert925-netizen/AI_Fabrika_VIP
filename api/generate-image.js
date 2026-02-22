@@ -22,10 +22,22 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Prompt gerekli' });
   }
 
-  const cleanPrompt = prompt.trim().slice(0, 1000);
+  let cleanPrompt = prompt.trim().slice(0, 1000);
   if (!cleanPrompt) {
     return res.status(400).json({ error: 'Prompt boş olamaz' });
   }
+
+  const VARIANCE = [
+    'golden hour lighting', 'dramatic shadows', 'soft diffused light', 'cinematic composition',
+    'low angle view', 'bird eye perspective', 'close-up detail', 'wide establishing shot',
+    'warm color palette', 'cool blue tones', 'high contrast', 'muted pastel colors',
+    'atmospheric depth', 'bokeh background', 'sharp focus', 'dreamy soft focus',
+    'unique composition', 'unexpected angle', 'artistic interpretation', 'creative variation'
+  ];
+  const r1 = VARIANCE[Math.floor(Math.random() * VARIANCE.length)];
+  let r2 = VARIANCE[Math.floor(Math.random() * VARIANCE.length)];
+  while (r2 === r1) r2 = VARIANCE[Math.floor(Math.random() * VARIANCE.length)];
+  cleanPrompt = `${cleanPrompt}, ${r1}, ${r2}`;
 
   const models = ['gemini-2.5-flash-image', 'gemini-3-pro-image-preview'];
   let lastError = null;
@@ -35,7 +47,12 @@ export default async function handler(req, res) {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
       const body = {
         contents: [{ parts: [{ text: cleanPrompt }] }],
-        generationConfig: { responseModalities: ['TEXT', 'IMAGE'] }
+        generationConfig: {
+          responseModalities: ['TEXT', 'IMAGE'],
+          temperature: 0.95,
+          topP: 0.95,
+          topK: 40
+        }
       };
 
       const response = await fetch(url, {
